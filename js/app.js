@@ -40,7 +40,6 @@ const MATERIAS = [
 let usuario = null;
 let materiaAtiva = MATERIAS[0];
 let aulaAtiva = MATERIAS[0].aulas[0];
-let subAbaAtiva = 'questoes';
 let tabGlobal = null;       // null | 'simulado' | 'historico'
 let modoQuestoes = 'lista'; // 'lista' | 'foco'
 let aulaCache = {};         // 'materiaId/slug' → dados JSON
@@ -136,34 +135,13 @@ function renderBarraAulas() {
   });
 }
 
-function renderSubAbas() {
-  const el = document.getElementById('sub-abas');
-  if (tabGlobal) {
-    el.classList.add('hidden');
-    return;
-  }
-  el.classList.remove('hidden');
-  el.querySelectorAll('.sub-aba').forEach(btn => {
-    btn.classList.toggle('ativa', btn.dataset.sub === subAbaAtiva);
-  });
-}
-
 function renderConteudo() {
   renderBarraAulas();
-  renderSubAbas();
 
   if (tabGlobal === 'simulado') { renderSimuladoConfig(); return; }
   if (tabGlobal === 'historico') { renderHistorico(); return; }
 
-  renderConteudoAula();
-}
-
-function renderConteudoAula() {
-  if (subAbaAtiva === 'teoria') {
-    renderTeoria();
-  } else {
-    renderQuestoes();
-  }
+  renderQuestoes();
 }
 
 // =====================================================================
@@ -911,7 +889,6 @@ document.getElementById('select-materia').addEventListener('change', e => {
   materiaAtiva = MATERIAS.find(m => m.id === e.target.value);
   aulaAtiva = materiaAtiva.aulas[0];
   tabGlobal = null;
-  subAbaAtiva = 'questoes';
   document.querySelectorAll('.aba-global').forEach(b => b.classList.remove('ativa'));
   document.querySelector('.aba-global[data-tab="inicio"]')?.classList.add('ativa');
   renderConteudo();
@@ -927,11 +904,3 @@ document.querySelectorAll('.aba-global').forEach(btn => {
   });
 });
 
-document.querySelectorAll('.sub-aba').forEach(btn => {
-  btn.addEventListener('click', () => {
-    subAbaAtiva = btn.dataset.sub;
-    document.querySelectorAll('.sub-aba').forEach(b => b.classList.remove('ativa'));
-    btn.classList.add('ativa');
-    renderConteudoAula();
-  });
-});

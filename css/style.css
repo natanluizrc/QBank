@@ -144,25 +144,6 @@ button:disabled { cursor: default; }
 .aba-aula:hover { color: #1a1a1a; }
 .aba-aula.ativa { color: #1a1a1a; border-bottom-color: #1a1a1a; font-weight: 500; }
 
-/* ---- Sub-abas (Teoria / Questões) ---- */
-#sub-abas {
-  display: flex;
-  gap: 0.15rem;
-  padding: 0.6rem 1.25rem 0;
-  border-bottom: 1px solid #e5e5e5;
-}
-
-.sub-aba {
-  padding: 0.4rem 0.8rem;
-  font-size: 0.875rem;
-  color: #666;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
-  transition: color 0.12s, border-color 0.12s;
-}
-
-.sub-aba:hover { color: #1a1a1a; }
-.sub-aba.ativa { color: #1a1a1a; border-bottom-color: #1a1a1a; font-weight: 500; }
 
 /* ---- Conteúdo ---- */
 #conteudo {
