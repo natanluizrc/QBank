@@ -349,7 +349,7 @@ button:disabled { cursor: default; }
 .btn-revelar:hover { background: #f5f5f5; }
 
 /* ---- Modo foco ---- */
-.foco-wrapper { max-width: 680px; margin: 0 auto; }
+.foco-wrapper { width: 100%; }
 
 
 
