@@ -42,6 +42,12 @@ Sem build, sem bundler, sem transpilação. Firebase SDK via CDN.
 
 A sub-aba Questões tem dois modos alternáveis: **lista** (scroll + gabarito inline) e **foco** (uma por vez → responde → gabarito imediato → próxima). Progresso é session-only — nunca gravado.
 
+## Autenticação
+
+- Usuário não autenticado vê tela de boas-vindas com botão "Entrar com Google"
+- Após login, redirecionado para o app
+- Todo acesso ao Firestore exige autenticação
+
 ## Fluxo do Simulado
 
 1. Usuário configura fonte (toda a base / matéria / aula) e quantidade
@@ -49,6 +55,7 @@ A sub-aba Questões tem dois modos alternáveis: **lista** (scroll + gabarito in
 3. Uma por vez: responde → gabarito imediato (acerto/erro + comentário) → próxima
 4. Cronômetro crescente, sem limite de tempo
 5. Ao finalizar: placar + gabarito completo + salvo no Firestore (`usuarios/{userId}/historico`)
+6. No Histórico, clicar num simulado exibe o gabarito completo daquele simulado
 
 ## Estrutura do Firestore
 
@@ -62,15 +69,18 @@ usuarios/
 
 ## Arquivos de conteúdo
 
-Organizados por matéria em `data/{materia}/aula-XX.json`. Schema completo no `PRD.md`:
+Organizados por matéria em `data/{materia}/aula-XX.json` — slug da matéria em minúsculas sem acentos (ex: `data/contabilidade/`). Schema completo no `PRD.md`:
 
 - `slug` — identificador do arquivo (ex: `aula-01`)
 - `titulo` — nome na aba (ex: `"Aula 01 — Balanço Patrimonial"`)
 - `materia` — nome da matéria (ex: `"Contabilidade"`)
 - `teoria` — Markdown renderizado na sub-aba Teoria
-- `questoes[]` — cada item tem: `id`, `tipo`, `enunciado`, `opcoes`, `resposta`, `comentario`, `dificuldade`
-- `tipo`: `"multipla_escolha"` ou `"certo_errado"`
-- `dificuldade`: inteiro de 1 (muito fácil) a 5 (muito difícil)
+- `questoes[]` — cada item tem: `id`, `tipo`, `enunciado`, `resposta`, `comentario`, `dificuldade`
+  - `opcoes`: presente **somente** em `multipla_escolha` (array de strings: `["A) ...", "B) ...", ...]`)
+  - `tipo`: `"multipla_escolha"` ou `"certo_errado"`
+  - `resposta` em `multipla_escolha`: letra maiúscula — `"A"`, `"B"`, `"C"`, `"D"` ou `"E"`
+  - `resposta` em `certo_errado`: `"certo"` ou `"errado"` (string minúscula)
+  - `dificuldade`: inteiro de 1 (muito fácil) a 5 (muito difícil)
 
 ## Adicionando novo conteúdo (fluxo padrão)
 

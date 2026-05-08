@@ -13,7 +13,7 @@ Inicialmente uso pessoal. Arquitetura preparada para múltiplos usuários desde 
 ## Estrutura de navegação
 
 ```
-[ Contabilidade ▼ ]   Simulado   Gabarito   Histórico
+[ Matéria ▼ ]   Simulado   Gabarito   Histórico
 ─────────────────────────────────────────────────────
   Aula 00   Aula 01A   Aula 01B   Aula 02  ...
 ─────────────────────────────────────────────────────
@@ -84,6 +84,7 @@ Inicialmente uso pessoal. Arquitetura preparada para múltiplos usuários desde 
 ## Aba: Histórico
 
 - Lista de todos os simulados do usuário: data, fonte, placar, tempo
+- Clicar num simulado abre o **gabarito completo** daquele simulado (todas as questões com resposta dada, acerto/erro e comentário)
 - Escopo global (todas as matérias)
 - Botão para limpar histórico
 - Dados no Firestore, acessíveis de qualquer dispositivo
@@ -92,7 +93,9 @@ Inicialmente uso pessoal. Arquitetura preparada para múltiplos usuários desde 
 
 ## Autenticação
 
+- Usuário não autenticado vê uma **tela de boas-vindas** com botão "Entrar com Google"
 - Login obrigatório com conta Google (Firebase Authentication)
+- Após autenticação, redirecionado para o app
 - Todos os dados do usuário ficam isolados em `usuarios/{userId}/` no Firestore
 
 ---
@@ -122,7 +125,7 @@ usuarios/
 
 ### Conteúdo (questões e teoria)
 
-- Arquivos JSON estáticos em `data/{materia}/aula-XX.json`
+- Arquivos JSON estáticos em `data/{materia}/aula-XX.json` — slug da matéria em minúsculas sem acentos (ex: `data/contabilidade/`)
 - Servidos pelo Firebase Hosting
 - Versionados no GitHub
 - Futuramente podem migrar para Firestore (ex: conteúdo personalizado por usuário)
@@ -159,7 +162,11 @@ usuarios/
 }
 ```
 
-**Campo `dificuldade`:** escala de 1 (muito fácil) a 5 (muito difícil). Atribuído pelo Claude ao extrair o PDF; pode ser revisado manualmente.
+**Notas sobre o schema:**
+- **`dificuldade`:** escala de 1 (muito fácil) a 5 (muito difícil) — atribuído pelo Claude ao extrair o PDF; pode ser revisado manualmente
+- **`opcoes`:** presente apenas em `multipla_escolha`; ausente em `certo_errado`
+- **`resposta` em `certo_errado`:** valor deve ser `"certo"` ou `"errado"` (string, minúsculo)
+- **`resposta` em `multipla_escolha`:** letra da alternativa correta — `"A"`, `"B"`, `"C"`, `"D"` ou `"E"`
 
 ---
 
