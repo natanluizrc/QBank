@@ -244,6 +244,7 @@ button:disabled { cursor: default; }
 .questoes-barra .barra-placar { display: flex; gap: 0.75rem; }
 .barra-placar .acerto { color: #16a34a; font-weight: 500; }
 .barra-placar .erro   { color: #dc2626; font-weight: 500; }
+.barra-placar .total  { color: #2563eb; font-weight: 500; }
 .questoes-barra button {
   font-size: 0.78rem;
   color: #666;

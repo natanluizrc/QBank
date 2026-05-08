@@ -21,7 +21,7 @@ const db = firebase.firestore();
 const MATERIAS = [
   {
     id: 'contabilidade',
-    nome: 'Contabilidade',
+    nome: 'ContG',
     aulas: [
       { slug: 'aula-00',  titulo: 'Aula 00' },
       { slug: 'aula-01a', titulo: 'Aula 01A' },
@@ -46,6 +46,7 @@ let modoQuestoes = 'lista'; // 'lista' | 'foco'
 let aulaCache = {};         // 'materiaId/slug' → dados JSON
 let focoIdx = 0;
 let focoRespostas = {};     // questaoId → { dada, acertou }
+let listaRespostas = {};   // questaoId → { dada, acertou }
 let simuladoState = null;
 
 // =====================================================================
@@ -217,6 +218,7 @@ async function renderQuestoes() {
 
   focoIdx = 0;
   focoRespostas = {};
+  listaRespostas = {};
 
   conteudo.innerHTML = `
     <div class="questoes-cabecalho">
@@ -247,13 +249,25 @@ async function renderQuestoes() {
 // ---- Modo lista ----
 function renderListaQuestoes(questoes) {
   const area = document.getElementById('questoes-area');
+
+  const placarHtml = () => {
+    const acertos = Object.values(listaRespostas).filter(r => r.acertou).length;
+    const erros   = Object.values(listaRespostas).filter(r => !r.acertou).length;
+    return `<span class="acerto">✓ ${acertos}</span><span class="erro">✗ ${erros}</span><span class="total">● ${questoes.length}</span>`;
+  };
+
   area.innerHTML = `
     <div class="questoes-barra">
-      <span class="barra-progresso">${questoes.length} questões</span>
       <button id="btn-expandir">Expandir tudo</button>
+      <div class="barra-placar">${placarHtml()}</div>
     </div>
     ${questoes.map((q, i) => htmlQuestaoLista(q, i)).join('')}
   `;
+
+  const atualizarPlacar = () => {
+    const pl = area.querySelector('.barra-placar');
+    if (pl) pl.innerHTML = placarHtml();
+  };
 
   document.getElementById('btn-expandir').addEventListener('click', () => {
     const btn = document.getElementById('btn-expandir');
@@ -279,11 +293,13 @@ function renderListaQuestoes(questoes) {
       if (btn.disabled) return;
       const card = btn.closest('.questao-card');
       const q = questoes.find(x => x.id === card.dataset.qid);
+      listaRespostas[q.id] = { dada: btn.dataset.letra, acertou: btn.dataset.letra === q.resposta };
       card.querySelectorAll('.opcao').forEach(o => {
         o.disabled = true;
         if (o.dataset.letra === q.resposta) o.classList.add('correta');
         else if (o.dataset.letra === btn.dataset.letra) o.classList.add('errada');
       });
+      atualizarPlacar();
     });
   });
 
@@ -292,11 +308,13 @@ function renderListaQuestoes(questoes) {
       if (btn.disabled) return;
       const card = btn.closest('.questao-card');
       const q = questoes.find(x => x.id === card.dataset.qid);
+      listaRespostas[q.id] = { dada: btn.dataset.resp, acertou: btn.dataset.resp === q.resposta };
       card.querySelectorAll('.btn-ce').forEach(b => {
         b.disabled = true;
         if (b.dataset.resp === q.resposta) b.classList.add('correta');
         else if (b.dataset.resp === btn.dataset.resp) b.classList.add('errada');
       });
+      atualizarPlacar();
     });
   });
 }
@@ -348,10 +366,11 @@ function renderFocoQuestao(questoes) {
   area.innerHTML = `
     <div class="foco-wrapper">
       <div class="questoes-barra">
-        <span class="barra-progresso">${focoIdx + 1} / ${total}</span>
+        <div></div>
         <div class="barra-placar">
           <span class="acerto">✓ ${acertos}</span>
           <span class="erro">✗ ${respondidas - acertos}</span>
+          <span class="total">● ${total}</span>
         </div>
       </div>
       ${htmlQuestaoFoco(q, resp, isLast, focoIdx + 1)}
