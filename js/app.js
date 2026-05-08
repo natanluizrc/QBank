@@ -40,8 +40,8 @@ const MATERIAS = [
 let usuario = null;
 let materiaAtiva = MATERIAS[0];
 let aulaAtiva = MATERIAS[0].aulas[0];
-let subAbaAtiva = 'teoria';
-let tabGlobal = null;       // null | 'simulado' | 'gabarito' | 'historico'
+let subAbaAtiva = 'questoes';
+let tabGlobal = null;       // null | 'simulado' | 'historico'
 let modoQuestoes = 'lista'; // 'lista' | 'foco'
 let aulaCache = {};         // 'materiaId/slug' → dados JSON
 let focoIdx = 0;
@@ -101,6 +101,7 @@ async function salvarPerfil() {
 
 function inicializarApp() {
   popularSelectMaterias();
+  document.querySelector('.aba-global[data-tab="inicio"]')?.classList.add('ativa');
   renderConteudo();
 }
 
@@ -151,7 +152,6 @@ function renderConteudo() {
   renderSubAbas();
 
   if (tabGlobal === 'simulado') { renderSimuladoConfig(); return; }
-  if (tabGlobal === 'gabarito') { renderGabarito(); return; }
   if (tabGlobal === 'historico') { renderHistorico(); return; }
 
   renderConteudoAula();
@@ -224,9 +224,9 @@ async function renderQuestoes() {
       <div class="questoes-modo">
         <button class="btn-modo ${modoQuestoes === 'foco' ? 'ativo' : ''}" id="btn-foco">Foco</button>
         <button class="btn-modo ${modoQuestoes === 'lista' ? 'ativo' : ''}" id="btn-lista">Lista</button>
-        ${modoQuestoes === 'lista' ? '<button class="btn-modo" id="btn-expandir">Expandir tudo</button>' : ''}
       </div>
     </div>
+    ${modoQuestoes === 'lista' ? '<div class="lista-toolbar"><button id="btn-expandir">Expandir tudo</button></div>' : ''}
     <div id="questoes-area"></div>
   `;
 
@@ -874,14 +874,15 @@ document.getElementById('select-materia').addEventListener('change', e => {
   materiaAtiva = MATERIAS.find(m => m.id === e.target.value);
   aulaAtiva = materiaAtiva.aulas[0];
   tabGlobal = null;
-  subAbaAtiva = 'teoria';
+  subAbaAtiva = 'questoes';
   document.querySelectorAll('.aba-global').forEach(b => b.classList.remove('ativa'));
+  document.querySelector('.aba-global[data-tab="inicio"]')?.classList.add('ativa');
   renderConteudo();
 });
 
 document.querySelectorAll('.aba-global').forEach(btn => {
   btn.addEventListener('click', () => {
-    tabGlobal = btn.dataset.tab;
+    tabGlobal = btn.dataset.tab === 'inicio' ? null : btn.dataset.tab;
     simuladoState = null;
     document.querySelectorAll('.aba-global').forEach(b => b.classList.remove('ativa'));
     btn.classList.add('ativa');

@@ -225,6 +225,24 @@ button:disabled { cursor: default; }
 
 .btn-modo.ativo { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
 
+.lista-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -1rem;
+  margin-bottom: 1.25rem;
+}
+.lista-toolbar button {
+  font-size: 0.78rem;
+  color: #666;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0.15rem 0;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.lista-toolbar button:hover { color: #1a1a1a; }
+
 /* ---- Questão card ---- */
 .questao-card {
   border: 1px solid #e5e5e5;
@@ -242,7 +260,7 @@ button:disabled { cursor: default; }
   flex-wrap: wrap;
 }
 
-.questao-banca { font-size: 0.75rem; color: #888; margin-bottom: 0.25rem; }
+.questao-banca { font-size: 0.75rem; color: #888; margin-bottom: 0.6rem; }
 .questao-enunciado { margin-bottom: 0.875rem; white-space: pre-wrap; }
 
 /* ---- Opções múltipla escolha ---- */
