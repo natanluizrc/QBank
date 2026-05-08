@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QBank</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="tela-login" class="hidden">
+    <div class="login-card">
+      <h1>QBank</h1>
+      <p>Banco de questões para estudo</p>
+      <button id="btn-login">Entrar com Google</button>
+    </div>
+  </div>
+
+  <div id="app" class="hidden">
+    <header id="topbar">
+      <div class="topbar-esquerda">
+        <span class="app-nome">QBank</span>
+        <select id="select-materia"></select>
+      </div>
+      <nav class="topbar-abas">
+        <button class="aba-global" data-tab="simulado">Simulado</button>
+        <button class="aba-global" data-tab="gabarito">Gabarito</button>
+        <button class="aba-global" data-tab="historico">Histórico</button>
+      </nav>
+      <div class="topbar-usuario">
+        <img id="avatar" src="" alt="avatar">
+        <button id="btn-logout">Sair</button>
+      </div>
+    </header>
+
+    <nav id="barra-aulas"></nav>
+
+    <div id="sub-abas" class="hidden">
+      <button class="sub-aba ativa" data-sub="teoria">Teoria</button>
+      <button class="sub-aba" data-sub="questoes">Questões</button>
+    </div>
+
+    <main id="conteudo"></main>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
