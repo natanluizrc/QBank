@@ -475,6 +475,19 @@ button:disabled { cursor: default; }
 
 .btn-voltar:hover { color: #1a1a1a; }
 
+/* ---- Marcador de revisão ---- */
+.btn-marcar {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: #bbb;
+  padding: 0;
+  transition: color 0.12s;
+}
+.btn-marcar:hover { color: #888; }
+.btn-marcar.marcado { color: #f59e0b; font-weight: 500; }
+
+.questao-fonte { color: #aaa; font-size: 0.75rem; }
+
 /* ---- Estados genéricos ---- */
 .msg-vazio {
   color: #888;

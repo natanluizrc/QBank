@@ -46,6 +46,7 @@ let aulaCache = {};         // 'materiaId/slug' → dados JSON
 let focoIdx = 0;
 let focoRespostas = {};     // questaoId → { dada, acertou }
 let listaRespostas = {};   // questaoId → { dada, acertou }
+let revisaoIds = new Set();
 let simuladoState = null;
 
 // =====================================================================
@@ -99,8 +100,9 @@ async function salvarPerfil() {
   }
 }
 
-function inicializarApp() {
+async function inicializarApp() {
   popularSelectMaterias();
+  await carregarRevisao();
   document.querySelector('.aba-global[data-tab="inicio"]')?.classList.add('ativa');
   renderConteudo();
 }
@@ -140,6 +142,7 @@ function renderConteudo() {
 
   if (tabGlobal === 'simulado') { renderSimuladoConfig(); return; }
   if (tabGlobal === 'historico') { renderHistorico(); return; }
+  if (tabGlobal === 'revisao')  { renderRevisao();  return; }
 
   renderQuestoes();
 }
@@ -295,6 +298,17 @@ function renderListaQuestoes(questoes) {
       atualizarPlacar();
     });
   });
+
+  area.querySelectorAll('.btn-marcar').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const q = questoes.find(x => x.id === btn.dataset.qid);
+      if (!q) return;
+      await toggleRevisao(q);
+      const marcado = revisaoIds.has(q.id);
+      btn.classList.toggle('marcado', marcado);
+      btn.textContent = marcado ? '✓ revisão' : '+ revisão';
+    });
+  });
 }
 
 function htmlEnunciado(q) {
@@ -343,6 +357,8 @@ function htmlQuestaoLista(q, i) {
         <span>Q${i + 1}</span>
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
+        ${q._aula ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
+        <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? '✓ revisão' : '+ revisão'}</button>
       </div>
       ${htmlEnunciado(q)}
       ${opcoes}
@@ -388,6 +404,13 @@ function renderFocoQuestao(questoes) {
       }
     });
   }
+
+  area.querySelector('.btn-marcar')?.addEventListener('click', async () => {
+    await toggleRevisao(q);
+    const marcado = revisaoIds.has(q.id);
+    const btn = area.querySelector('.btn-marcar');
+    if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? '✓ revisão' : '+ revisão'; }
+  });
 }
 
 function htmlQuestaoFoco(q, resp, isLast = false, num = null) {
@@ -428,6 +451,8 @@ function htmlQuestaoFoco(q, resp, isLast = false, num = null) {
         ${num !== null ? `<span>Q${num}</span>` : ''}
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
+        ${q._aula ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
+        <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? '✓ revisão' : '+ revisão'}</button>
       </div>
       ${htmlEnunciado(q)}
       ${interacaoHtml}
@@ -611,6 +636,13 @@ function renderSimuladoQuiz() {
       }
     });
   }
+
+  conteudo.querySelector('.btn-marcar')?.addEventListener('click', async () => {
+    await toggleRevisao(q);
+    const marcado = revisaoIds.has(q.id);
+    const btn = conteudo.querySelector('.btn-marcar');
+    if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? '✓ revisão' : '+ revisão'; }
+  });
 }
 
 function atualizarCronometro() {
@@ -863,6 +895,65 @@ async function limparHistorico(simulados) {
   );
   await batch.commit();
   renderHistorico();
+}
+
+// =====================================================================
+// REVISÃO
+// =====================================================================
+async function carregarRevisao() {
+  try {
+    const snap = await db.collection('usuarios').doc(usuario.uid).collection('revisao').get();
+    revisaoIds = new Set(snap.docs.map(d => d.id));
+  } catch (e) { console.error('Erro ao carregar revisão:', e); }
+}
+
+async function toggleRevisao(q) {
+  const ref = db.collection('usuarios').doc(usuario.uid).collection('revisao').doc(q.id);
+  if (revisaoIds.has(q.id)) {
+    revisaoIds.delete(q.id);
+    await ref.delete();
+    if (tabGlobal === 'revisao') renderRevisao();
+  } else {
+    revisaoIds.add(q.id);
+    await ref.set({
+      id: q.id, banca: q.banca || '', tipo: q.tipo, enunciado: q.enunciado,
+      opcoes: q.opcoes || null, resposta: q.resposta, comentario: q.comentario,
+      dificuldade: q.dificuldade || 1,
+      _materia: q._materia || materiaAtiva.nome, _materiaId: q._materiaId || materiaAtiva.id,
+      _aula: q._aula || aulaAtiva?.titulo || '', _slug: q._slug || aulaAtiva?.slug || '',
+      marcadoEm: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }
+}
+
+async function renderRevisao() {
+  const conteudo = document.getElementById('conteudo');
+  conteudo.innerHTML = '<p class="msg-vazio">Carregando...</p>';
+  try {
+    const snap = await db.collection('usuarios').doc(usuario.uid)
+      .collection('revisao').orderBy('marcadoEm').get();
+    if (snap.empty) {
+      conteudo.innerHTML = '<p class="msg-vazio">Nenhuma questão marcada para revisão ainda.</p>';
+      return;
+    }
+    const questoes = snap.docs.map(d => d.data());
+    focoIdx = 0; focoRespostas = {}; listaRespostas = {};
+    conteudo.innerHTML = `
+      <div class="questoes-cabecalho">
+        <div class="questoes-modo">
+          <button class="btn-modo ${modoQuestoes === 'foco' ? 'ativo' : ''}" id="btn-foco">Foco</button>
+          <button class="btn-modo ${modoQuestoes === 'lista' ? 'ativo' : ''}" id="btn-lista">Lista</button>
+        </div>
+      </div>
+      <div id="questoes-area"></div>`;
+    document.getElementById('btn-lista').addEventListener('click', () => { modoQuestoes = 'lista'; renderRevisao(); });
+    document.getElementById('btn-foco').addEventListener('click', () => { modoQuestoes = 'foco'; renderRevisao(); });
+    if (modoQuestoes === 'lista') renderListaQuestoes(questoes);
+    else renderFocoQuestao(questoes);
+  } catch (e) {
+    conteudo.innerHTML = '<p class="msg-vazio">Erro ao carregar revisão.</p>';
+    console.error(e);
+  }
 }
 
 // =====================================================================
