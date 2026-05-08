@@ -2,30 +2,28 @@
 
 ## Objetivo
 
-Banco de questões interativo para estudo pessoal, com foco inicial em Contabilidade. O conteúdo é extraído de apostilas em PDF pelo Claude e organizado em abas por material, com explicação teórica, questões comentadas, simulados cronometrados e histórico de desempenho.
+Banco de questões interativo para estudo, com foco inicial em Contabilidade. O conteúdo é extraído de apostilas em PDF pelo Claude e organizado em abas por aula, com explicação teórica, questões comentadas, simulados cronometrados e histórico de desempenho por usuário.
 
 ## Público-alvo
 
-Uso pessoal — estudante de Contabilidade (e futuramente outras matérias).
+Inicialmente uso pessoal. Arquitetura preparada para múltiplos usuários desde o início.
 
 ---
 
 ## Estrutura de navegação
 
-A interface tem quatro tipos de abas fixas na navegação principal:
-
-| Aba | Descrição |
-|-----|-----------|
-| **[Material]** | Uma aba por PDF importado (ex: "Aula 1 — Balanço Patrimonial") |
-| **Simulado** | Modo prova com cronômetro e gabarito imediato |
-| **Revisão Geral** | Todas as questões da base, com filtros |
-| **Histórico** | Registro de simulados anteriores |
+| Aba | Tipo | Descrição |
+|-----|------|-----------|
+| **Aula 00, Aula 01A, Aula 01B...** | Dinâmica | Uma aba por material extraído de PDF |
+| **Simulado** | Fixa | Modo prova com cronômetro |
+| **Gabarito** | Fixa | Todas as questões da base com filtros |
+| **Histórico** | Fixa | Simulados realizados pelo usuário |
 
 ---
 
-## Abas de material (uma por PDF)
+## Abas de material (Aula XX)
 
-Cada aba de material contém duas sub-abas:
+Cada aba contém duas sub-abas:
 
 ### Sub-aba: Teoria
 - Conteúdo teórico extraído do PDF, revisado e formatado pelo Claude
@@ -33,84 +31,88 @@ Cada aba de material contém duas sub-abas:
 
 ### Sub-aba: Questões
 - Dois modos alternáveis por botão:
-  - **Modo lista** — scroll contínuo com todas as questões e gabaritos inline
-  - **Modo foco** — uma questão por vez; responde → vê gabarito → avança
+  - **Modo lista** — scroll com todas as questões e gabaritos inline
+  - **Modo foco** — uma questão por vez; responde → gabarito imediato → avança
 - Suporte a múltipla escolha e Certo/Errado
-- Indicadores de progresso por sessão: acertos, erros, questões marcadas para revisão
-- **O progresso não persiste entre sessões** (zera ao recarregar a página)
+- Exibe dificuldade de cada questão (1 a 5)
+- Progresso da sessão (acertos/erros) visível, mas não persistido
 
 ---
 
 ## Aba: Simulado
 
 ### Configuração antes de iniciar
-- Escolher número de questões: 10 / 20 / 30 / 40 / 50
-- Escolher fonte: **Toda a base** ou **material específico**
+- Quantidade de questões: 10 / 20 / 30 / 40 / 50
+- Fonte: **Toda a base** ou **aula específica**
 
 ### Durante o simulado
 - Uma questão por vez
-- Ao marcar uma resposta → gabarito imediato (acerto/erro + comentário)
-- Avança automaticamente para a próxima
-- Cronômetro visível contando o tempo (sem limite — não encerra automaticamente)
+- Ao marcar resposta → gabarito imediato (acerto/erro + comentário)
+- Avança para a próxima automaticamente
+- Cronômetro crescente visível (sem limite — não encerra automaticamente)
 
 ### Ao finalizar
 - Tela de resultado: placar (ex: 14/20 — 70%) + tempo total
-- Gabarito completo com comentários de todas as questões
-- Simulado salvo automaticamente no Histórico (data, placar, tempo, fonte)
+- Gabarito completo com comentários
+- Simulado salvo automaticamente no Firestore (vinculado ao usuário)
 
 ---
 
-## Aba: Revisão Geral
+## Aba: Gabarito
 
 - Lista única com **todas** as questões de todos os materiais
-- Filtros disponíveis: por material, por tipo de questão
+- Filtros: por aula, por tipo de questão, por dificuldade
 - Sem interação de resposta — foco em revisão editorial (checar erros de conteúdo ou diagramação)
 
 ---
 
 ## Aba: Histórico
 
-- Lista de todos os simulados realizados: data, fonte, placar, tempo
-- Botão para **limpar histórico**
-- Dados persistidos em **localStorage** (sobrevive ao fechar o navegador)
+- Lista de todos os simulados do usuário: data, fonte, placar, tempo
+- Botão para limpar histórico
+- Dados no Firestore, acessíveis de qualquer dispositivo
 
 ---
 
-## Persistência de dados
+## Autenticação
 
-| Dado | Armazenamento |
-|------|---------------|
-| Questões e teoria | Arquivos JSON estáticos em `data/` |
-| Histórico de simulados | localStorage |
-| Progresso nas abas de material | **Não persiste** — reseta por sessão |
+- Login com conta Google (Firebase Authentication)
+- Obrigatório para acessar o app
+- Todos os dados de histórico ficam isolados por usuário no Firestore
 
 ---
 
-## Stack técnica
+## Arquitetura técnica
 
-- HTML + CSS + JavaScript (vanilla, sem framework)
-- Dados em JSON estáticos (um arquivo por material)
-- localStorage para histórico
-- Hospedagem: GitHub Pages (futuramente)
-- Layout responsivo — funciona em desktop e celular
-- Visual: limpo e minimalista
+### Stack
 
----
+| Camada | Tecnologia | Custo |
+|--------|-----------|-------|
+| Interface | HTML + CSS + JavaScript (vanilla) | — |
+| Hospedagem | Firebase Hosting | Gratuito |
+| Autenticação | Firebase Authentication (Google) | Gratuito |
+| Banco de dados | Firebase Firestore | Gratuito |
+| Controle de versão | GitHub | Gratuito |
+| Conteúdo (questões/teoria) | JSON no repositório | — |
 
-## Estrutura de arquivos
+### Estrutura do Firestore
 
 ```
-QBank/
-├── index.html
-├── css/
-│   └── style.css
-├── js/
-│   └── app.js
-├── data/
-│   └── [slug-do-material].json
-├── PRD.md
-└── CLAUDE.md
+usuarios/
+  {userId}/
+    perfil/
+      nome, email, fotoUrl, criadoEm
+    historico/
+      {simuladoId}/
+        data, fonte, placar, total, tempoSegundos
 ```
+
+### Conteúdo (questões e teoria)
+
+- Armazenado como arquivos JSON estáticos em `data/`
+- Servido pelo Firebase Hosting
+- Versionado no GitHub
+- Futuramente pode ser migrado para Firestore se necessário (ex: conteúdo personalizado por usuário)
 
 ---
 
@@ -118,8 +120,8 @@ QBank/
 
 ```json
 {
-  "titulo": "Nome do Material",
-  "slug": "slug-do-material",
+  "titulo": "Aula 01 — Nome do Tema",
+  "slug": "aula-01",
   "materia": "Contabilidade",
   "teoria": "Conteúdo teórico em Markdown...",
   "questoes": [
@@ -129,25 +131,37 @@ QBank/
       "enunciado": "Enunciado da questão...",
       "opcoes": ["A) ...", "B) ...", "C) ...", "D) ...", "E) ..."],
       "resposta": "A",
-      "comentario": "Explicação da resposta correta..."
+      "comentario": "Explicação da resposta correta...",
+      "dificuldade": 3
     },
     {
       "id": 2,
       "tipo": "certo_errado",
       "enunciado": "Assertiva para julgamento...",
       "resposta": "certo",
-      "comentario": "Explicação..."
+      "comentario": "Explicação...",
+      "dificuldade": 2
     }
   ]
 }
 ```
 
+**Campo `dificuldade`:** escala de 1 (muito fácil) a 5 (muito difícil). Atribuído pelo Claude ao extrair o PDF; pode ser revisado manualmente.
+
 ---
 
-## Fora do escopo (por ora)
+## Plano de evolução
 
-- Login / autenticação
-- Banco de dados remoto
-- Upload automático de PDFs pelo usuário
-- Filtros por dificuldade ou banca
-- Modo de marcação de questões para revisão posterior (futuro)
+| Fase | Funcionalidade |
+|------|---------------|
+| MVP | Login Google + questões por aula + simulado + gabarito + histórico |
+| Fase 2 | Filtros avançados, marcar questões para revisão, progresso persistido por usuário |
+| Fase 3 | Múltiplas matérias, conteúdo no Firestore, permissões por usuário |
+
+---
+
+## Fora do escopo no MVP
+
+- Cadastro manual (só login Google)
+- Upload de PDFs pelo usuário
+- Modo administrador para gerenciar conteúdo pela interface
