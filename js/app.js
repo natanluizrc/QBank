@@ -354,7 +354,7 @@ function renderFocoQuestao(questoes) {
           <span class="erro">✗ ${respondidas - acertos}</span>
         </div>
       </div>
-      ${htmlQuestaoFoco(q, resp, isLast)}
+      ${htmlQuestaoFoco(q, resp, isLast, focoIdx + 1)}
     </div>`;
 
   if (!resp) {
@@ -371,7 +371,7 @@ function renderFocoQuestao(questoes) {
   }
 }
 
-function htmlQuestaoFoco(q, resp, isLast = false) {
+function htmlQuestaoFoco(q, resp, isLast = false, num = null) {
   const dif = '★'.repeat(q.dificuldade) + '☆'.repeat(5 - q.dificuldade);
 
   let interacaoHtml;
@@ -406,6 +406,7 @@ function htmlQuestaoFoco(q, resp, isLast = false) {
   return `
     <div class="questao-card">
       <div class="questao-meta">
+        ${num !== null ? `<span>Q${num}</span>` : ''}
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
       </div>
@@ -560,7 +561,7 @@ function renderSimuladoQuiz() {
         <span>${s.idx + 1} / ${s.questoes.length}</span>
         <span id="cronometro">00:00</span>
       </div>
-      ${htmlQuestaoFoco(q, resp, isLast)}
+      ${htmlQuestaoFoco(q, resp, isLast, s.idx + 1)}
     </div>`;
 
   atualizarCronometro();
