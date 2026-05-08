@@ -321,7 +321,29 @@ function renderListaQuestoes(questoes) {
 
 function htmlEnunciado(q) {
   const banca = q.banca ? `<div class="questao-banca">(${q.banca})</div>` : '';
-  return `${banca}<div class="questao-enunciado">${q.enunciado}</div>`;
+  const boxRe = /[┌┐└┘│─┬┴┼├┤]/;
+  const linhas = q.enunciado.split('\n');
+  let html = '';
+  let diagBuf = [];
+
+  const flushDiag = () => {
+    if (diagBuf.length) {
+      html += `<pre class="diagrama">${diagBuf.join('\n')}</pre>`;
+      diagBuf = [];
+    }
+  };
+
+  for (const linha of linhas) {
+    if (boxRe.test(linha)) {
+      diagBuf.push(linha);
+    } else {
+      flushDiag();
+      html += linha + '\n';
+    }
+  }
+  flushDiag();
+
+  return `${banca}<div class="questao-enunciado">${html.trimEnd()}</div>`;
 }
 
 function htmlQuestaoLista(q, i) {

@@ -277,6 +277,18 @@ button:disabled { cursor: default; }
 .questao-banca { font-size: 0.75rem; color: #888; margin-bottom: 0.6rem; }
 .questao-enunciado { margin-bottom: 0.875rem; white-space: pre-wrap; }
 
+.diagrama {
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  margin: 0.5rem 0;
+  padding: 0;
+  background: none;
+  border: none;
+  white-space: pre;
+  overflow-x: auto;
+}
+
 /* ---- Opções múltipla escolha ---- */
 .opcoes {
   display: flex;
