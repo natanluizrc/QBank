@@ -2,53 +2,67 @@
 
 ## Objetivo
 
-Banco de questões interativo para estudo, com foco inicial em Contabilidade. O conteúdo é extraído de apostilas em PDF pelo Claude e organizado em abas por aula, com explicação teórica, questões comentadas, simulados cronometrados e histórico de desempenho por usuário.
+Banco de questões interativo para estudo pessoal, inicialmente focado em Contabilidade. O conteúdo é extraído de apostilas em PDF pelo Claude e organizado por matéria e aula, com explicação teórica, questões comentadas, simulados cronometrados e histórico de desempenho por usuário.
 
 ## Público-alvo
 
-Inicialmente uso pessoal. Arquitetura preparada para múltiplos usuários desde o início.
+Inicialmente uso pessoal. Arquitetura preparada para múltiplos usuários desde o MVP.
 
 ---
 
 ## Estrutura de navegação
 
-| Aba | Tipo | Descrição |
-|-----|------|-----------|
-| **Aula 00, Aula 01A, Aula 01B...** | Dinâmica | Uma aba por material extraído de PDF |
-| **Simulado** | Fixa | Modo prova com cronômetro |
-| **Gabarito** | Fixa | Todas as questões da base com filtros |
-| **Histórico** | Fixa | Simulados realizados pelo usuário |
+```
+[ Contabilidade ▼ ]   Simulado   Gabarito   Histórico
+─────────────────────────────────────────────────────
+  Aula 00   Aula 01A   Aula 01B   Aula 02  ...
+─────────────────────────────────────────────────────
+  [ Teoria ]   [ Questões ]
+```
+
+### Barra superior (fixa)
+| Elemento | Tipo | Descrição |
+|----------|------|-----------|
+| **Seletor de matéria** | Dropdown | Troca a matéria ativa — muda as abas de Aula abaixo |
+| **Simulado** | Aba global | Modo prova (opera em toda a base, com filtros) |
+| **Gabarito** | Aba global | Todas as questões de todas as matérias, com filtros |
+| **Histórico** | Aba global | Todos os simulados do usuário |
+
+### Barra secundária (muda conforme matéria selecionada)
+- Uma aba por aula da matéria ativa: **Aula 00, Aula 01A, Aula 01B, Aula 02...**
+- Cada aba de aula tem duas sub-abas: **Teoria** e **Questões**
 
 ---
 
-## Abas de material (Aula XX)
-
-Cada aba contém duas sub-abas:
+## Abas de Aula
 
 ### Sub-aba: Teoria
 - Conteúdo teórico extraído do PDF, revisado e formatado pelo Claude
 - Renderizado em Markdown
 
 ### Sub-aba: Questões
+- **Todas as questões da aula são exibidas sempre** (sem seleção de quantidade)
 - Dois modos alternáveis por botão:
   - **Modo lista** — scroll com todas as questões e gabaritos inline
   - **Modo foco** — uma questão por vez; responde → gabarito imediato → avança
 - Suporte a múltipla escolha e Certo/Errado
 - Exibe dificuldade de cada questão (1 a 5)
-- Progresso da sessão (acertos/erros) visível, mas não persistido
+- Progresso da sessão (acertos/erros) visível — não persiste ao recarregar
 
 ---
 
 ## Aba: Simulado
 
 ### Configuração antes de iniciar
-- Quantidade de questões: 10 / 20 / 30 / 40 / 50
-- Fonte: **Toda a base** ou **aula específica**
+- **Fonte:** Toda a base | Matéria específica | Aula específica
+- **Quantidade:** 10 / 20 / 30 (para aula ou matéria) — 10 / 20 / 30 / 40 / 50 (para toda a base)
+
+> Cada material terá no mínimo 30 questões, garantindo que todas as opções estejam sempre disponíveis.
 
 ### Durante o simulado
 - Uma questão por vez
-- Ao marcar resposta → gabarito imediato (acerto/erro + comentário)
-- Avança para a próxima automaticamente
+- Ao marcar a resposta → gabarito imediato (acerto/erro + comentário)
+- Avança automaticamente para a próxima
 - Cronômetro crescente visível (sem limite — não encerra automaticamente)
 
 ### Ao finalizar
@@ -60,15 +74,17 @@ Cada aba contém duas sub-abas:
 
 ## Aba: Gabarito
 
-- Lista única com **todas** as questões de todos os materiais
-- Filtros: por aula, por tipo de questão, por dificuldade
-- Sem interação de resposta — foco em revisão editorial (checar erros de conteúdo ou diagramação)
+- Escopo global — exibe questões de **todas as matérias**
+- Filtros: por matéria, por aula, por tipo de questão, por dificuldade
+- Sem interação de resposta — foco em revisão editorial
+- Erros encontrados são reportados ao Claude, que corrige o arquivo JSON
 
 ---
 
 ## Aba: Histórico
 
 - Lista de todos os simulados do usuário: data, fonte, placar, tempo
+- Escopo global (todas as matérias)
 - Botão para limpar histórico
 - Dados no Firestore, acessíveis de qualquer dispositivo
 
@@ -76,9 +92,8 @@ Cada aba contém duas sub-abas:
 
 ## Autenticação
 
-- Login com conta Google (Firebase Authentication)
-- Obrigatório para acessar o app
-- Todos os dados de histórico ficam isolados por usuário no Firestore
+- Login obrigatório com conta Google (Firebase Authentication)
+- Todos os dados do usuário ficam isolados em `usuarios/{userId}/` no Firestore
 
 ---
 
@@ -93,30 +108,28 @@ Cada aba contém duas sub-abas:
 | Autenticação | Firebase Authentication (Google) | Gratuito |
 | Banco de dados | Firebase Firestore | Gratuito |
 | Controle de versão | GitHub | Gratuito |
-| Conteúdo (questões/teoria) | JSON no repositório | — |
+| Conteúdo | JSON estático em `data/` | — |
 
 ### Estrutura do Firestore
 
 ```
 usuarios/
   {userId}/
-    perfil/
-      nome, email, fotoUrl, criadoEm
+    perfil/         → nome, email, fotoUrl, criadoEm
     historico/
-      {simuladoId}/
-        data, fonte, placar, total, tempoSegundos
+      {simuladoId}/ → data, fonte, materia, placar, total, tempoSegundos
 ```
 
 ### Conteúdo (questões e teoria)
 
-- Armazenado como arquivos JSON estáticos em `data/`
-- Servido pelo Firebase Hosting
-- Versionado no GitHub
-- Futuramente pode ser migrado para Firestore se necessário (ex: conteúdo personalizado por usuário)
+- Arquivos JSON estáticos em `data/{materia}/aula-XX.json`
+- Servidos pelo Firebase Hosting
+- Versionados no GitHub
+- Futuramente podem migrar para Firestore (ex: conteúdo personalizado por usuário)
 
 ---
 
-## Schema JSON de cada material
+## Schema JSON de cada aula
 
 ```json
 {
@@ -150,18 +163,38 @@ usuarios/
 
 ---
 
+## Identidade visual
+
+- Design limpo e minimalista
+- Fundo branco, tipografia clara
+- Sem logo, sem cor de destaque
+- Responsivo — funciona em desktop e celular
+
+---
+
+## Fluxo de adição de conteúdo
+
+1. Usuário envia o PDF diretamente no chat com Claude
+2. Claude extrai teoria e questões, atribui dificuldade (1–5)
+3. Claude gera o arquivo JSON no formato do schema acima
+4. Arquivo salvo em `data/{materia}/aula-XX.json`
+5. Material registrado na lista de materiais em `app.js`
+
+---
+
 ## Plano de evolução
 
 | Fase | Funcionalidade |
 |------|---------------|
-| MVP | Login Google + questões por aula + simulado + gabarito + histórico |
-| Fase 2 | Filtros avançados, marcar questões para revisão, progresso persistido por usuário |
-| Fase 3 | Múltiplas matérias, conteúdo no Firestore, permissões por usuário |
+| MVP | Login Google + matérias + aulas + simulado + gabarito + histórico |
+| Fase 2 | Progresso persistido por usuário, marcar questões para revisão, filtros avançados |
+| Fase 3 | Questões no Firestore, conteúdo personalizável, permissões por usuário |
 
 ---
 
 ## Fora do escopo no MVP
 
 - Cadastro manual (só login Google)
-- Upload de PDFs pelo usuário
+- Upload de PDFs pelo usuário pela interface
 - Modo administrador para gerenciar conteúdo pela interface
+- Edição de questões pela interface

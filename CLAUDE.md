@@ -4,7 +4,7 @@ Este arquivo orienta o Claude Code (claude.ai/code) ao trabalhar neste repositó
 
 ## Visão geral do projeto
 
-QBank é um banco de questões interativo para estudo pessoal, inicialmente focado em Contabilidade. O conteúdo é extraído de PDFs pelo Claude e armazenado como JSON estático. A aplicação usa Firebase para autenticação, hospedagem e banco de dados.
+QBank é um banco de questões interativo para estudo pessoal, inicialmente focado em Contabilidade. Conteúdo extraído de PDFs pelo Claude, armazenado como JSON estático. Firebase para autenticação, hospedagem e banco de dados do usuário.
 
 ## Stack
 
@@ -15,78 +15,78 @@ QBank é um banco de questões interativo para estudo pessoal, inicialmente foca
 | Autenticação | Firebase Authentication (Google) |
 | Banco de dados | Firebase Firestore |
 | Conteúdo | JSON estático em `data/` (versionado no GitHub) |
-| Repositório | GitHub (controle de versão, não hospedagem) |
+| Repositório | GitHub (controle de versão apenas) |
 
-Não há etapa de build, bundler ou transpilação. O `index.html` referencia os arquivos diretamente.
+Sem build, sem bundler, sem transpilação. Firebase SDK via CDN.
 
-## Arquitetura
+## Arquitetura de navegação
 
-**Fluxo de dados de conteúdo:** PDF → Claude extrai → arquivo JSON em `data/` → servido pelo Firebase Hosting → `app.js` carrega e renderiza.
+```
+[ Matéria ▼ ]   Simulado   Gabarito   Histórico   ← barra superior (fixa)
+────────────────────────────────────────────────────
+  Aula 00   Aula 01A   Aula 01B   Aula 02  ...     ← barra secundária (por matéria)
+────────────────────────────────────────────────────
+  [ Teoria ]   [ Questões ]                        ← sub-abas da aula ativa
+```
 
-**Fluxo de dados do usuário:** ação do usuário → `app.js` → Firebase Firestore (autenticado).
+- **Seletor de matéria:** dropdown que troca as abas de Aula exibidas na barra secundária
+- **Simulado / Gabarito / Histórico:** abas globais — operam em toda a base, independente da matéria selecionada
 
-### Estrutura de navegação
+## Regras de exibição de questões
 
-- **Abas dinâmicas:** uma por arquivo em `data/`, nomeadas "Aula 00", "Aula 01A", etc. Cada uma tem sub-abas **Teoria** e **Questões**
-- **Simulado:** modo prova (fonte + quantidade → uma questão por vez → gabarito imediato → cronômetro → salva no Firestore)
-- **Gabarito:** todas as questões de todos os materiais, com filtros por aula, tipo e dificuldade
-- **Histórico:** simulados do usuário autenticado, lidos do Firestore
+| Contexto | Comportamento |
+|----------|--------------|
+| Sub-aba Questões (Aula) | **Todas** as questões da aula são exibidas sempre |
+| Simulado | Quantidade configurável pelo usuário (10/20/30 para aula/matéria; até 50 para toda a base) |
+| Gabarito | Todas as questões de todas as matérias, com filtros |
 
-### Autenticação
+A sub-aba Questões tem dois modos alternáveis: **lista** (scroll + gabarito inline) e **foco** (uma por vez → responde → gabarito imediato → próxima). Progresso é session-only — nunca gravado.
 
-- Login obrigatório com conta Google via Firebase Authentication
-- Todos os dados de histórico ficam sob `usuarios/{userId}/` no Firestore
-- Conteúdo (questões/teoria) é público — não requer autenticação para leitura
+## Fluxo do Simulado
 
-### Estrutura do Firestore
+1. Usuário configura fonte (toda a base / matéria / aula) e quantidade
+2. Questões sorteadas aleatoriamente
+3. Uma por vez: responde → gabarito imediato (acerto/erro + comentário) → próxima
+4. Cronômetro crescente, sem limite de tempo
+5. Ao finalizar: placar + gabarito completo + salvo no Firestore (`usuarios/{userId}/historico`)
+
+## Estrutura do Firestore
 
 ```
 usuarios/
   {userId}/
-    perfil/        → nome, email, fotoUrl, criadoEm
-    historico/     → {simuladoId}: data, fonte, placar, total, tempoSegundos
+    perfil/         → nome, email, fotoUrl, criadoEm
+    historico/
+      {simuladoId}/ → data, fonte, materia, placar, total, tempoSegundos
 ```
 
-### Sub-aba Questões (abas de material)
+## Arquivos de conteúdo
 
-- Dois modos alternáveis: **lista** (todas com gabarito inline) e **foco** (uma por vez)
-- Tipos suportados: `multipla_escolha` e `certo_errado`
-- Progresso (acertos/erros) é por sessão — em memória, nunca gravado
+Organizados por matéria em `data/{materia}/aula-XX.json`. Schema completo no `PRD.md`:
 
-### Fluxo do Simulado
-
-1. Usuário escolhe quantidade (10/20/30/40/50) e fonte (toda a base ou uma aula)
-2. Questões sorteadas aleatoriamente
-3. Uma por vez: responde → gabarito imediato (acerto/erro + comentário) → próxima
-4. Cronômetro crescente sem limite de tempo
-5. Ao finalizar: placar + gabarito completo + salvo no Firestore
-
-## Arquivos de conteúdo (`data/`)
-
-Cada arquivo representa uma aula (uma aba). Schema completo no `PRD.md`. Campos principais:
-
-- `slug` — identificador e nome do arquivo (ex: `data/aula-01.json`)
-- `titulo` — nome exibido na aba (ex: `"Aula 01 — Balanço Patrimonial"`)
+- `slug` — identificador do arquivo (ex: `aula-01`)
+- `titulo` — nome na aba (ex: `"Aula 01 — Balanço Patrimonial"`)
 - `materia` — nome da matéria (ex: `"Contabilidade"`)
-- `teoria` — string Markdown renderizada na sub-aba Teoria
-- `questoes` — array com `id`, `tipo`, `enunciado`, `opcoes`, `resposta`, `comentario`, `dificuldade`
-- `dificuldade` — inteiro de 1 (muito fácil) a 5 (muito difícil); sugerido pelo Claude ao extrair o PDF
+- `teoria` — Markdown renderizado na sub-aba Teoria
+- `questoes[]` — cada item tem: `id`, `tipo`, `enunciado`, `opcoes`, `resposta`, `comentario`, `dificuldade`
+- `tipo`: `"multipla_escolha"` ou `"certo_errado"`
+- `dificuldade`: inteiro de 1 (muito fácil) a 5 (muito difícil)
 
-## Adicionando novo conteúdo
+## Adicionando novo conteúdo (fluxo padrão)
 
-Ao receber um PDF:
+Quando o usuário enviar um PDF:
 1. Extrair teoria e questões seguindo o schema do `PRD.md`
 2. Atribuir `dificuldade` (1–5) a cada questão com base no enunciado
-3. Salvar como `data/aula-XX.json`
-4. Registrar o novo material na lista de materiais em `app.js`
+3. Salvar em `data/{materia}/aula-XX.json`
+4. Registrar o material na lista de materiais em `app.js`
+5. Cada material deve ter no mínimo 30 questões
 
-Não modificar arquivos JSON existentes, salvo para corrigir erros de conteúdo.
+Não modificar arquivos JSON existentes, salvo para corrigir erros reportados pelo usuário.
 
 ## Convenções de código
 
-- ES6+ puro em `js/app.js` — sem frameworks, npm ou transpilação
-- CSS em `css/style.css` — sem frameworks utilitários; design limpo e minimalista
+- ES6+ puro em `js/app.js` — sem frameworks ou npm
+- CSS em `css/style.css` — design limpo e minimalista, fundo branco, sem cor de destaque
 - Markdown nos campos `teoria` renderizado no cliente (usar `marked` via CDN)
-- Firebase SDK carregado via CDN (compat ou modular)
 - Todo texto da interface em português (pt-BR)
-- Layout responsivo — funciona em desktop e celular
+- Layout responsivo — desktop e celular
