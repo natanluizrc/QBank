@@ -224,6 +224,7 @@ async function renderQuestoes() {
       <div class="questoes-modo">
         <button class="btn-modo ${modoQuestoes === 'foco' ? 'ativo' : ''}" id="btn-foco">Foco</button>
         <button class="btn-modo ${modoQuestoes === 'lista' ? 'ativo' : ''}" id="btn-lista">Lista</button>
+        ${modoQuestoes === 'lista' ? '<button class="btn-modo" id="btn-expandir">Expandir tudo</button>' : ''}
       </div>
     </div>
     <div id="questoes-area"></div>
@@ -240,6 +241,17 @@ async function renderQuestoes() {
 
   if (modoQuestoes === 'lista') {
     renderListaQuestoes(dados.questoes);
+    document.getElementById('btn-expandir').addEventListener('click', () => {
+      const area = document.getElementById('questoes-area');
+      const btn = document.getElementById('btn-expandir');
+      const expandir = btn.textContent === 'Expandir tudo';
+      area.querySelectorAll('.gabarito-inline').forEach(gab => {
+        gab.classList.toggle('hidden', !expandir);
+        const revelar = area.querySelector(`.btn-revelar[data-id="${gab.dataset.id}"]`);
+        if (revelar) revelar.textContent = expandir ? 'Ocultar' : 'Ver gabarito';
+      });
+      btn.textContent = expandir ? 'Recolher tudo' : 'Expandir tudo';
+    });
   } else {
     renderFocoQuestao(dados.questoes);
   }
