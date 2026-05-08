@@ -9,9 +9,6 @@ desktop.ini
 *.suo
 *.user
 
-# PDFs originais (não versionar os arquivos fonte)
-pdfs/
-
 # Logs
 *.log
 .claude/
