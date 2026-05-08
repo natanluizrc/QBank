@@ -13,71 +13,75 @@ Inicialmente uso pessoal. Arquitetura preparada para múltiplos usuários desde 
 ## Estrutura de navegação
 
 ```
-[ Matéria ▼ ]   Simulado   Gabarito   Histórico
+[ Matéria ▼ ]   Início   Simulado   Histórico
 ─────────────────────────────────────────────────────
   Aula 00   Aula 01A   Aula 01B   Aula 02  ...
 ─────────────────────────────────────────────────────
-  [ Teoria ]   [ Questões ]
+  [ Questões ]   [ Teoria ]
 ```
 
 ### Barra superior (fixa)
 | Elemento | Tipo | Descrição |
 |----------|------|-----------|
 | **Seletor de matéria** | Dropdown | Troca a matéria ativa — muda as abas de Aula abaixo |
-| **Simulado** | Aba global | Modo prova (opera em toda a base, com filtros) |
-| **Gabarito** | Aba global | Todas as questões de todas as matérias, com filtros |
+| **Início** | Aba global | Volta para a view de aulas (aba padrão ao entrar no app) |
+| **Simulado** | Aba global | Modo prova com fonte e quantidade configuráveis |
 | **Histórico** | Aba global | Todos os simulados do usuário |
 
 ### Barra secundária (muda conforme matéria selecionada)
 - Uma aba por aula da matéria ativa: **Aula 00, Aula 01A, Aula 01B, Aula 02...**
-- Cada aba de aula tem duas sub-abas: **Teoria** e **Questões**
+- Cada aba de aula tem duas sub-abas: **Questões** (padrão) e **Teoria**
 
 ---
 
 ## Abas de Aula
 
-### Sub-aba: Teoria
-- Conteúdo teórico extraído do PDF, revisado e formatado pelo Claude
-- Renderizado em Markdown
-
-### Sub-aba: Questões
+### Sub-aba: Questões (padrão)
 - **Todas as questões da aula são exibidas sempre** (sem seleção de quantidade)
-- Dois modos alternáveis por botão:
-  - **Modo lista** — scroll com todas as questões e gabaritos inline
-  - **Modo foco** — uma questão por vez; responde → gabarito imediato → avança
-- Suporte a múltipla escolha e Certo/Errado
-- Exibe dificuldade de cada questão (1 a 5)
-- Progresso da sessão (acertos/erros) visível — não persiste ao recarregar
+- Dois modos alternáveis por botão, com **barra de informação unificada** abaixo dos botões:
+
+#### Modo Lista
+- Barra: `N questões` (esquerda) · `Expandir tudo / Recolher tudo` (direita, link sublinhado)
+- Scroll com todas as questões — cada uma tem gabarito inline interativo
+- Responder clicando na opção revela gabarito com feedback visual (verde/vermelho)
+- "Expandir tudo" abre todos os gabaritos de uma vez para revisão rápida
+
+#### Modo Foco
+- Barra: `X / N` em negrito (esquerda) · placar `✓ verde` / `✗ vermelho` (direita)
+- Uma questão por vez: responde → gabarito imediato (acerto/erro + comentário) → avança
+- Ao final: tela de conclusão com resultado da sessão
+
+#### Campos exibidos em cada questão (ambos os modos)
+- Número `Q1`, `Q2`... · estrelas de dificuldade (★★☆☆☆) · tipo
+- `(Banca/Concurso/Ano)` em destaque acima do enunciado
+- Enunciado + opções (ou botões Certo/Errado)
+
+Progresso da sessão não persiste ao recarregar.
+
+### Sub-aba: Teoria
+- Conteúdo teórico extraído do PDF, sintetizado e formatado pelo Claude
+- Renderizado em Markdown
 
 ---
 
 ## Aba: Simulado
 
 ### Configuração antes de iniciar
-- **Fonte:** Toda a base | Matéria específica | Aula específica
-- **Quantidade:** 10 / 20 / 30 (para aula ou matéria) — 10 / 20 / 30 / 40 / 50 (para toda a base)
+- **Fonte:** Matéria específica | Aula específica
+- **Quantidade:** 10 / 20 / 30 questões
 
-> Cada material terá no mínimo 30 questões, garantindo que todas as opções estejam sempre disponíveis.
+> Cada material terá no mínimo 30 questões, garantindo que todas as opções de quantidade estejam disponíveis.
 
 ### Durante o simulado
-- Uma questão por vez
+- Uma questão por vez com número `Q1`, `Q2`...
 - Ao marcar a resposta → gabarito imediato (acerto/erro + comentário)
-- Avança automaticamente para a próxima
+- Avança para a próxima
 - Cronômetro crescente visível (sem limite — não encerra automaticamente)
 
 ### Ao finalizar
 - Tela de resultado: placar (ex: 14/20 — 70%) + tempo total
 - Gabarito completo com comentários
 - Simulado salvo automaticamente no Firestore (vinculado ao usuário)
-
----
-
-## Aba: Gabarito
-
-- Escopo global — exibe questões de **todas as matérias**
-- Filtros: por matéria, por aula, por tipo de questão, por dificuldade
-- Sem interação de resposta — foco em revisão editorial
-- Erros encontrados são reportados ao Claude, que corrige o arquivo JSON
 
 ---
 
@@ -142,7 +146,8 @@ usuarios/
   "teoria": "Conteúdo teórico em Markdown...",
   "questoes": [
     {
-      "id": 1,
+      "id": "cg-01-01",
+      "banca": "FGV/PC-AM/Investigador de Polícia/2022",
       "tipo": "multipla_escolha",
       "enunciado": "Enunciado da questão...",
       "opcoes": ["A) ...", "B) ...", "C) ...", "D) ...", "E) ..."],
@@ -151,7 +156,8 @@ usuarios/
       "dificuldade": 3
     },
     {
-      "id": 2,
+      "id": "cg-01-02",
+      "banca": "CESPE/TCU/Analista/2019",
       "tipo": "certo_errado",
       "enunciado": "Assertiva para julgamento...",
       "resposta": "certo",
@@ -163,18 +169,20 @@ usuarios/
 ```
 
 **Notas sobre o schema:**
-- **`dificuldade`:** escala de 1 (muito fácil) a 5 (muito difícil) — atribuído pelo Claude ao extrair o PDF; pode ser revisado manualmente
+- **`id`:** formato `cg-XX-NN` — matéria abreviada + número da aula (dois dígitos) + número da questão (dois dígitos)
+- **`banca`:** identificação completa separada do enunciado — nunca embutir no texto da questão
+- **`dificuldade`:** escala de 1 (muito fácil) a 5 (muito difícil) — atribuído pelo Claude; exibido como estrelas ★
 - **`opcoes`:** presente apenas em `multipla_escolha`; ausente em `certo_errado`
-- **`resposta` em `certo_errado`:** valor deve ser `"certo"` ou `"errado"` (string, minúsculo)
-- **`resposta` em `multipla_escolha`:** letra da alternativa correta — `"A"`, `"B"`, `"C"`, `"D"` ou `"E"`
+- **`resposta` em `certo_errado`:** `"certo"` ou `"errado"` (string, minúsculo)
+- **`resposta` em `multipla_escolha`:** letra maiúscula — `"A"`, `"B"`, `"C"`, `"D"` ou `"E"`
 
 ---
 
 ## Identidade visual
 
-- Design limpo e minimalista
-- Fundo branco, tipografia clara
-- Sem logo, sem cor de destaque
+- Design limpo e minimalista — fundo branco, tipografia clara
+- Sem logo, sem cor de destaque decorativa
+- Verde (#16a34a) e vermelho (#dc2626) usados exclusivamente para feedback de acerto/erro
 - Responsivo — funciona em desktop e celular
 
 ---
@@ -182,10 +190,12 @@ usuarios/
 ## Fluxo de adição de conteúdo
 
 1. Usuário envia o PDF diretamente no chat com Claude
-2. Claude extrai teoria e questões, atribui dificuldade (1–5)
-3. Claude gera o arquivo JSON no formato do schema acima
-4. Arquivo salvo em `data/{materia}/aula-XX.json`
-5. Material registrado na lista de materiais em `app.js`
+2. Claude extrai o texto com `pdftotext -enc UTF-8` via Bash
+3. Questões extraídas da seção "Lista de Questões"; comentários da seção "Questões Comentadas"
+4. Teoria: síntese estruturada em Markdown — definições, classificações, tabelas, normas; omite exemplos do professor
+5. Claude atribui `dificuldade` (1–5) e separa `banca` do `enunciado`
+6. Arquivo salvo em `data/{materia}/aula-XX.json`
+7. Material registrado na lista de materiais em `app.js`
 
 ---
 
@@ -193,7 +203,7 @@ usuarios/
 
 | Fase | Funcionalidade |
 |------|---------------|
-| MVP | Login Google + matérias + aulas + simulado + gabarito + histórico |
+| MVP | Login Google + matérias + aulas (Questões + Teoria) + simulado + histórico |
 | Fase 2 | Progresso persistido por usuário, marcar questões para revisão, filtros avançados |
 | Fase 3 | Questões no Firestore, conteúdo personalizável, permissões por usuário |
 
@@ -205,3 +215,4 @@ usuarios/
 - Upload de PDFs pelo usuário pela interface
 - Modo administrador para gerenciar conteúdo pela interface
 - Edição de questões pela interface
+- Simulado com "Toda a base" como fonte (disponível a partir da Fase 2)
