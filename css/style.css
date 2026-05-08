@@ -242,6 +242,7 @@ button:disabled { cursor: default; }
   flex-wrap: wrap;
 }
 
+.questao-banca { font-size: 0.75rem; color: #888; margin-bottom: 0.25rem; }
 .questao-enunciado { margin-bottom: 0.875rem; white-space: pre-wrap; }
 
 /* ---- Opções múltipla escolha ---- */

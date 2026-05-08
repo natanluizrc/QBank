@@ -297,6 +297,11 @@ function renderListaQuestoes(questoes) {
   });
 }
 
+function htmlEnunciado(q) {
+  const banca = q.banca ? `<div class="questao-banca">(${q.banca})</div>` : '';
+  return `${banca}<div class="questao-enunciado">${q.enunciado}</div>`;
+}
+
 function htmlQuestaoLista(q, i) {
   const dif = '★'.repeat(q.dificuldade) + '☆'.repeat(5 - q.dificuldade);
 
@@ -317,7 +322,7 @@ function htmlQuestaoLista(q, i) {
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
       </div>
-      <div class="questao-enunciado">${q.enunciado}</div>
+      ${htmlEnunciado(q)}
       ${opcoes}
       <button class="btn-revelar" data-id="${q.id}">Ver gabarito</button>
       <div class="gabarito-inline hidden" data-id="${q.id}">
@@ -400,7 +405,7 @@ function htmlQuestaoFoco(q, resp, isLast = false) {
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
       </div>
-      <div class="questao-enunciado">${q.enunciado}</div>
+      ${htmlEnunciado(q)}
       ${interacaoHtml}
       ${gabaritoHtml}
     </div>`;
@@ -648,7 +653,7 @@ function renderSimuladoResultado() {
           <span style="color:${resp.acertou ? '#4a9a5a' : '#c05050'}">${resp.acertou ? '✓' : '✗'}</span>
           ${q._aula ? `<span>${q._materia} — ${q._aula}</span>` : ''}
         </div>
-        <div class="questao-enunciado">${q.enunciado}</div>
+        ${htmlEnunciado(q)}
         <div class="gabarito-inline ${resp.acertou ? 'acerto' : 'erro'}">
           Sua resposta: <strong>${String(resp.dada || '—').toUpperCase()}</strong> ·
           Correta: <strong>${String(q.resposta).toUpperCase()}</strong><br>${q.comentario}
@@ -816,7 +821,7 @@ function renderDetalhesSimulado(s) {
         <span style="color:${q.acertou ? '#4a9a5a' : '#c05050'}">${q.acertou ? '✓' : '✗'}</span>
         ${q._aula ? `<span>${q._materia} — ${q._aula}</span>` : ''}
       </div>
-      <div class="questao-enunciado">${q.enunciado}</div>
+      ${htmlEnunciado(q)}
       <div class="gabarito-inline ${q.acertou ? 'acerto' : 'erro'}">
         Respondido: <strong>${String(q.respondido || '—').toUpperCase()}</strong> ·
         Correto: <strong>${String(q.resposta).toUpperCase()}</strong><br>${q.comentario}
