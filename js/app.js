@@ -220,13 +220,11 @@ async function renderQuestoes() {
 
   conteudo.innerHTML = `
     <div class="questoes-cabecalho">
-      <span>${dados.questoes.length} questões</span>
       <div class="questoes-modo">
         <button class="btn-modo ${modoQuestoes === 'foco' ? 'ativo' : ''}" id="btn-foco">Foco</button>
         <button class="btn-modo ${modoQuestoes === 'lista' ? 'ativo' : ''}" id="btn-lista">Lista</button>
       </div>
     </div>
-    ${modoQuestoes === 'lista' ? '<div class="lista-toolbar"><button id="btn-expandir">Expandir tudo</button></div>' : ''}
     <div id="questoes-area"></div>
   `;
 
@@ -241,17 +239,6 @@ async function renderQuestoes() {
 
   if (modoQuestoes === 'lista') {
     renderListaQuestoes(dados.questoes);
-    document.getElementById('btn-expandir').addEventListener('click', () => {
-      const area = document.getElementById('questoes-area');
-      const btn = document.getElementById('btn-expandir');
-      const expandir = btn.textContent === 'Expandir tudo';
-      area.querySelectorAll('.gabarito-inline').forEach(gab => {
-        gab.classList.toggle('hidden', !expandir);
-        const revelar = area.querySelector(`.btn-revelar[data-id="${gab.dataset.id}"]`);
-        if (revelar) revelar.textContent = expandir ? 'Ocultar' : 'Ver gabarito';
-      });
-      btn.textContent = expandir ? 'Recolher tudo' : 'Expandir tudo';
-    });
   } else {
     renderFocoQuestao(dados.questoes);
   }
@@ -260,7 +247,24 @@ async function renderQuestoes() {
 // ---- Modo lista ----
 function renderListaQuestoes(questoes) {
   const area = document.getElementById('questoes-area');
-  area.innerHTML = questoes.map((q, i) => htmlQuestaoLista(q, i)).join('');
+  area.innerHTML = `
+    <div class="questoes-barra">
+      <span>${questoes.length} questões</span>
+      <button id="btn-expandir">Expandir tudo</button>
+    </div>
+    ${questoes.map((q, i) => htmlQuestaoLista(q, i)).join('')}
+  `;
+
+  document.getElementById('btn-expandir').addEventListener('click', () => {
+    const btn = document.getElementById('btn-expandir');
+    const expandir = btn.textContent === 'Expandir tudo';
+    area.querySelectorAll('.gabarito-inline').forEach(gab => {
+      gab.classList.toggle('hidden', !expandir);
+      const revelar = area.querySelector(`.btn-revelar[data-id="${gab.dataset.id}"]`);
+      if (revelar) revelar.textContent = expandir ? 'Ocultar' : 'Ver gabarito';
+    });
+    btn.textContent = expandir ? 'Recolher tudo' : 'Expandir tudo';
+  });
 
   area.querySelectorAll('.btn-revelar').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -343,7 +347,7 @@ function renderFocoQuestao(questoes) {
 
   area.innerHTML = `
     <div class="foco-wrapper">
-      <div class="foco-progresso">
+      <div class="questoes-barra">
         <span>${focoIdx + 1} / ${total}</span>
         <div class="foco-placar">
           <span>✓ ${acertos}</span>
@@ -464,7 +468,6 @@ function renderSimuladoConfig() {
   const conteudo = document.getElementById('conteudo');
 
   const opsFonte = [
-    '<option value="base">Toda a base</option>',
     ...MATERIAS.map(m => `<option value="materia:${m.id}">${m.nome}</option>`),
     ...MATERIAS.flatMap(m => m.aulas.map(a =>
       `<option value="aula:${m.id}:${a.slug}">${m.nome} — ${a.titulo}</option>`
@@ -484,24 +487,16 @@ function renderSimuladoConfig() {
           <option value="10">10 questões</option>
           <option value="20">20 questões</option>
           <option value="30">30 questões</option>
-          <option value="40">40 questões</option>
-          <option value="50">50 questões</option>
         </select>
       </div>
       <button class="btn-iniciar" id="btn-iniciar-sim">Iniciar Simulado</button>
     </div>`;
 
-  const selFonte = document.getElementById('sim-fonte');
-  const selQtd = document.getElementById('sim-qtd');
-
-  selFonte.addEventListener('change', () => {
-    const isBase = selFonte.value === 'base';
-    selQtd.innerHTML = (isBase ? [10, 20, 30, 40, 50] : [10, 20, 30])
-      .map(n => `<option value="${n}">${n} questões</option>`).join('');
-  });
-
   document.getElementById('btn-iniciar-sim').addEventListener('click', () =>
-    iniciarSimulado(selFonte.value, parseInt(selQtd.value))
+    iniciarSimulado(
+      document.getElementById('sim-fonte').value,
+      parseInt(document.getElementById('sim-qtd').value)
+    )
   );
 }
 
