@@ -258,8 +258,8 @@ function renderListaQuestoes(questoes) {
 
   area.innerHTML = `
     <div class="questoes-barra">
-      <button id="btn-expandir">Expandir tudo</button>
       <div class="barra-placar">${placarHtml()}</div>
+      <button id="btn-expandir">Expandir tudo</button>
     </div>
     ${questoes.map((q, i) => htmlQuestaoLista(q, i)).join('')}
   `;
@@ -366,12 +366,12 @@ function renderFocoQuestao(questoes) {
   area.innerHTML = `
     <div class="foco-wrapper">
       <div class="questoes-barra">
-        <div></div>
         <div class="barra-placar">
           <span class="acerto">✓ ${acertos}</span>
           <span class="erro">✗ ${respondidas - acertos}</span>
           <span class="total">● ${total}</span>
         </div>
+        <div></div>
       </div>
       ${htmlQuestaoFoco(q, resp, isLast, focoIdx + 1)}
     </div>`;
