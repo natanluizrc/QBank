@@ -222,8 +222,8 @@ async function renderQuestoes() {
     <div class="questoes-cabecalho">
       <span>${dados.questoes.length} questões</span>
       <div class="questoes-modo">
-        <button class="btn-modo ${modoQuestoes === 'lista' ? 'ativo' : ''}" id="btn-lista">Lista</button>
         <button class="btn-modo ${modoQuestoes === 'foco' ? 'ativo' : ''}" id="btn-foco">Foco</button>
+        <button class="btn-modo ${modoQuestoes === 'lista' ? 'ativo' : ''}" id="btn-lista">Lista</button>
       </div>
     </div>
     <div id="questoes-area"></div>
@@ -257,17 +257,49 @@ function renderListaQuestoes(questoes) {
       btn.textContent = gab.classList.contains('hidden') ? 'Ver gabarito' : 'Ocultar';
     });
   });
+
+  area.querySelectorAll('.opcao[data-letra]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.disabled) return;
+      const card = btn.closest('.questao-card');
+      const q = questoes.find(x => x.id === card.dataset.qid);
+      card.querySelectorAll('.opcao').forEach(o => {
+        o.disabled = true;
+        if (o.dataset.letra === q.resposta) o.classList.add('correta');
+        else if (o.dataset.letra === btn.dataset.letra) o.classList.add('errada');
+      });
+    });
+  });
+
+  area.querySelectorAll('.btn-ce[data-resp]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.disabled) return;
+      const card = btn.closest('.questao-card');
+      const q = questoes.find(x => x.id === card.dataset.qid);
+      card.querySelectorAll('.btn-ce').forEach(b => {
+        b.disabled = true;
+        if (b.dataset.resp === q.resposta) b.classList.add('correta');
+        else if (b.dataset.resp === btn.dataset.resp) b.classList.add('errada');
+      });
+    });
+  });
 }
 
 function htmlQuestaoLista(q, i) {
   const dif = '●'.repeat(q.dificuldade) + '○'.repeat(5 - q.dificuldade);
 
   const opcoes = q.tipo === 'multipla_escolha'
-    ? `<div class="opcoes">${q.opcoes.map(o => `<div class="opcao">${o}</div>`).join('')}</div>`
-    : `<div class="certo-errado-btns"><span class="btn-ce">Certo</span><span class="btn-ce">Errado</span></div>`;
+    ? `<div class="opcoes">${q.opcoes.map((o, idx) => {
+        const letra = String.fromCharCode(65 + idx);
+        return `<button class="opcao" data-letra="${letra}">${o}</button>`;
+      }).join('')}</div>`
+    : `<div class="certo-errado-btns">
+        <button class="btn-ce" data-resp="certo">Certo</button>
+        <button class="btn-ce" data-resp="errado">Errado</button>
+       </div>`;
 
   return `
-    <div class="questao-card">
+    <div class="questao-card" data-qid="${q.id}">
       <div class="questao-meta">
         <span>Q${i + 1}</span>
         <span title="Dificuldade">${dif}</span>
