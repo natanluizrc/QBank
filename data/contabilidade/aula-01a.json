@@ -8,7 +8,7 @@
       "id": "cg-01a-01",
       "banca": "VUNESP/CM Serrana/Controlador Interno/2019",
       "tipo": "multipla_escolha",
-      "enunciado": "Quando a representação gráfica a seguir é a situação patrimonial da empresa, pode-se considerar que\n\n┌───────────┬────────┬────────────────────┐\n│  ATIVO    │ PL(−)  │      PASSIVO       │\n└───────────┴────────┴────────────────────┘",
+      "enunciado": "Quando a representação gráfica a seguir é a situação patrimonial da empresa, pode-se considerar que\n\n┌────────────────────┬──────────────────────────────┐\n│                    │                              │\n│       ATIVO        │                              │\n│                    │         PASSIVO              │\n├────────────────────┤                              │\n│                    │                              │\n│       PL (−)       │                              │\n└────────────────────┴──────────────────────────────┘",
       "opcoes": [
         "A) a empresa encontra-se em situação confortável.",
         "B) a empresa está com PL positivo, somado ao Ativo.",
@@ -24,7 +24,7 @@
       "id": "cg-01a-02",
       "banca": "VUNESP/TRANSERP/Contador/2019",
       "tipo": "multipla_escolha",
-      "enunciado": "Considere a seguinte representação gráfica de uma situação enfrentada por uma empresa.\n\n┌──────────────────────┬──────────────────────┐\n│          A           │          PL          │\n└──────────────────────┴──────────────────────┘\n\nNesse caso, considera-se que",
+      "enunciado": "Considere a seguinte representação gráfica de uma situação enfrentada por uma empresa.\n\n┌────────────────────────┬────────────────────────┐\n│                        │                        │\n│        ATIVO           │           PL           │\n│                        │                        │\n└────────────────────────┴────────────────────────┘\n\nNesse caso, considera-se que",
       "opcoes": [
         "A) a situação é superavitária.",
         "B) o passivo está a descoberto.",
