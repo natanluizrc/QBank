@@ -1,64 +1,65 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Este arquivo orienta o Claude Code (claude.ai/code) ao trabalhar neste repositório.
 
-## Project overview
+## Visão geral do projeto
 
-QBank is a static, client-side question bank for personal study. Content is extracted from PDF course materials by Claude and stored as JSON. Initially focused on Accounting (Contabilidade), with plans to expand to other subjects.
+QBank é um banco de questões estático para estudo pessoal. O conteúdo é extraído de apostilas em PDF pelo Claude e armazenado em JSON. Foco inicial em Contabilidade, com expansão planejada para outras matérias.
 
-There is no build step, no package manager, and no backend — open `index.html` directly in a browser or serve with any static file server.
+Não há etapa de build, gerenciador de pacotes ou backend — basta abrir o `index.html` no navegador ou servir com qualquer servidor de arquivos estáticos.
 
-## Architecture
+## Arquitetura
 
-The app is entirely static: HTML + vanilla JS + CSS, with data in JSON files.
+A aplicação é 100% estática: HTML + JS vanilla + CSS, com dados em arquivos JSON.
 
-**Data flow:** PDF → Claude extracts content → JSON file in `data/` → `app.js` loads and renders it.
+**Fluxo de dados:** PDF → Claude extrai o conteúdo → arquivo JSON em `data/` → `app.js` carrega e renderiza.
 
-### Navigation structure
+### Estrutura de navegação
 
-Four tab types in the main nav:
-1. **Material tabs** — one per JSON file in `data/`, each with two sub-tabs (Teoria / Questões)
-2. **Simulado** — exam simulation mode
-3. **Revisão Geral** — all questions from all materials with filters
-4. **Histórico** — past simulation results (persisted in localStorage)
+Quatro tipos de abas na navegação principal:
+1. **Abas de material** — uma por arquivo JSON em `data/`, cada uma com duas sub-abas (Teoria / Questões)
+2. **Simulado** — modo prova cronometrado
+3. **Revisão Geral** — todas as questões de todos os materiais com filtros
+4. **Histórico** — resultados de simulados anteriores (persistidos em localStorage)
 
-### Material tabs (Questões sub-tab)
+### Abas de material (sub-aba Questões)
 
-- Two display modes toggled by a button: **lista** (all questions with inline answers) and **foco** (one at a time, answer → immediate feedback → next)
-- Progress (score, answered, bookmarked) is session-only — resets on page reload
-- Question types: `multiple_choice` and `true_false`
+- Dois modos alternáveis por botão: **lista** (todas as questões com gabarito inline) e **foco** (uma por vez — responde → feedback imediato → próxima)
+- Progresso (acertos, respondidas, marcadas) é por sessão — reseta ao recarregar a página
+- Tipos de questão suportados: `multipla_escolha` e `certo_errado`
 
-### Simulado flow
+### Fluxo do Simulado
 
-1. User picks number of questions (10/20/30/40/50) and source (all materials or one specific)
-2. Questions are randomly sampled from the chosen source
-3. One question at a time: user answers → immediate gabarito (correct/wrong + commentary) → next
-4. Chronometer counts up (no time limit, no auto-submit)
-5. On finish: score screen + full gabarito + auto-save to localStorage history
+1. Usuário escolhe quantidade de questões (10/20/30/40/50) e fonte (toda a base ou um material específico)
+2. Questões são sorteadas aleatoriamente da fonte escolhida
+3. Uma questão por vez: usuário responde → gabarito imediato (acerto/erro + comentário) → próxima
+4. Cronômetro crescente (sem limite de tempo, sem encerramento automático)
+5. Ao finalizar: tela de resultado + gabarito completo + salvamento automático no histórico
 
-### Persistence
+### Persistência
 
-- `data/*.json` — static content (questions + theory)
-- `localStorage` — simulation history only (`qbank_history` key, array of `{date, source, score, total, timeSeconds}`)
-- Session progress in material tabs: in-memory only, never written to localStorage
+- `data/*.json` — conteúdo estático (questões + teoria)
+- `localStorage` — somente histórico de simulados (chave `qbank_history`, array de `{date, source, score, total, timeSeconds}`)
+- Progresso nas abas de material: apenas em memória, nunca gravado no localStorage
 
-## Data files
+## Arquivos de dados
 
-Each JSON file in `data/` represents one study material (one tab). The schema is defined in `PRD.md`. Key fields:
-- `slug` — tab identifier and filename (e.g., `data/contabilidade-basica.json`)
-- `subject` — subject name (e.g., `"Contabilidade"`)
-- `theory` — Markdown string rendered in the Teoria sub-tab
-- `questions` — array with `id`, `type`, `statement`, `options` (for multiple_choice), `answer`, `commentary`
+Cada arquivo em `data/` representa um material de estudo (uma aba). O schema completo está no `PRD.md`. Campos principais:
+- `slug` — identificador da aba e nome do arquivo (ex: `data/contabilidade-basica.json`)
+- `materia` — nome da matéria (ex: `"Contabilidade"`)
+- `teoria` — string em Markdown renderizada na sub-aba Teoria
+- `questoes` — array com `id`, `tipo`, `enunciado`, `opcoes` (para múltipla escolha), `resposta`, `comentario`
+- Valores de `tipo`: `"multipla_escolha"` ou `"certo_errado"`
 
-## Adding new content
+## Adicionando novo conteúdo
 
-When the user provides a PDF, extract and produce a new JSON file following the schema in `PRD.md`. Place it in `data/` and register it in the materials list in `app.js`. Do not modify existing JSON files unless correcting content errors.
+Quando o usuário fornecer um PDF, extrair o conteúdo e criar um novo arquivo JSON seguindo o schema do `PRD.md`. Salvar em `data/` e registrar o material na lista em `app.js`. Não modificar arquivos JSON existentes, salvo para corrigir erros de conteúdo.
 
-## Coding conventions
+## Convenções de código
 
-- No frameworks, no npm, no transpilation — plain ES6+ in `js/app.js`
-- CSS in `css/style.css` — no utility frameworks; clean minimalist design
-- Markdown in `theory` fields rendered client-side (use `marked` via CDN if needed)
-- All UI text in Portuguese (pt-BR)
-- IDs within a JSON file must be unique but need not be globally unique across files
-- Layout must be responsive (mobile + desktop)
+- Sem frameworks, sem npm, sem transpilação — ES6+ puro em `js/app.js`
+- CSS em `css/style.css` — sem frameworks utilitários; design limpo e minimalista
+- Markdown nos campos `theory` renderizado no cliente (usar `marked` via CDN se necessário)
+- Todo o texto da interface em português (pt-BR)
+- IDs dentro de um arquivo JSON devem ser únicos no arquivo, mas não precisam ser únicos globalmente
+- Layout responsivo (desktop e celular)

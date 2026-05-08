@@ -118,25 +118,25 @@ QBank/
 
 ```json
 {
-  "title": "Nome do Material",
+  "titulo": "Nome do Material",
   "slug": "slug-do-material",
-  "subject": "Contabilidade",
-  "theory": "Conteúdo teórico em Markdown...",
-  "questions": [
+  "materia": "Contabilidade",
+  "teoria": "Conteúdo teórico em Markdown...",
+  "questoes": [
     {
       "id": 1,
-      "type": "multiple_choice",
-      "statement": "Enunciado da questão...",
-      "options": ["A) ...", "B) ...", "C) ...", "D) ...", "E) ..."],
-      "answer": "A",
-      "commentary": "Explicação da resposta correta..."
+      "tipo": "multipla_escolha",
+      "enunciado": "Enunciado da questão...",
+      "opcoes": ["A) ...", "B) ...", "C) ...", "D) ...", "E) ..."],
+      "resposta": "A",
+      "comentario": "Explicação da resposta correta..."
     },
     {
       "id": 2,
-      "type": "true_false",
-      "statement": "Assertiva para julgamento...",
-      "answer": "true",
-      "commentary": "Explicação..."
+      "tipo": "certo_errado",
+      "enunciado": "Assertiva para julgamento...",
+      "resposta": "certo",
+      "comentario": "Explicação..."
     }
   ]
 }
