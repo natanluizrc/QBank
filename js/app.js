@@ -286,7 +286,7 @@ function renderListaQuestoes(questoes) {
 }
 
 function htmlQuestaoLista(q, i) {
-  const dif = '●'.repeat(q.dificuldade) + '○'.repeat(5 - q.dificuldade);
+  const dif = '★'.repeat(q.dificuldade) + '☆'.repeat(5 - q.dificuldade);
 
   const opcoes = q.tipo === 'multipla_escolha'
     ? `<div class="opcoes">${q.opcoes.map((o, idx) => {
@@ -351,7 +351,7 @@ function renderFocoQuestao(questoes) {
 }
 
 function htmlQuestaoFoco(q, resp, isLast = false) {
-  const dif = '●'.repeat(q.dificuldade) + '○'.repeat(5 - q.dificuldade);
+  const dif = '★'.repeat(q.dificuldade) + '☆'.repeat(5 - q.dificuldade);
 
   let interacaoHtml;
   if (q.tipo === 'multipla_escolha') {
