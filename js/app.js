@@ -130,7 +130,7 @@ function renderBarraAulas() {
       aulaAtiva = materiaAtiva.aulas.find(a => a.slug === btn.dataset.slug);
       barra.querySelectorAll('.aba-aula').forEach(b => b.classList.remove('ativa'));
       btn.classList.add('ativa');
-      renderConteudoAula();
+      renderQuestoes();
     });
   });
 }
