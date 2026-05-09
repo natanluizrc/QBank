@@ -617,14 +617,17 @@ button:disabled { cursor: default; }
 /* ---- Responsivo ---- */
 @media (max-width: 600px) {
   #topbar { padding: 0 0.75rem; height: 48px; gap: 0.5rem; }
-  .app-nome { display: none; }
-  #conteudo { padding: 1.25rem 0.75rem; }
-  .aba-global { padding: 0.3rem 0.55rem; font-size: 0.82rem; }
+  .topbar-esquerda { display: none; }
+  .topbar-abas { flex: 1; overflow-x: auto; scrollbar-width: none; justify-content: flex-start; }
+  .topbar-abas::-webkit-scrollbar { display: none; }
+  .aba-global { padding: 0.3rem 0.55rem; font-size: 0.82rem; min-width: auto; flex-shrink: 0; }
   .topbar-usuario { gap: 0.5rem; }
   #avatar { width: 26px; height: 26px; }
   #btn-logout { display: none; }
-  #barra-materias { top: 48px; }
-  #barra-aulas { top: 90px; }
+  #conteudo { padding: 1.25rem 0.75rem; }
+  #barra-materias { top: 48px; padding: 0 0.75rem; }
+  #barra-aulas { top: 90px; padding: 0 0.75rem; }
   .sim-barra-sticky { top: 90px; }
   .aula-barra-sticky { top: 132px; }
+  .docs-toc { display: none; }
 }
