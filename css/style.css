@@ -246,6 +246,8 @@ button:disabled { cursor: default; }
   border-radius: 4px;
   font-size: 0.8rem;
   font-weight: 600;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.05em;
 }
 .barra-placar .total  { background: #dbeafe; color: #1d4ed8; }
 .barra-placar .acerto { background: #dcfce7; color: #15803d; }

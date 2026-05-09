@@ -246,7 +246,7 @@ function renderListaQuestoes(questoes) {
   const placarHtml = () => {
     const acertos = Object.values(listaRespostas).filter(r => r.acertou).length;
     const erros   = Object.values(listaRespostas).filter(r => !r.acertou).length;
-    return `<span class="total">${questoes.length}</span><span class="acerto">✓ ${acertos}</span><span class="erro">✗ ${erros}</span>`;
+    return `<span class="total">${String(questoes.length).padStart(3,'0')}</span><span class="acerto">${String(acertos).padStart(3,'0')}</span><span class="erro">${String(erros).padStart(3,'0')}</span>`;
   };
 
   area.innerHTML = `
@@ -405,9 +405,9 @@ function renderFocoQuestao(questoes) {
     <div class="foco-wrapper">
       <div class="questoes-barra">
         <div class="barra-placar">
-          <span class="total">${total}</span>
-          <span class="acerto">✓ ${acertos}</span>
-          <span class="erro">✗ ${respondidas - acertos}</span>
+          <span class="total">${String(total).padStart(3,'0')}</span>
+          <span class="acerto">${String(acertos).padStart(3,'0')}</span>
+          <span class="erro">${String(respondidas - acertos).padStart(3,'0')}</span>
         </div>
         <div></div>
       </div>
