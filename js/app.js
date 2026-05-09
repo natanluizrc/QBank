@@ -48,6 +48,7 @@ let focoRespostas = {};     // questaoId → { dada, acertou }
 let listaRespostas = {};   // questaoId → { dada, acertou }
 let revisaoIds = new Set();
 let revisaoQuestoes = [];
+let salvosFiltroSlug = null;
 let simuladoState = null;
 
 // =====================================================================
@@ -120,6 +121,7 @@ function renderBarraMaterias() {
       materiaAtiva = MATERIAS.find(m => m.id === btn.dataset.mid);
       aulaAtiva = materiaAtiva.aulas[0];
       tabGlobal = null;
+      salvosFiltroSlug = null;
       document.querySelectorAll('.aba-global').forEach(b => b.classList.remove('ativa'));
       document.querySelector('.aba-global[data-tab="inicio"]')?.classList.add('ativa');
       renderConteudo();
@@ -129,21 +131,30 @@ function renderBarraMaterias() {
 
 function renderBarraAulas() {
   const barra = document.getElementById('barra-aulas');
-  if (tabGlobal) {
+  if (tabGlobal && tabGlobal !== 'revisao') {
     barra.style.display = 'none';
     return;
   }
   barra.style.display = '';
-  barra.innerHTML = materiaAtiva.aulas.map(a =>
-    `<button class="aba-aula ${a.slug === aulaAtiva.slug ? 'ativa' : ''}" data-slug="${a.slug}">${a.titulo}</button>`
-  ).join('');
+  const isRevisao = tabGlobal === 'revisao';
+  barra.innerHTML = materiaAtiva.aulas.map(a => {
+    const ativa = isRevisao ? salvosFiltroSlug === a.slug : a.slug === aulaAtiva.slug;
+    return `<button class="aba-aula ${ativa ? 'ativa' : ''}" data-slug="${a.slug}">${a.titulo}</button>`;
+  }).join('');
 
   barra.querySelectorAll('.aba-aula').forEach(btn => {
     btn.addEventListener('click', () => {
-      aulaAtiva = materiaAtiva.aulas.find(a => a.slug === btn.dataset.slug);
-      barra.querySelectorAll('.aba-aula').forEach(b => b.classList.remove('ativa'));
-      btn.classList.add('ativa');
-      renderQuestoes();
+      const slug = btn.dataset.slug;
+      if (tabGlobal === 'revisao') {
+        salvosFiltroSlug = salvosFiltroSlug === slug ? null : slug;
+        renderBarraAulas();
+        renderRevisao();
+      } else {
+        aulaAtiva = materiaAtiva.aulas.find(a => a.slug === slug);
+        barra.querySelectorAll('.aba-aula').forEach(b => b.classList.remove('ativa'));
+        btn.classList.add('ativa');
+        renderQuestoes();
+      }
     });
   });
 }
@@ -962,8 +973,11 @@ function toggleRevisao(q, qNum) {
 
 function renderRevisao() {
   const conteudo = document.getElementById('conteudo');
-  if (!revisaoQuestoes.length) {
-    conteudo.innerHTML = '<p class="msg-vazio">Nenhuma questão salva ainda.</p>';
+  const questoes = salvosFiltroSlug
+    ? revisaoQuestoes.filter(q => q._slug === salvosFiltroSlug)
+    : revisaoQuestoes;
+  if (!questoes.length) {
+    conteudo.innerHTML = `<p class="msg-vazio">${salvosFiltroSlug ? 'Nenhuma questão salva nesta aula.' : 'Nenhuma questão salva ainda.'}</p>`;
     return;
   }
   focoIdx = 0; focoRespostas = {}; listaRespostas = {};
@@ -977,8 +991,8 @@ function renderRevisao() {
     <div id="questoes-area"></div>`;
   document.getElementById('btn-lista').addEventListener('click', () => { modoQuestoes = 'lista'; renderRevisao(); });
   document.getElementById('btn-foco').addEventListener('click', () => { modoQuestoes = 'foco'; renderRevisao(); });
-  if (modoQuestoes === 'lista') renderListaQuestoes(revisaoQuestoes);
-  else renderFocoQuestao(revisaoQuestoes);
+  if (modoQuestoes === 'lista') renderListaQuestoes(questoes);
+  else renderFocoQuestao(questoes);
 }
 
 // =====================================================================
@@ -1004,7 +1018,9 @@ document.getElementById('btn-logout').addEventListener('click', () => {
 
 document.querySelectorAll('.aba-global').forEach(btn => {
   btn.addEventListener('click', () => {
-    tabGlobal = btn.dataset.tab === 'inicio' ? null : btn.dataset.tab;
+    const newTab = btn.dataset.tab === 'inicio' ? null : btn.dataset.tab;
+    if (newTab !== 'revisao') salvosFiltroSlug = null;
+    tabGlobal = newTab;
     simuladoState = null;
     document.querySelectorAll('.aba-global').forEach(b => b.classList.remove('ativa'));
     btn.classList.add('ativa');

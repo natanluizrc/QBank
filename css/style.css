@@ -217,6 +217,8 @@ button:disabled { cursor: default; }
 
 .btn-modo {
   padding: 0.35rem 0.75rem;
+  min-width: 4.5rem;
+  text-align: center;
   border-radius: 5px;
   font-size: 0.85rem;
   color: #555;
