@@ -267,6 +267,7 @@ function renderListaQuestoes(questoes) {
     </div>
     ${questoes.map((q, i) => htmlQuestaoLista(q, i)).join('')}
   `;
+  diagramasParaCanvas();
 
   const atualizarPlacar = () => {
     const pl = area.querySelector('.barra-placar');
@@ -341,6 +342,47 @@ function renderListaQuestoes(questoes) {
         btn.textContent = marcado ? 'Salvo' : 'Salvar';
       }
     });
+  });
+}
+
+function diagramasParaCanvas() {
+  document.querySelectorAll('pre.diagrama').forEach(pre => {
+    const lines = pre.textContent.split('\n');
+    const fontSize = 13;
+    const lh = Math.round(fontSize * 1.5);
+    const px = 12, py = 10;
+    const fontStr = `${fontSize}px 'Courier New', Consolas, monospace`;
+
+    const tmp = document.createElement('canvas').getContext('2d');
+    tmp.font = fontStr;
+    const cw = tmp.measureText('─').width;
+    const maxLen = Math.max(...lines.map(l => l.length));
+    const w = Math.ceil(maxLen * cw + px * 2);
+    const h = Math.ceil(lines.length * lh + py * 2);
+
+    const dpr = window.devicePixelRatio || 1;
+    const canvas = document.createElement('canvas');
+    canvas.width  = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width       = w + 'px';
+    canvas.style.maxWidth    = '100%';
+    canvas.style.aspectRatio = `${w} / ${h}`;
+    canvas.style.display     = 'block';
+    canvas.style.margin      = '0.75rem 0';
+    canvas.style.borderRadius = '6px';
+    canvas.style.border      = '1px solid #e5e7eb';
+
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.fillStyle = '#f9fafb';
+    ctx.fillRect(0, 0, w, h);
+    ctx.font = fontStr;
+    ctx.fillStyle = '#1a1a1a';
+    lines.forEach((line, i) => {
+      ctx.fillText(line, px, py + (i + 1) * lh - 3);
+    });
+
+    pre.replaceWith(canvas);
   });
 }
 
@@ -424,6 +466,7 @@ function renderFocoQuestao(questoes) {
       </div>
       ${htmlQuestaoFoco(q, resp, isLast, focoIdx + 1)}
     </div>`;
+  diagramasParaCanvas();
 
   if (!resp) {
     bindFocoInteracao(q, questoes);
@@ -641,6 +684,7 @@ function renderSimuladoQuiz() {
       </div>
       ${htmlQuestaoFoco(q, resp, isLast, s.idx + 1)}
     </div>`;
+  diagramasParaCanvas();
 
   atualizarCronometro();
 
@@ -753,6 +797,7 @@ function renderSimuladoResultado() {
       <button class="btn-iniciar" id="btn-novo-sim">Novo Simulado</button>
     </div>
     <div class="resultado-gabarito">${gabHtml}</div>`;
+  diagramasParaCanvas();
 
   document.getElementById('btn-novo-sim').addEventListener('click', () => {
     simuladoState = null;
