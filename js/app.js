@@ -109,6 +109,8 @@ async function inicializarApp() {
 // =====================================================================
 function renderBarraMaterias() {
   const barra = document.getElementById('barra-materias');
+  if (tabGlobal === 'docs') { barra.style.display = 'none'; return; }
+  barra.style.display = '';
   barra.innerHTML = MATERIAS.map(m =>
     `<button class="aba-materia ${m.id === materiaAtiva.id ? 'ativa' : ''}" data-mid="${m.id}">${m.nome}</button>`
   ).join('');

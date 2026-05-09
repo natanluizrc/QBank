@@ -61,7 +61,7 @@ button:disabled { cursor: default; }
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 0 1.25rem;
+  padding: 0 max(1.25rem, calc((100% - 820px) / 2));
   height: 52px;
 }
 
@@ -118,7 +118,7 @@ button:disabled { cursor: default; }
   border-bottom: 1px solid #e5e5e5;
   display: flex;
   overflow-x: auto;
-  padding: 0 1.25rem;
+  padding: 0 max(1.25rem, calc((100% - 820px) / 2));
   scrollbar-width: none;
   gap: 0.15rem;
   min-height: 42px;
@@ -156,7 +156,7 @@ button:disabled { cursor: default; }
   display: flex;
   align-items: center;
   overflow-x: auto;
-  padding: 0 1.25rem;
+  padding: 0 max(1.25rem, calc((100% - 820px) / 2));
   scrollbar-width: none;
   gap: 0.15rem;
   min-height: 42px;
@@ -479,7 +479,7 @@ button:disabled { cursor: default; }
   flex-shrink: 0;
   width: 180px;
   position: sticky;
-  top: 148px;
+  top: 68px;
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
