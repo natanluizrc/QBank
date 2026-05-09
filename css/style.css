@@ -295,13 +295,21 @@ button:disabled { cursor: default; }
 .diagrama {
   font-family: 'Courier New', Consolas, monospace;
   font-size: 0.85rem;
-  line-height: 1.4;
-  margin: 0.5rem 0;
-  padding: 0;
-  background: none;
-  border: none;
+  line-height: 1.5;
+  margin: 0.75rem 0;
+  padding: 0.6rem 0.75rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
   white-space: pre;
   overflow-x: auto;
+  display: block;
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 480px) {
+  .diagrama { font-size: 0.72rem; padding: 0.5rem; }
 }
 
 /* ---- Opções múltipla escolha ---- */
