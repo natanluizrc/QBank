@@ -127,11 +127,18 @@ function renderBarraMaterias() {
     btn.addEventListener('click', () => {
       materiaAtiva = MATERIAS.find(m => m.id === btn.dataset.mid);
       aulaAtiva = materiaAtiva.aulas[0];
-      tabGlobal = null;
-      salvosFiltroSlug = null;
-      document.querySelectorAll('.aba-global').forEach(b => b.classList.remove('ativa'));
-      document.querySelector('.aba-global[data-tab="inicio"]')?.classList.add('ativa');
-      renderConteudo();
+      if (tabGlobal === 'revisao') {
+        salvosFiltroSlug = materiaAtiva.aulas[0].slug;
+        renderBarraMaterias();
+        renderBarraAulas();
+        renderRevisao();
+      } else {
+        tabGlobal = null;
+        salvosFiltroSlug = null;
+        document.querySelectorAll('.aba-global').forEach(b => b.classList.remove('ativa'));
+        document.querySelector('.aba-global[data-tab="inicio"]')?.classList.add('ativa');
+        renderConteudo();
+      }
     });
   });
 }
@@ -892,7 +899,7 @@ function toggleRevisao(q, qNum) {
 function renderRevisao() {
   const conteudo = document.getElementById('conteudo');
   const questoes = salvosFiltroSlug
-    ? revisaoQuestoes.filter(q => q._slug === salvosFiltroSlug)
+    ? revisaoQuestoes.filter(q => q._slug === salvosFiltroSlug && q._materiaId === materiaAtiva.id)
     : revisaoQuestoes;
   if (!questoes.length) {
     conteudo.innerHTML = `<p class="msg-vazio">${salvosFiltroSlug ? 'Nenhuma questão salva nesta aula.' : 'Nenhuma questão salva ainda.'}</p>`;

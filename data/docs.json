@@ -197,7 +197,7 @@
         },
         {
           "tipo": "codigo",
-          "conteudo": "pdftotext -enc UTF-8 ContG_0200.pdf ContG_0200.txt"
+          "conteudo": "pdftotext -enc UTF-8 Arquivo.pdf Arquivo.txt"
         },
         {
           "tipo": "subtitulo",
@@ -205,7 +205,7 @@
         },
         {
           "tipo": "texto",
-          "conteudo": "Salvar em data/contabilidade/aula-XX.json seguindo o schema acima. Mínimo 30 questões por aula. Campo banca separado do enunciado. Dificuldade de 1 a 5 em cada questão."
+          "conteudo": "Salvar em data/{materia}/aula-XX.json seguindo o schema acima. O slug da matéria é em minúsculas sem acentos (ex: data/contabilidade/). Mínimo 30 questões por aula. Campo banca separado do enunciado. Dificuldade de 1 a 5 em cada questão."
         },
         {
           "tipo": "subtitulo",
@@ -213,11 +213,11 @@
         },
         {
           "tipo": "codigo",
-          "conteudo": "const MATERIAS = [\n  {\n    id: 'contabilidade',\n    nome: 'ContG',\n    aulas: [\n      { slug: 'aula-00',  titulo: 'Aula 00' },\n      { slug: 'aula-01a', titulo: 'Aula 01A' },\n      { slug: 'aula-02a', titulo: 'Aula 02A' },  // ← nova entrada\n    ]\n  }\n];"
+          "conteudo": "const MATERIAS = [\n  {\n    id: 'contabilidade',   // slug — corresponde ao nome da pasta em data/\n    nome: 'ContG',         // nome exibido na barra de matérias\n    aulas: [\n      { slug: 'aula-00',  titulo: 'Aula 00' },\n      { slug: 'aula-01a', titulo: 'Aula 01A' },\n      { slug: 'aula-02a', titulo: 'Aula 02A' },  // ← nova aula\n    ]\n  },\n  // { id: 'outra-materia', nome: 'OutraM', aulas: [...] }  // ← nova matéria\n];"
         },
         {
           "tipo": "nota",
-          "conteudo": "O slug deve corresponder exatamente ao nome do arquivo JSON sem extensão. Ex.: \"aula-02a\" → data/contabilidade/aula-02a.json"
+          "conteudo": "O slug deve corresponder exatamente ao nome do arquivo JSON sem extensão. Ex.: \"aula-02a\" → data/{materia}/aula-02a.json"
         },
         {
           "tipo": "subtitulo",
@@ -225,7 +225,7 @@
         },
         {
           "tipo": "codigo",
-          "conteudo": "git add data/contabilidade/aula-02a.json js/app.js\ngit commit -m \"content: adicionar Aula 02A — Título\"\ngit push origin master\nfirebase deploy --only hosting"
+          "conteudo": "git add data/{materia}/aula-XX.json js/app.js\ngit commit -m \"content: adicionar Aula XX — Título\"\ngit push origin master\nfirebase deploy --only hosting"
         }
       ]
     },
@@ -291,7 +291,7 @@
       "blocos": [
         {
           "tipo": "codigo",
-          "conteudo": "QBank/\n├── index.html          ← Página principal (único HTML)\n├── firebase.json       ← Config do Firebase Hosting\n├── firestore.rules     ← Regras de segurança\n├── .firebaserc         ← Vínculo com o projeto qbank-v01\n├── .gitignore\n├── CLAUDE.md           ← Instruções para o Claude Code\n│\n├── js/app.js           ← Toda a lógica (~930 linhas)\n├── css/style.css       ← Toda a estilização (~493 linhas)\n│\n├── data/\n│   ├── docs.json       ← Conteúdo desta documentação\n│   └── contabilidade/\n│       ├── aula-00.json\n│       ├── aula-01a.json\n│       └── aula-XX.json  (demais aulas)\n│\n└── PDFs/ContG/         ← PDFs fonte (não servidos pelo Hosting)"
+          "conteudo": "QBank/\n├── index.html          ← Página principal (único HTML)\n├── firebase.json       ← Config do Firebase Hosting\n├── firestore.rules     ← Regras de segurança\n├── .firebaserc         ← Vínculo com o projeto qbank-v01\n├── .gitignore\n├── CLAUDE.md           ← Instruções para o Claude Code\n│\n├── js/app.js           ← Toda a lógica\n├── css/style.css       ← Toda a estilização\n│\n├── data/\n│   ├── docs.json           ← Conteúdo desta documentação\n│   ├── {materia-1}/        ← Pasta por matéria (slug sem acentos)\n│   │   ├── aula-00.json\n│   │   ├── aula-01a.json\n│   │   └── aula-XX.json\n│   └── {materia-2}/        ← Novas matérias seguem o mesmo padrão\n│       └── aula-XX.json\n│\n└── PDFs/               ← PDFs fonte (não servidos pelo Hosting)"
         },
         {
           "tipo": "subtitulo",
