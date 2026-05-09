@@ -22,36 +22,50 @@ Sem build, sem bundler, sem transpilação. Firebase SDK via CDN.
 ## Arquitetura de navegação
 
 ```
-[ Matéria ▼ ]   Início   Simulado   Histórico   ← barra superior (fixa)
-────────────────────────────────────────────────────
-  Aula 00   Aula 01A   Aula 01B   Aula 02  ...     ← barra secundária (por matéria)
-────────────────────────────────────────────────────
-  [ Questões ]   [ Teoria ]                        ← sub-abas da aula ativa
+  Início   Simulado   Histórico   Salvos        ← topbar (abas globais)
+──────────────────────────────────────────────
+  ContG   ContC   ContT   ...                   ← barra de matérias (nível 1)
+──────────────────────────────────────────────
+  Aula 00   Aula 01A   Aula 01B   Aula 02  ...  ← barra de aulas (nível 2, oculta em abas globais)
 ```
 
-- **Início:** aba padrão — exibe as aulas da matéria selecionada
-- **Seletor de matéria:** dropdown que troca as abas de Aula exibidas na barra secundária
-- **Simulado / Histórico:** abas globais — operam independente da matéria selecionada
-- **Sub-aba padrão ao entrar em uma aula:** Questões (não Teoria)
+- **Início:** aba padrão — exibe as aulas da matéria ativa
+- **Barra de matérias:** botões que trocam a matéria ativa e voltam ao Início
+- **Barra de aulas:** visível apenas quando `tabGlobal === null` (Início)
+- **Simulado / Histórico / Salvos:** abas globais — operam independente da matéria
 
-## Regras de exibição de questões
+Não há sub-abas de Questões/Teoria — a aula abre direto nas questões.
 
-| Contexto | Comportamento |
-|----------|--------------|
-| Sub-aba Questões (Aula) | **Todas** as questões da aula são exibidas sempre |
-| Simulado | Quantidade configurável: 10 / 20 / 30 — fonte: matéria ou aula |
+## Modos de questões
 
-A sub-aba Questões tem dois modos alternáveis com **barra de informação unificada**:
+Dois modos alternáveis com **barra de informação unificada** acima das questões:
 
-- **Modo lista** — barra mostra `N questões` (esq.) + `Expandir tudo` (dir.); scroll com gabaritos inline interativos
-- **Modo foco** — barra mostra `X / N` em negrito (esq.) + placar `✓ verde / ✗ vermelho` (dir.); uma questão por vez → responde → gabarito imediato → próxima
+- **Modo lista** — placar à esq. + `Expandir tudo` à dir.; scroll com gabaritos inline interativos
+- **Modo foco** — placar à esq. + div vazio à dir.; uma questão por vez → responde → gabarito imediato → próxima
 
-Progresso é session-only — nunca gravado. Ambos os modos exibem `Q1`, `Q2`... na meta da questão.
+**Placar** (chips coloridos com fonte mono, números zero-padded 3 dígitos):
+- Chip azul `#dbeafe / #1d4ed8` — total de questões
+- Chip verde `#dcfce7 / #15803d` — acertos
+- Chip vermelho `#fee2e2 / #b91c1c` — erros
+
+Progresso é session-only — nunca gravado. Ambos os modos exibem `Q1`, `Q2`... na meta da questão. Na aba Salvos, o número original da aula-fonte é preservado via `_qNum`.
+
+## Botão Salvar/Salvo
+
+Cada questão tem um botão de marcação na meta:
+- **Salvar** — borda cinza `#d1d5db`, texto cinza `#9ca3af`; hover revela amarelo `#f59e0b`
+- **Salvo** — borda e texto amarelo `#f59e0b`, fundo `#fffbeb`
+
+Ao clicar em Salvar, a questão entra em `revisaoQuestoes[]` (cache em memória) e no Firestore. Ao clicar em Salvo, é removida de ambos. A atualização do Firestore é fire-and-forget (`.catch()`) — a UI sempre responde imediatamente.
+
+## Aba Salvos
+
+Exibe as questões salvas usando o cache local `revisaoQuestoes[]` — sem fetch do Firestore, resposta imediata. Suporta modo lista e foco. Ao desmarcar uma questão dentro da aba, o card é removido do DOM na hora. Mostra `_materia` e `_aula` de origem na meta de cada questão.
 
 ## Autenticação
 
 - Usuário não autenticado vê tela de boas-vindas com botão "Entrar com Google"
-- Após login, redirecionado para o app
+- Após login, redirecionado para o app; `carregarRevisao()` popula `revisaoIds` e `revisaoQuestoes` do Firestore
 - Todo acesso ao Firestore exige autenticação
 
 ## Fluxo do Simulado
@@ -68,26 +82,32 @@ Progresso é session-only — nunca gravado. Ambos os modos exibem `Q1`, `Q2`...
 ```
 usuarios/
   {userId}/
-    perfil/         → nome, email, fotoUrl, criadoEm
+    perfil/              → nome, email, fotoUrl, criadoEm
     historico/
-      {simuladoId}/ → data, fonte, materia, placar, total, tempoSegundos
+      {simuladoId}/      → data, fonte, placar, total, tempoSegundos, questoes[]
+    revisao/
+      {questaoId}/       → todos os campos da questão + _materia, _aula, _qNum, marcadoEm
 ```
+
+Regras em `firestore.rules` — permite leitura/escrita em todas as subcoleções do próprio usuário. Deploy: `firebase deploy --only firestore:rules`.
 
 ## Arquivos de conteúdo
 
-Organizados por matéria em `data/{materia}/aula-XX.json` — slug da matéria em minúsculas sem acentos (ex: `data/contabilidade/`). Schema completo no `PRD.md`.
+Organizados por matéria em `data/{materia}/aula-XX.json` — slug da matéria em minúsculas sem acentos (ex: `data/contabilidade/`).
 
-- `slug` — identificador do arquivo (ex: `aula-01`)
-- `titulo` — nome na aba (ex: `"Aula 01 — Balanço Patrimonial"`)
-- `materia` — nome da matéria (ex: `"Contabilidade"`)
-- `teoria` — Markdown renderizado na sub-aba Teoria
+- `slug` — identificador do arquivo (ex: `aula-01a`)
+- `titulo` — nome na aba (ex: `"Aula 01A"`)
+- `materia` — nome da matéria (ex: `"ContG"`)
+- `teoria` — Markdown renderizado (disponível mas sem sub-aba dedicada)
 - `questoes[]` — cada item tem: `id`, `banca`, `tipo`, `enunciado`, `resposta`, `comentario`, `dificuldade`
-  - `banca`: string com identificação da banca/concurso (ex: `"FGV/PC-AM/Investigador de Polícia/2022"`) — exibida acima do enunciado
+  - `banca`: string com identificação da banca/concurso — exibida acima do enunciado em cinza
   - `opcoes`: presente **somente** em `multipla_escolha` (array de strings: `["A) ...", "B) ...", ...]`)
   - `tipo`: `"multipla_escolha"` ou `"certo_errado"`
   - `resposta` em `multipla_escolha`: letra maiúscula — `"A"`, `"B"`, `"C"`, `"D"` ou `"E"`
   - `resposta` em `certo_errado`: `"certo"` ou `"errado"` (string minúscula)
   - `dificuldade`: inteiro de 1 (muito fácil) a 5 (muito difícil) — exibido como estrelas (★★☆☆☆)
+
+Diagramas no enunciado usam caracteres box-drawing Unicode (`┌┐└┘│─┬┴┼├┤`) — detectados por regex e renderizados em `<pre class="diagrama">` com fonte monoespaçada.
 
 ## Adicionando novo conteúdo (fluxo padrão)
 
@@ -99,7 +119,7 @@ Quando o usuário enviar um PDF:
 5. Campo `banca` separado do `enunciado` — nunca embutir a banca dentro do texto da questão
 6. IDs no formato `cg-XX-NN` (matéria abreviada + número da aula + número da questão)
 7. Salvar em `data/{materia}/aula-XX.json`
-8. Registrar o material na lista de materiais em `app.js`
+8. Registrar o material na lista `MATERIAS` em `app.js`
 9. Cada material deve ter no mínimo 30 questões
 
 Não modificar arquivos JSON existentes, salvo para corrigir erros reportados pelo usuário.
@@ -107,7 +127,8 @@ Não modificar arquivos JSON existentes, salvo para corrigir erros reportados pe
 ## Convenções de código
 
 - ES6+ puro em `js/app.js` — sem frameworks ou npm
-- CSS em `css/style.css` — design limpo e minimalista, fundo branco; exceção: placar usa verde (#16a34a) e vermelho (#dc2626) por serem funcionais
+- CSS em `css/style.css` — design minimalista, fundo branco
+- Paleta funcional: verde `#16a34a` / vermelho `#dc2626` (acerto/erro), azul `#2563eb` (total), amarelo `#f59e0b` (Salvar/Salvo), preto `#1a1a1a` (UI geral)
 - Markdown nos campos `teoria` renderizado no cliente (usar `marked` via CDN)
 - Todo texto da interface em português (pt-BR)
 - Layout responsivo — desktop e celular
