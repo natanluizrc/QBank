@@ -41,10 +41,7 @@ let usuario = null;
 let materiaAtiva = MATERIAS[0];
 let aulaAtiva = MATERIAS[0].aulas[0];
 let tabGlobal = null;       // null | 'simulado' | 'historico'
-let modoQuestoes = 'lista'; // 'lista' | 'foco'
 let aulaCache = {};         // 'materiaId/slug' → dados JSON
-let focoIdx = 0;
-let focoRespostas = {};     // questaoId → { dada, acertou }
 let listaRespostas = {};   // questaoId → { dada, acertou }
 let revisaoIds = new Set();
 let revisaoQuestoes = [];
@@ -220,34 +217,10 @@ async function renderQuestoes() {
     return;
   }
 
-  focoIdx = 0;
-  focoRespostas = {};
   listaRespostas = {};
 
-  conteudo.innerHTML = `
-    <div class="questoes-cabecalho">
-      <div class="questoes-modo">
-        <button class="btn-modo ${modoQuestoes === 'foco' ? 'ativo' : ''}" id="btn-foco">Foco</button>
-        <button class="btn-modo ${modoQuestoes === 'lista' ? 'ativo' : ''}" id="btn-lista">Lista</button>
-      </div>
-    </div>
-    <div id="questoes-area"></div>
-  `;
-
-  document.getElementById('btn-lista').addEventListener('click', () => {
-    modoQuestoes = 'lista';
-    renderQuestoes();
-  });
-  document.getElementById('btn-foco').addEventListener('click', () => {
-    modoQuestoes = 'foco';
-    renderQuestoes();
-  });
-
-  if (modoQuestoes === 'lista') {
-    renderListaQuestoes(dados.questoes);
-  } else {
-    renderFocoQuestao(dados.questoes);
-  }
+  conteudo.innerHTML = `<div id="questoes-area"></div>`;
+  renderListaQuestoes(dados.questoes);
 }
 
 // ---- Modo lista ----
@@ -475,142 +448,6 @@ function htmlQuestaoLista(q, i) {
         <strong>Resposta: ${String(q.resposta).toUpperCase()}</strong><br>${q.comentario}
       </div>
     </div>`;
-}
-
-// ---- Modo foco ----
-function renderFocoQuestao(questoes) {
-  const area = document.getElementById('questoes-area');
-  const q = questoes[focoIdx];
-  const total = questoes.length;
-  const respondidas = Object.keys(focoRespostas).length;
-  const acertos = Object.values(focoRespostas).filter(r => r.acertou).length;
-  const isLast = focoIdx === total - 1;
-  const resp = focoRespostas[q.id];
-
-  area.innerHTML = `
-    <div class="foco-wrapper">
-      <div class="questoes-barra">
-        <div class="barra-placar">
-          <span class="total">${String(total).padStart(3,'0')}</span>
-          <span class="acerto">${String(acertos).padStart(3,'0')}</span>
-          <span class="erro">${String(respondidas - acertos).padStart(3,'0')}</span>
-        </div>
-        <div></div>
-      </div>
-      ${htmlQuestaoFoco(q, resp, isLast, focoIdx + 1)}
-    </div>`;
-  diagramasParaCanvas();
-
-  if (!resp) {
-    bindFocoInteracao(q, questoes);
-  } else {
-    area.querySelector('.btn-proxima')?.addEventListener('click', () => {
-      if (isLast) {
-        renderFocoConcluido(questoes);
-      } else {
-        focoIdx++;
-        renderFocoQuestao(questoes);
-      }
-    });
-  }
-
-  area.querySelector('.btn-marcar')?.addEventListener('click', e => {
-    e.stopPropagation();
-    toggleRevisao(q, focoIdx + 1);
-    const marcado = revisaoIds.has(q.id);
-    const btn = area.querySelector('.btn-marcar');
-    if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? 'Fixada' : 'Fixar'; }
-  });
-}
-
-function htmlQuestaoFoco(q, resp, isLast = false, num = null) {
-  const dif = '★'.repeat(q.dificuldade) + '☆'.repeat(5 - q.dificuldade);
-
-  let interacaoHtml;
-  if (q.tipo === 'multipla_escolha') {
-    interacaoHtml = `<div class="opcoes">${q.opcoes.map((o, i) => {
-      const letra = String.fromCharCode(65 + i);
-      let cls = 'opcao';
-      if (resp) {
-        if (letra === q.resposta) cls += ' correta';
-        else if (letra === resp.dada) cls += ' errada';
-      }
-      return `<button class="${cls}" data-letra="${letra}" ${resp ? 'disabled' : ''}>${o}</button>`;
-    }).join('')}</div>`;
-  } else {
-    const mkCE = (val, label) => {
-      let cls = 'opcao btn-ce';
-      if (resp) {
-        if (q.resposta === val) cls += ' correta';
-        else if (resp.dada === val) cls += ' errada';
-      }
-      return `<button class="${cls}" data-resp="${val}" ${resp ? 'disabled' : ''}>${label}</button>`;
-    };
-    interacaoHtml = `<div class="opcoes">${mkCE('certo', 'A) Certo')}${mkCE('errado', 'B) Errado')}</div>`;
-  }
-
-  const gabaritoHtml = resp ? `
-    <div class="gabarito-inline ${resp.acertou ? 'acerto' : 'erro'}">
-      ${resp.acertou ? '✓ Correto!' : '✗ Incorreto.'} Resposta: <strong>${String(q.resposta).toUpperCase()}</strong><br>${q.comentario}
-    </div>
-    <button class="btn-proxima">${isLast ? 'Ver resultado' : 'Próxima →'}</button>` : '';
-
-  return `
-    <div class="questao-card">
-      <div class="questao-meta">
-        ${num !== null ? `<span>Q${q._qNum ?? num}</span>` : ''}
-        <span title="Dificuldade">${dif}</span>
-        <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
-        ${q._aula && tabGlobal !== 'revisao' ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
-        <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? 'Fixada' : 'Fixar'}</button>
-      </div>
-      ${htmlEnunciado(q)}
-      ${interacaoHtml}
-      ${gabaritoHtml}
-    </div>`;
-}
-
-function bindFocoInteracao(q, questoes) {
-  const area = document.getElementById('questoes-area');
-  const responder = (dada) => {
-    const acertou = dada.toLowerCase() === String(q.resposta).toLowerCase();
-    focoRespostas[q.id] = { dada, acertou };
-    renderFocoQuestao(questoes);
-  };
-
-  if (q.tipo === 'multipla_escolha') {
-    area.querySelectorAll('.opcao[data-letra]').forEach(btn =>
-      btn.addEventListener('click', () => responder(btn.dataset.letra))
-    );
-  } else {
-    area.querySelectorAll('.btn-ce[data-resp]').forEach(btn =>
-      btn.addEventListener('click', () => responder(btn.dataset.resp))
-    );
-  }
-}
-
-function renderFocoConcluido(questoes) {
-  const area = document.getElementById('questoes-area');
-  const acertos = Object.values(focoRespostas).filter(r => r.acertou).length;
-  const total = questoes.length;
-  const pct = Math.round((acertos / total) * 100);
-
-  area.innerHTML = `
-    <div class="foco-wrapper">
-      <div class="resultado-placar">
-        <div class="score">${acertos} / ${total}</div>
-        <div class="pct">${pct}%</div>
-      </div>
-      <div class="resultado-acoes">
-        <button class="btn-iniciar" id="btn-reiniciar">Tentar novamente</button>
-      </div>
-    </div>`;
-
-  document.getElementById('btn-reiniciar').addEventListener('click', () => {
-    focoIdx = 0;
-    focoRespostas = {};
-    renderFocoQuestao(questoes);
-  });
 }
 
 // =====================================================================
@@ -1058,19 +895,9 @@ function renderRevisao() {
     conteudo.innerHTML = `<p class="msg-vazio">${salvosFiltroSlug ? 'Nenhuma questão salva nesta aula.' : 'Nenhuma questão salva ainda.'}</p>`;
     return;
   }
-  focoIdx = 0; focoRespostas = {}; listaRespostas = {};
-  conteudo.innerHTML = `
-    <div class="questoes-cabecalho">
-      <div class="questoes-modo">
-        <button class="btn-modo ${modoQuestoes === 'foco' ? 'ativo' : ''}" id="btn-foco">Foco</button>
-        <button class="btn-modo ${modoQuestoes === 'lista' ? 'ativo' : ''}" id="btn-lista">Lista</button>
-      </div>
-    </div>
-    <div id="questoes-area"></div>`;
-  document.getElementById('btn-lista').addEventListener('click', () => { modoQuestoes = 'lista'; renderRevisao(); });
-  document.getElementById('btn-foco').addEventListener('click', () => { modoQuestoes = 'foco'; renderRevisao(); });
-  if (modoQuestoes === 'lista') renderListaQuestoes(questoes);
-  else renderFocoQuestao(questoes);
+  listaRespostas = {};
+  conteudo.innerHTML = `<div id="questoes-area"></div>`;
+  renderListaQuestoes(questoes);
 }
 
 // =====================================================================
