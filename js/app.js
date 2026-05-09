@@ -47,6 +47,7 @@ let focoIdx = 0;
 let focoRespostas = {};     // questaoId → { dada, acertou }
 let listaRespostas = {};   // questaoId → { dada, acertou }
 let revisaoIds = new Set();
+let revisaoQuestoes = [];
 let simuladoState = null;
 
 // =====================================================================
@@ -926,6 +927,7 @@ async function carregarRevisao() {
   try {
     const snap = await db.collection('usuarios').doc(usuario.uid).collection('revisao').get();
     revisaoIds = new Set(snap.docs.map(d => d.id));
+    revisaoQuestoes = snap.docs.map(d => d.data());
   } catch (e) { console.error('Erro ao carregar revisão:', e); }
 }
 
@@ -933,9 +935,11 @@ function toggleRevisao(q) {
   const ref = db.collection('usuarios').doc(usuario.uid).collection('revisao').doc(q.id);
   if (revisaoIds.has(q.id)) {
     revisaoIds.delete(q.id);
+    revisaoQuestoes = revisaoQuestoes.filter(x => x.id !== q.id);
     ref.delete().catch(e => console.error('Erro ao remover revisão:', e));
   } else {
     revisaoIds.add(q.id);
+    revisaoQuestoes.push(q);
     ref.set({
       id: q.id, banca: q.banca || '', tipo: q.tipo, enunciado: q.enunciado,
       opcoes: q.opcoes || null, resposta: q.resposta, comentario: q.comentario,
@@ -947,34 +951,25 @@ function toggleRevisao(q) {
   }
 }
 
-async function renderRevisao() {
+function renderRevisao() {
   const conteudo = document.getElementById('conteudo');
-  conteudo.innerHTML = '<p class="msg-vazio">Carregando...</p>';
-  try {
-    const snap = await db.collection('usuarios').doc(usuario.uid)
-      .collection('revisao').get();
-    if (snap.empty) {
-      conteudo.innerHTML = '<p class="msg-vazio">Nenhuma questão marcada para revisão ainda.</p>';
-      return;
-    }
-    const questoes = snap.docs.map(d => d.data());
-    focoIdx = 0; focoRespostas = {}; listaRespostas = {};
-    conteudo.innerHTML = `
-      <div class="questoes-cabecalho">
-        <div class="questoes-modo">
-          <button class="btn-modo ${modoQuestoes === 'foco' ? 'ativo' : ''}" id="btn-foco">Foco</button>
-          <button class="btn-modo ${modoQuestoes === 'lista' ? 'ativo' : ''}" id="btn-lista">Lista</button>
-        </div>
-      </div>
-      <div id="questoes-area"></div>`;
-    document.getElementById('btn-lista').addEventListener('click', () => { modoQuestoes = 'lista'; renderRevisao(); });
-    document.getElementById('btn-foco').addEventListener('click', () => { modoQuestoes = 'foco'; renderRevisao(); });
-    if (modoQuestoes === 'lista') renderListaQuestoes(questoes);
-    else renderFocoQuestao(questoes);
-  } catch (e) {
-    conteudo.innerHTML = '<p class="msg-vazio">Erro ao carregar revisão.</p>';
-    console.error(e);
+  if (!revisaoQuestoes.length) {
+    conteudo.innerHTML = '<p class="msg-vazio">Nenhuma questão marcada para revisão ainda.</p>';
+    return;
   }
+  focoIdx = 0; focoRespostas = {}; listaRespostas = {};
+  conteudo.innerHTML = `
+    <div class="questoes-cabecalho">
+      <div class="questoes-modo">
+        <button class="btn-modo ${modoQuestoes === 'foco' ? 'ativo' : ''}" id="btn-foco">Foco</button>
+        <button class="btn-modo ${modoQuestoes === 'lista' ? 'ativo' : ''}" id="btn-lista">Lista</button>
+      </div>
+    </div>
+    <div id="questoes-area"></div>`;
+  document.getElementById('btn-lista').addEventListener('click', () => { modoQuestoes = 'lista'; renderRevisao(); });
+  document.getElementById('btn-foco').addEventListener('click', () => { modoQuestoes = 'foco'; renderRevisao(); });
+  if (modoQuestoes === 'lista') renderListaQuestoes(revisaoQuestoes);
+  else renderFocoQuestao(revisaoQuestoes);
 }
 
 // =====================================================================
