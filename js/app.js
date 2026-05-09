@@ -109,7 +109,16 @@ async function inicializarApp() {
 // =====================================================================
 function renderBarraMaterias() {
   const barra = document.getElementById('barra-materias');
-  if (['docs', 'historico', 'simulado'].includes(tabGlobal)) { barra.style.display = 'none'; return; }
+  if (tabGlobal === 'docs' || tabGlobal === 'historico') { barra.style.display = 'none'; return; }
+  if (tabGlobal === 'simulado') {
+    const s = simuladoState;
+    if (!s || s.fase === 'config') { barra.style.display = 'none'; return; }
+    const mid = s.fonte.startsWith('materia:') ? s.fonte.split(':')[1] : s.fonte.split(':')[1];
+    const m = MATERIAS.find(x => x.id === mid);
+    barra.style.display = '';
+    barra.innerHTML = m ? `<button class="aba-materia ativa">${m.nome}</button>` : '';
+    return;
+  }
   barra.style.display = '';
   barra.innerHTML = MATERIAS.map(m =>
     `<button class="aba-materia ${m.id === materiaAtiva.id ? 'ativa' : ''}" data-mid="${m.id}">${m.nome}</button>`
@@ -129,6 +138,16 @@ function renderBarraMaterias() {
 
 function renderBarraAulas() {
   const barra = document.getElementById('barra-aulas');
+  if (tabGlobal === 'simulado') {
+    const s = simuladoState;
+    if (!s || s.fase === 'config' || !s.fonte.startsWith('aula:')) { barra.style.display = 'none'; return; }
+    const [, mid, slug] = s.fonte.split(':');
+    const m = MATERIAS.find(x => x.id === mid);
+    const a = m?.aulas.find(x => x.slug === slug);
+    barra.style.display = '';
+    barra.innerHTML = a ? `<button class="aba-aula ativa">${a.titulo}</button>` : '';
+    return;
+  }
   if (tabGlobal && tabGlobal !== 'revisao') {
     barra.style.display = 'none';
     return;
@@ -595,6 +614,8 @@ async function iniciarSimulado(fonte, qtd) {
     intervalo: setInterval(atualizarCronometro, 1000)
   };
 
+  renderBarraMaterias();
+  renderBarraAulas();
   renderSimuladoQuiz();
 }
 
