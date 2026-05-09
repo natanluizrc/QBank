@@ -421,9 +421,9 @@ function htmlQuestaoLista(q, i) {
         const letra = String.fromCharCode(65 + idx);
         return `<button class="opcao" data-letra="${letra}">${o}</button>`;
       }).join('')}</div>`
-    : `<div class="certo-errado-btns">
-        <button class="btn-ce" data-resp="certo">Certo</button>
-        <button class="btn-ce" data-resp="errado">Errado</button>
+    : `<div class="opcoes">
+        <button class="opcao btn-ce" data-resp="certo">A) Certo</button>
+        <button class="opcao btn-ce" data-resp="errado">B) Errado</button>
        </div>`;
 
   return `
@@ -506,14 +506,14 @@ function htmlQuestaoFoco(q, resp, isLast = false, num = null) {
     }).join('')}</div>`;
   } else {
     const mkCE = (val, label) => {
-      let cls = 'btn-ce';
+      let cls = 'opcao btn-ce';
       if (resp) {
         if (q.resposta === val) cls += ' correta';
         else if (resp.dada === val) cls += ' errada';
       }
       return `<button class="${cls}" data-resp="${val}" ${resp ? 'disabled' : ''}>${label}</button>`;
     };
-    interacaoHtml = `<div class="certo-errado-btns">${mkCE('certo', 'Certo')}${mkCE('errado', 'Errado')}</div>`;
+    interacaoHtml = `<div class="opcoes">${mkCE('certo', 'A) Certo')}${mkCE('errado', 'B) Errado')}</div>`;
   }
 
   const gabaritoHtml = resp ? `
