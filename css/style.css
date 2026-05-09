@@ -126,6 +126,8 @@ button:disabled { cursor: default; }
 .aba-materia {
   flex-shrink: 0;
   padding: 0.45rem 0.9rem;
+  min-width: 4.5rem;
+  text-align: center;
   font-size: 0.875rem;
   font-weight: 600;
   color: #555;
@@ -154,6 +156,8 @@ button:disabled { cursor: default; }
 .aba-aula {
   flex-shrink: 0;
   padding: 0.6rem 0.9rem;
+  min-width: 5.5rem;
+  text-align: center;
   font-size: 0.875rem;
   color: #555;
   border-bottom: 2px solid transparent;
