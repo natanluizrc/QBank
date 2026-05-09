@@ -497,14 +497,17 @@ button:disabled { cursor: default; }
 .btn-marcar {
   margin-left: auto;
   font-size: 0.75rem;
-  color: #16a34a;
   font-weight: 500;
-  padding: 0;
-  transition: color 0.12s;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #f59e0b;
+  color: #f59e0b;
+  background: none;
+  transition: background 0.12s;
 }
-.btn-marcar:hover { color: #15803d; }
-.btn-marcar.marcado { color: #dc2626; }
-.btn-marcar.marcado:hover { color: #b91c1c; }
+.btn-marcar:hover { background: #fffbeb; }
+.btn-marcar.marcado { border-color: #6366f1; color: #6366f1; }
+.btn-marcar.marcado:hover { background: #f5f3ff; }
 
 .questao-fonte { color: #aaa; font-size: 0.75rem; }
 
