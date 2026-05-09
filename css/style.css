@@ -468,6 +468,144 @@ button:disabled { cursor: default; }
 
 .questao-fonte { color: #aaa; font-size: 0.75rem; }
 
+/* ---- Documentação ---- */
+.docs-wrap {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.docs-toc {
+  flex-shrink: 0;
+  width: 180px;
+  position: sticky;
+  top: 148px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.docs-toc-titulo {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #aaa;
+  margin-bottom: 0.4rem;
+}
+
+.docs-toc-item {
+  font-size: 0.8rem;
+  color: #666;
+  text-decoration: none;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  transition: background 0.1s, color 0.1s;
+  line-height: 1.4;
+}
+
+.docs-toc-item:hover { background: #f5f5f5; color: #1a1a1a; }
+
+.docs-toc-meta {
+  font-size: 0.72rem;
+  color: #bbb;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #eee;
+  font-family: 'Courier New', monospace;
+}
+
+.docs-conteudo { flex: 1; min-width: 0; }
+
+.docs-secao {
+  margin-bottom: 2.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.docs-secao:last-child { border-bottom: none; }
+
+.docs-titulo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid #1a1a1a;
+}
+
+.docs-h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #333;
+  margin: 1.25rem 0 0.5rem;
+}
+
+.docs-p {
+  font-size: 0.875rem;
+  color: #444;
+  line-height: 1.65;
+  margin-bottom: 0.75rem;
+}
+
+.docs-pre {
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 0.78rem;
+  background: #f8f8f8;
+  border: 1px solid #e5e5e5;
+  border-left: 3px solid #1a1a1a;
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0 1rem;
+  white-space: pre;
+  overflow-x: auto;
+  line-height: 1.55;
+}
+
+.docs-nota {
+  background: #fffbeb;
+  border-left: 3px solid #f59e0b;
+  padding: 0.6rem 0.875rem;
+  border-radius: 0 4px 4px 0;
+  font-size: 0.825rem;
+  color: #555;
+  margin: 0.5rem 0 1rem;
+  line-height: 1.55;
+}
+
+.docs-tabela-wrap { overflow-x: auto; margin: 0.5rem 0 1rem; }
+
+.docs-tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.docs-tabela th {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 0.4rem 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.docs-tabela td {
+  padding: 0.4rem 0.75rem;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: top;
+  line-height: 1.5;
+}
+
+.docs-tabela tr:last-child td { border-bottom: none; }
+.docs-tabela tr:nth-child(even) td { background: #fafafa; }
+
+@media (max-width: 600px) {
+  .docs-wrap { flex-direction: column; }
+  .docs-toc { position: static; width: 100%; flex-direction: row; flex-wrap: wrap; gap: 0.25rem; }
+  .docs-toc-titulo, .docs-toc-meta { display: none; }
+  .docs-toc-item { border: 1px solid #e5e5e5; border-radius: 5px; font-size: 0.75rem; }
+}
+
 /* ---- Estados genéricos ---- */
 .msg-vazio {
   color: #888;

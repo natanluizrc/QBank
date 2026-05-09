@@ -131,6 +131,7 @@ function renderBarraAulas() {
     barra.style.display = 'none';
     return;
   }
+
   barra.style.display = '';
   const isRevisao = tabGlobal === 'revisao';
   barra.innerHTML = materiaAtiva.aulas.map(a => {
@@ -162,6 +163,7 @@ function renderConteudo() {
   if (tabGlobal === 'simulado') { renderSimuladoConfig(); return; }
   if (tabGlobal === 'historico') { renderHistorico(); return; }
   if (tabGlobal === 'revisao')  { renderRevisao();  return; }
+  if (tabGlobal === 'docs')     { renderDocs();     return; }
 
   renderQuestoes();
 }
@@ -877,6 +879,66 @@ function renderRevisao() {
   listaRespostas = {};
   conteudo.innerHTML = `<div id="questoes-area"></div>`;
   renderListaQuestoes(questoes);
+}
+
+// =====================================================================
+// DOCUMENTAÇÃO
+// =====================================================================
+async function renderDocs() {
+  const conteudo = document.getElementById('conteudo');
+  conteudo.innerHTML = '<p class="msg-vazio">Carregando...</p>';
+
+  let docs;
+  try {
+    const resp = await fetch('data/docs.json');
+    if (!resp.ok) throw new Error();
+    docs = await resp.json();
+  } catch {
+    conteudo.innerHTML = '<p class="msg-vazio">Erro ao carregar documentação.</p>';
+    return;
+  }
+
+  const renderBloco = b => {
+    switch (b.tipo) {
+      case 'texto':
+        return `<p class="docs-p">${b.conteudo}</p>`;
+      case 'subtitulo':
+        return `<h3 class="docs-h3">${b.conteudo}</h3>`;
+      case 'codigo':
+        return `<pre class="docs-pre">${b.conteudo}</pre>`;
+      case 'nota':
+        return `<div class="docs-nota">${b.conteudo}</div>`;
+      case 'tabela': {
+        const ths = b.cabecalho.map(h => `<th>${h}</th>`).join('');
+        const trs = b.linhas.map(l =>
+          `<tr>${l.map(c => `<td>${c}</td>`).join('')}</tr>`
+        ).join('');
+        return `<div class="docs-tabela-wrap"><table class="docs-tabela"><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table></div>`;
+      }
+      default: return '';
+    }
+  };
+
+  const secoesHtml = docs.secoes.map(s => `
+    <div class="docs-secao" id="docs-${s.id}">
+      <h2 class="docs-titulo">${s.titulo}</h2>
+      ${s.blocos.map(renderBloco).join('')}
+    </div>
+  `).join('');
+
+  const toc = docs.secoes.map((s, i) =>
+    `<a class="docs-toc-item" href="#docs-${s.id}">${i + 1}. ${s.titulo}</a>`
+  ).join('');
+
+  conteudo.innerHTML = `
+    <div class="docs-wrap">
+      <aside class="docs-toc">
+        <div class="docs-toc-titulo">Índice</div>
+        ${toc}
+        <div class="docs-toc-meta">v${docs.versao} · ${docs.atualizado}</div>
+      </aside>
+      <div class="docs-conteudo">${secoesHtml}</div>
+    </div>`;
 }
 
 // =====================================================================
