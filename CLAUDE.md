@@ -99,7 +99,6 @@ Organizados por matéria em `data/{materia}/aula-XX.json` — slug da matéria e
 - `slug` — identificador do arquivo (ex: `aula-01a`)
 - `titulo` — nome na aba (ex: `"Aula 01A"`)
 - `materia` — nome da matéria (ex: `"ContG"`)
-- `teoria` — Markdown renderizado (disponível mas sem sub-aba dedicada)
 - `questoes[]` — cada item tem: `id`, `banca`, `tipo`, `enunciado`, `resposta`, `comentario`, `dificuldade`
   - `banca`: string com identificação da banca/concurso — exibida acima do enunciado em cinza
   - `opcoes`: presente **somente** em `multipla_escolha` (array de strings: `["A) ...", "B) ...", ...]`)
@@ -131,6 +130,5 @@ Não modificar arquivos JSON existentes, salvo para corrigir erros reportados pe
 - CSS em `css/style.css` — design minimalista, fundo branco
 - Paleta funcional: verde `#15803d` / vermelho `#b91c1c` (chips do placar), azul `#1d4ed8` (chip total), amarelo `#f59e0b` (Fixar/Fixada), laranja `#ea580c` (Ver gabarito/Ocultar), preto `#1a1a1a` (UI geral)
 - Botões de ação (Fixar, Ver gabarito): contorno colorido → preenchimento sólido ao ativar; mesmo padrão visual
-- Markdown nos campos `teoria` renderizado no cliente (usar `marked` via CDN)
 - Todo texto da interface em português (pt-BR)
 - Layout responsivo — desktop e celular

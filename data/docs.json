@@ -145,7 +145,7 @@
         },
         {
           "tipo": "codigo",
-          "conteudo": "{\n  \"slug\":    \"aula-01a\",\n  \"titulo\":  \"Aula 01A — Título\",\n  \"materia\": \"Contabilidade Geral\",\n  \"teoria\":  \"## Markdown...\",\n  \"questoes\": [ ... ]\n}"
+          "conteudo": "{\n  \"slug\":    \"aula-01a\",\n  \"titulo\":  \"Aula 01A — Título\",\n  \"materia\": \"Nome da Matéria\",\n  \"questoes\": [ ... ]\n}"
         },
         {
           "tipo": "subtitulo",
