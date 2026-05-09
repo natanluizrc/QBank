@@ -189,22 +189,6 @@ async function carregarAula(slug) {
 }
 
 // =====================================================================
-// TEORIA
-// =====================================================================
-async function renderTeoria() {
-  const conteudo = document.getElementById('conteudo');
-  conteudo.innerHTML = '<p class="msg-vazio">Carregando...</p>';
-
-  const dados = await carregarAula(aulaAtiva.slug);
-  if (!dados) {
-    conteudo.innerHTML = '<p class="msg-vazio">Conteúdo ainda não disponível.</p>';
-    return;
-  }
-
-  conteudo.innerHTML = `<div class="teoria-conteudo">${marked.parse(dados.teoria || '')}</div>`;
-}
-
-// =====================================================================
 // QUESTÕES
 // =====================================================================
 async function renderQuestoes() {
@@ -466,7 +450,7 @@ function htmlQuestaoLista(q, i) {
         <span>Q${q._qNum ?? i + 1}</span>
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
-        ${q._aula && tabGlobal !== 'revisao' ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
+        ${q._aula && tabGlobal === 'revisao' ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
         <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? 'Fixada' : 'Fixar'}</button>
       </div>
       ${htmlEnunciado(q)}
@@ -578,9 +562,7 @@ async function iniciarSimulado(fonte, qtd) {
     }
   };
 
-  if (fonte === 'base') {
-    for (const m of MATERIAS) for (const a of m.aulas) await carregarParaPool(m, a);
-  } else if (fonte.startsWith('materia:')) {
+  if (fonte.startsWith('materia:')) {
     const m = MATERIAS.find(x => x.id === fonte.split(':')[1]);
     if (m) for (const a of m.aulas) await carregarParaPool(m, a);
   } else if (fonte.startsWith('aula:')) {
@@ -753,89 +735,6 @@ function renderSimuladoResultado() {
     simuladoState = null;
     renderSimuladoConfig();
   });
-}
-
-// =====================================================================
-// GABARITO GLOBAL
-// =====================================================================
-async function renderGabarito() {
-  const conteudo = document.getElementById('conteudo');
-  conteudo.innerHTML = '<p class="msg-vazio">Carregando questões...</p>';
-
-  const todas = [];
-  for (const m of MATERIAS) {
-    for (const a of m.aulas) {
-      const dados = await carregarAulaDados(m.id, a.slug);
-      if (dados?.questoes) {
-        todas.push(...dados.questoes.map(q => ({
-          ...q, _materia: m.nome, _materiaId: m.id, _aula: a.titulo, _slug: a.slug
-        })));
-      }
-    }
-  }
-
-  if (!todas.length) {
-    conteudo.innerHTML = '<p class="msg-vazio">Nenhuma questão disponível ainda.</p>';
-    return;
-  }
-
-  renderGabaritoFiltrado(todas);
-}
-
-function renderGabaritoFiltrado(todas) {
-  const conteudo = document.getElementById('conteudo');
-  const materias = [...new Set(todas.map(q => q._materia))];
-
-  conteudo.innerHTML = `
-    <div class="gabarito-filtros">
-      <select id="fil-materia">
-        <option value="">Todas as matérias</option>
-        ${materias.map(m => `<option value="${m}">${m}</option>`).join('')}
-      </select>
-      <select id="fil-tipo">
-        <option value="">Todos os tipos</option>
-        <option value="multipla_escolha">Múltipla escolha</option>
-        <option value="certo_errado">Certo/Errado</option>
-      </select>
-      <select id="fil-dif">
-        <option value="">Todas as dificuldades</option>
-        ${[1,2,3,4,5].map(d => `<option value="${d}">${d}</option>`).join('')}
-      </select>
-    </div>
-    <div id="gabarito-lista"></div>`;
-
-  const aplicar = () => {
-    const fm = document.getElementById('fil-materia').value;
-    const ft = document.getElementById('fil-tipo').value;
-    const fd = document.getElementById('fil-dif').value;
-
-    const filtradas = todas.filter(q =>
-      (!fm || q._materia === fm) &&
-      (!ft || q.tipo === ft) &&
-      (!fd || q.dificuldade === parseInt(fd))
-    );
-
-    const lista = document.getElementById('gabarito-lista');
-    if (!filtradas.length) {
-      lista.innerHTML = '<p class="msg-vazio">Nenhuma questão encontrada.</p>';
-      return;
-    }
-
-    lista.innerHTML = filtradas.map((q, i) => htmlQuestaoLista(q, i)).join('');
-    lista.querySelectorAll('.btn-revelar').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const gab = lista.querySelector(`.gabarito-inline[data-id="${btn.dataset.id}"]`);
-        gab.classList.toggle('hidden');
-        btn.textContent = gab.classList.contains('hidden') ? 'Ver gabarito' : 'Ocultar';
-      });
-    });
-  };
-
-  ['fil-materia', 'fil-tipo', 'fil-dif'].forEach(id =>
-    document.getElementById(id).addEventListener('change', aplicar)
-  );
-
-  aplicar();
 }
 
 // =====================================================================

@@ -219,19 +219,6 @@ button:disabled { cursor: default; }
 }
 .teoria-conteudo th { background: #f5f5f5; font-weight: 600; }
 
-/* ---- Questões header ---- */
-.questoes-cabecalho {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid #e5e5e5;
-  margin-bottom: 0;
-  font-size: 0.875rem;
-  color: #666;
-}
-
-
 .questoes-barra {
   display: flex;
   justify-content: space-between;
@@ -241,10 +228,6 @@ button:disabled { cursor: default; }
   margin-bottom: 1.5rem;
   font-size: 0.875rem;
   color: #444;
-}
-.questoes-barra .barra-progresso {
-  font-weight: 600;
-  color: #1a1a1a;
 }
 .questoes-barra .barra-placar { display: flex; gap: 0.35rem; align-items: center; }
 .barra-placar span {
@@ -338,12 +321,6 @@ button:disabled { cursor: default; }
 .opcao.errada { background: #fdf0f0; border-color: #c05050; color: #8a3030; }
 
 /* ---- Certo/Errado ---- */
-.certo-errado-btns {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 0.875rem;
-}
-
 .btn-ce {
   padding: 0.5rem 1.5rem;
   border: 1px solid #ddd;
@@ -462,24 +439,6 @@ button:disabled { cursor: default; }
 .resultado-placar .tempo { font-size: 0.875rem; color: #888; margin-top: 0.5rem; }
 .resultado-acoes { margin-top: 1.5rem; }
 .resultado-gabarito { margin-top: 2rem; }
-
-/* ---- Gabarito global ---- */
-.gabarito-filtros {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.5rem;
-}
-
-.gabarito-filtros select {
-  padding: 0.4rem 0.65rem;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-family: inherit;
-  font-size: 0.875rem;
-  background: #fff;
-  cursor: pointer;
-}
 
 /* ---- Histórico ---- */
 .historico-lista { list-style: none; }
