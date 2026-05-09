@@ -414,6 +414,21 @@
     {
       "id": "cg-00-30",
       "tipo": "multipla_escolha",
+      "enunciado": "Na definição do Professor Hilário Franco, a Contabilidade é \"a ciência que estuda e pratica, controla e interpreta os fatos ocorridos no patrimônio das entidades, mediante o registro, a demonstração expositiva e a revelação desses fatos, com o fim de oferecer informações sobre a composição do patrimônio, suas variações e o resultado econômico decorrente da gestão da riqueza econômica\".\n\nSobre o tema, analise as afirmativas a seguir:\n\nI. As principais funções da Contabilidade são: registrar, organizar, demonstrar, analisar e acompanhar as modificações do patrimônio em virtude da atividade econômica ou social que a empresa exerce no contexto econômico.\nII. A Contabilidade faz o registro metódico e ordenado dos negócios realizados e a verificação sistemática dos resultados obtidos. Ela deve identificar, classificar e anotar as operações da entidade e de todos os fatos que de alguma forma afetam sua situação econômica, financeira e patrimonial.\nIII. Com a acumulação de dados, convenientemente classificados, a Contabilidade procura apresentar, de forma ordenada, o histórico das atividades da empresa, a interpretação dos resultados, e através de relatórios produzir as informações que se fizerem precisas para o atendimento das diferentes necessidades.\nIV. A informação contábil, principalmente no que se refere ao estabelecimento de padrões e ao inter-relacionamento da Contabilidade e os planos orçamentários, é de grande utilidade no planejamento empresarial, ou seja, no processo de decisão sobre que curso de ação deverá ser tomado para o futuro.\nV. A missão da Contabilidade está voltada, exclusivamente, ao fornecimento de informações aos gestores da empresa e aos entes de controles governamentais.\n\nÉ correto o que se afirma:",
+      "opcoes": [
+        "A) em I, II, III, IV e V.",
+        "B) apenas em I, II e IV.",
+        "C) apenas em I, III e V.",
+        "D) apenas em I, II, III e IV."
+      ],
+      "resposta": "D",
+      "comentario": "Os itens I a IV descrevem corretamente funções e utilidades da Contabilidade. O item V está errado ao dizer que a missão está voltada exclusivamente a gestores e entes governamentais — na verdade, a Contabilidade produz informações para todos os seus usuários (internos e externos).",
+      "dificuldade": 3,
+      "banca": "IDIB/Contador/CRF-MS/2021"
+    },
+    {
+      "id": "cg-00-31",
+      "tipo": "multipla_escolha",
       "enunciado": "Contabilidade é a ciência social que estuda, controla e interpreta os fatos ocorridos no patrimônio das entidades mediante o registro, a demonstração e a divulgação desses fatos.\n\nSobre esse tema, assinale a alternativa que apresenta o conceito correto de Patrimônio.",
       "opcoes": [
         "A) Conjunto de bens, direitos e obrigações de uma entidade.",
@@ -427,7 +442,7 @@
       "banca": "FUNDATEC/Prefeitura de Tramandaí/Administrativo/2021"
     },
     {
-      "id": "cg-00-31",
+      "id": "cg-00-32",
       "tipo": "multipla_escolha",
       "enunciado": "A contabilidade tem em sua essência, basicamente, duas funções:",
       "opcoes": [
@@ -443,7 +458,7 @@
       "banca": "UEPB/Assistente Administrativo/CREF 10/2021"
     },
     {
-      "id": "cg-00-32",
+      "id": "cg-00-33",
       "tipo": "multipla_escolha",
       "enunciado": "Em relação ao conceito, ao objeto e à finalidade da contabilidade, analise as assertivas:\n\nI. A contabilidade, por ser uma ciência social, possui como objeto o patrimônio das entidades e tem como objetivo precípuo fornecer informações principalmente aos administradores desse patrimônio.\nII. A doutrina contábil costuma classificar os usuários da informação contábil em dois grandes grupos: internos e externos.\nIII. Os usuários internos da informação contábil estão ligados aos objetivos e às atividades da entidade. Como a própria classificação indica, são internos à entidade.\n\nAssinale a alternativa que aponta a(s) correta(s):",
       "opcoes": [
@@ -459,7 +474,7 @@
       "banca": "Instituto AOCP/ITEP-RN/Criminal/Área Geral/2021"
     },
     {
-      "id": "cg-00-33",
+      "id": "cg-00-34",
       "tipo": "multipla_escolha",
       "enunciado": "A técnica contábil que registra todos os eventos que afetam o Patrimônio, cronologicamente, no idioma e na moeda do País em que a entidade está instalada é denominada:",
       "opcoes": [
@@ -474,7 +489,7 @@
       "banca": "FUNDATEC/Pref. Estância Velha/Técnico Contabilidade/2020"
     },
     {
-      "id": "cg-00-34",
+      "id": "cg-00-35",
       "tipo": "multipla_escolha",
       "enunciado": "A contabilidade para obter a perfeita aplicação de suas funções utiliza-se de um conjunto de procedimentos, os quais são conhecidos como técnicas contábeis.\n\nAssinale a alternativa em que a afirmativa NÃO está correta.",
       "opcoes": [
@@ -489,7 +504,7 @@
       "banca": "IDIB/CREMERJ/Contador/2019"
     },
     {
-      "id": "cg-00-35",
+      "id": "cg-00-36",
       "tipo": "multipla_escolha",
       "enunciado": "Os Princípios de Contabilidade representam a essência das doutrinas e teorias relativas à Ciência da Contabilidade. No seu sentido mais amplo de ciência social, ela tem um objeto.\n\nAssinale a alternativa que evidencia o objeto da contabilidade.",
       "opcoes": [
@@ -505,7 +520,7 @@
       "banca": "AOCP/ITEP-RN/Perito Criminal/2018"
     },
     {
-      "id": "cg-00-36",
+      "id": "cg-00-37",
       "tipo": "multipla_escolha",
       "enunciado": "A contabilidade, em decorrência de sua ampla abrangência, atende a um leque amplo e diferenciado de interesses dos seus múltiplos usuários.\n\nDe que grupo fazem parte os usuários que têm como principal preocupação com a empresa o risco inerente às suas decisões?",
       "opcoes": [
@@ -521,7 +536,7 @@
       "banca": "CESGRANRIO/Transpetro/Técnico de Suprimento/2018"
     },
     {
-      "id": "cg-00-37",
+      "id": "cg-00-38",
       "tipo": "multipla_escolha",
       "enunciado": "A contabilidade em seus aspectos técnico-conceituais tem grande amplitude e interesse, tanto para as pessoas físicas quanto para as pessoas jurídicas de cunho social ou econômico de qualquer ramo de atividade ou atuação no campo público ou privado.\n\nNesse contexto, o objetivo primeiro da contabilidade é o de fornecer:",
       "opcoes": [
@@ -537,7 +552,7 @@
       "banca": "CESGRANRIO/Transpetro/Técnico de Suprimento/2018"
     },
     {
-      "id": "cg-00-38",
+      "id": "cg-00-39",
       "tipo": "multipla_escolha",
       "enunciado": "Fornecer informações econômicas e financeiras acerca da entidade corresponde à (ao):",
       "opcoes": [
@@ -553,7 +568,7 @@
       "banca": "FUNRIO/Câmara Municipal de SJM/Técnico em Finanças/2018"
     },
     {
-      "id": "cg-00-39",
+      "id": "cg-00-40",
       "tipo": "multipla_escolha",
       "enunciado": "Assinale a alternativa em que se apresenta de forma adequada o objetivo da Contabilidade.",
       "opcoes": [
@@ -569,7 +584,7 @@
       "banca": "UFPR/Contador/COREN-PR/2018"
     },
     {
-      "id": "cg-00-40",
+      "id": "cg-00-41",
       "tipo": "multipla_escolha",
       "enunciado": "Em Contabilidade, define-se como patrimônio o conjunto de bens, direitos e obrigações que constituem as empresas (aziendas).\n\nSão técnicas da contabilidade:",
       "opcoes": [
@@ -585,7 +600,7 @@
       "banca": "UFPR/Contador/Quitandinha/2018"
     },
     {
-      "id": "cg-00-41",
+      "id": "cg-00-42",
       "tipo": "multipla_escolha",
       "enunciado": "Considerando que o objetivo da contabilidade é o controle de um patrimônio, assinale a alternativa correta.",
       "opcoes": [
@@ -601,7 +616,7 @@
       "banca": "IADES/Hemocentro/DF/2017"
     },
     {
-      "id": "cg-00-42",
+      "id": "cg-00-43",
       "tipo": "multipla_escolha",
       "enunciado": "Em relação à ciência, a contabilidade é considerada uma:",
       "opcoes": [
@@ -616,7 +631,7 @@
       "banca": "IESES/CEGÁS/Contador/2017"
     },
     {
-      "id": "cg-00-43",
+      "id": "cg-00-44",
       "tipo": "multipla_escolha",
       "enunciado": "São usuários externos da contabilidade, EXCETO:",
       "opcoes": [
@@ -631,7 +646,7 @@
       "banca": "IESES/CEGÁS/Administrativo e Financeiro/2017"
     },
     {
-      "id": "cg-00-44",
+      "id": "cg-00-45",
       "tipo": "multipla_escolha",
       "enunciado": "Analise as sentenças sobre Contabilidade Geral e assinale a alternativa correta:\n\nI. A Contabilidade é considerada uma ciência social e também exata, pois tem por objetivo medir quantitativamente e qualitativamente o patrimônio das entidades.\nII. A Contabilidade tem como objeto de estudo o patrimônio das entidades. Seu principal objetivo é controlar o patrimônio das entidades.\nIII. A principal finalidade da Contabilidade é fornecer informações aos seus usuários.\nIV. Os usuários das informações produzidas pela Contabilidade podem ser: administradores, acionistas, fornecedores, investidores, instituições financeiras, governo e inclusive pessoas físicas.",
       "opcoes": [
@@ -647,7 +662,7 @@
       "banca": "IESES/BAHIAGÁS/Organizacional/2016"
     },
     {
-      "id": "cg-00-45",
+      "id": "cg-00-46",
       "tipo": "multipla_escolha",
       "enunciado": "O termo Azienda, utilizado em contabilidade, tem o sentido de:",
       "opcoes": [
@@ -662,7 +677,7 @@
       "banca": "FUNRIO/Câmara de Tanguá/Técnico de Contabilidade/2016"
     },
     {
-      "id": "cg-00-46",
+      "id": "cg-00-47",
       "tipo": "multipla_escolha",
       "enunciado": "O objeto e a finalidade da contabilidade são, respectivamente:",
       "opcoes": [
@@ -678,7 +693,7 @@
       "banca": "CEPERJ/Pref. Saquarema/Auditor Fiscal/2015"
     },
     {
-      "id": "cg-00-47",
+      "id": "cg-00-48",
       "tipo": "multipla_escolha",
       "enunciado": "O princípio contábil que afirma a autonomia patrimonial e a necessidade de diferenciação de um patrimônio particular no universo dos patrimônios existentes é o princípio da:",
       "opcoes": [
@@ -694,7 +709,39 @@
       "banca": "CEPERJ/Pref. Saquarema/Auditor Fiscal/2015"
     },
     {
-      "id": "cg-00-48",
+      "id": "cg-00-49",
+      "tipo": "multipla_escolha",
+      "enunciado": "\"Estudo e controle do patrimônio e de suas variações, para fornecer aos usuários o máximo possível de informações de natureza econômica, financeira e patrimonial, que sejam úteis para a tomada de decisões econômicas.\"\n\nO conceito se refere ao:",
+      "opcoes": [
+        "A) plano de contas contábil.",
+        "B) objetivo da contabilidade.",
+        "C) usuário da informação contábil.",
+        "D) objeto de estudo da contabilidade.",
+        "E) campo de aplicação da contabilidade."
+      ],
+      "resposta": "B",
+      "comentario": "O conceito descrito define o objetivo da Contabilidade — fornecer informações úteis sobre o patrimônio para a tomada de decisões. O objeto é o patrimônio em si; o campo de aplicação são as entidades (aziendas). A confusão mais comum é entre objeto e objetivo.",
+      "dificuldade": 2,
+      "banca": "IDECAN/INMETRO/Assistente em Metrologia/2015"
+    },
+    {
+      "id": "cg-00-50",
+      "tipo": "multipla_escolha",
+      "enunciado": "\"O grande objetivo da Contabilidade é prover seus usuários, em geral, com o máximo possível de informações sobre o patrimônio de uma entidade e suas mutações.\" (Iudícibus et al, 2010)\n\n\"________________________________ são usuários que possuem duplo interesse nas informações contábeis: primeiramente porque se baseiam nas mesmas para arrecadar tributos; e, em segundo lugar, interessam-se pelos dados econômicos das unidades microeconômicas para que, devidamente agregados e tratados estatisticamente, possam fornecer bases adequadas para análises econômicas.\"\n\nAssinale a alternativa que completa corretamente a afirmativa anterior.",
+      "opcoes": [
+        "A) Pessoas físicas",
+        "B) Sócios, acionistas e proprietários",
+        "C) Bancos e emprestadores de recursos",
+        "D) Administradores e diretores executivos",
+        "E) Governo e economistas governamentais"
+      ],
+      "resposta": "E",
+      "comentario": "O governo tem duplo interesse: arrecadar tributos (interesse fiscal) e analisar dados econômicos agregados para formular políticas públicas. É um dos usuários externos clássicos das demonstrações contábeis, explicitamente reconhecido pela doutrina.",
+      "dificuldade": 2,
+      "banca": "IDECAN/DETRAN-RO/Contabilidade/2014"
+    },
+    {
+      "id": "cg-00-51",
       "tipo": "multipla_escolha",
       "enunciado": "Assinale a alternativa que apresenta as técnicas aplicadas em ciências contábeis.",
       "opcoes": [
@@ -710,7 +757,7 @@
       "banca": "FEPESE/Auditor Fiscal/Florianópolis/2014"
     },
     {
-      "id": "cg-00-49",
+      "id": "cg-00-52",
       "tipo": "multipla_escolha",
       "enunciado": "Assinale a alternativa que apresenta o objeto das ciências contábeis.",
       "opcoes": [
@@ -726,7 +773,7 @@
       "banca": "FEPESE/Auditor Fiscal/Florianópolis/2014"
     },
     {
-      "id": "cg-00-50",
+      "id": "cg-00-53",
       "tipo": "multipla_escolha",
       "enunciado": "A técnica contábil usada no registro dos fatos contábeis e no controle do patrimônio, e das variações desse patrimônio, através de lançamentos destinados ao registro das operações que o afetam, é a:",
       "opcoes": [
@@ -742,7 +789,7 @@
       "banca": "CESGRANRIO/BNDES/Técnico Adm/2013"
     },
     {
-      "id": "cg-00-51",
+      "id": "cg-00-54",
       "tipo": "multipla_escolha",
       "enunciado": "A contabilidade é hoje em dia plenamente reconhecida por sua capacidade provedora de informações. Quanto mais transparentes e detalhadas as informações forem apresentadas, tanto melhor elas poderão ser interpretadas pelos usuários, conhecidos mundialmente por stakeholders.\n\nDentre os stakeholders (usuários), aqueles que têm maior interesse em exibir os resultados, consolidar sua posição na organização e garantir sua participação nesses resultados são os:",
       "opcoes": [
@@ -758,7 +805,7 @@
       "banca": "CESGRANRIO/Liquigas/Profissional Junior – Ciências Contábeis/2012"
     },
     {
-      "id": "cg-00-52",
+      "id": "cg-00-55",
       "tipo": "multipla_escolha",
       "enunciado": "Tudo que pode ser avaliado economicamente e que satisfaça a necessidade humana é denominado bem.\n\nPodemos classificar os bens em:",
       "opcoes": [
@@ -773,7 +820,7 @@
       "banca": "IBFC/CM Franca/Contabilidade/2012"
     },
     {
-      "id": "cg-00-53",
+      "id": "cg-00-56",
       "tipo": "multipla_escolha",
       "enunciado": "As principais técnicas contábeis são:\nI. Escrituração.\nII. Demonstrações contábeis ou financeiras.\nIII. Análise das demonstrações contábeis e financeiras.\nIV. Auditoria.\n\nEstão corretas:",
       "opcoes": [
@@ -788,7 +835,7 @@
       "banca": "IBFC/CM Franca/Técnico de Contabilidade/2012"
     },
     {
-      "id": "cg-00-54",
+      "id": "cg-00-57",
       "tipo": "multipla_escolha",
       "enunciado": "O patrimônio é o conjunto dos:",
       "opcoes": [
@@ -803,7 +850,7 @@
       "banca": "IBFC/CRA-SP/Contabilidade/2011"
     },
     {
-      "id": "cg-00-55",
+      "id": "cg-00-58",
       "tipo": "multipla_escolha",
       "enunciado": "NÃO é considerada (o) como técnica contábil:",
       "opcoes": [
@@ -819,7 +866,7 @@
       "banca": "CONSULPLAN/Pref. Resende/2010"
     },
     {
-      "id": "cg-00-56",
+      "id": "cg-00-59",
       "tipo": "multipla_escolha",
       "enunciado": "O objeto da contabilidade é o patrimônio da entidade e o seu campo de aplicação são as entidades econômico-administrativas, assim chamadas aquelas que, para atingirem seu objetivo, seja ele econômico ou social, utilizam bens patrimoniais e necessitam de um órgão administrativo que pratica atos de natureza econômica necessários a seus fins.\n\nEsse é o enunciado de:",
       "opcoes": [
@@ -835,7 +882,7 @@
       "banca": "CESGRANRIO/BNDES/Técnico Adm/2010"
     },
     {
-      "id": "cg-00-57",
+      "id": "cg-00-60",
       "tipo": "multipla_escolha",
       "enunciado": "O objeto da Contabilidade é:",
       "opcoes": [
@@ -851,7 +898,7 @@
       "banca": "CETAP/ALERR/Contabilidade/2010"
     },
     {
-      "id": "cg-00-58",
+      "id": "cg-00-61",
       "tipo": "multipla_escolha",
       "enunciado": "Técnica utilizada pela contabilidade cuja característica maior é ser obrigatória para toda a sociedade anônima de capital aberto:",
       "opcoes": [
@@ -866,7 +913,7 @@
       "banca": "FADESP/CM Alenquer/Auxiliar Contabilidade/2010"
     },
     {
-      "id": "cg-00-59",
+      "id": "cg-00-62",
       "tipo": "multipla_escolha",
       "enunciado": "Assinale a alternativa que completa corretamente a seguinte frase:\n\n\"_________é uma ciência que possibilita, por meio de sua(s) ________, o controle permanente da(o) ________ das empresas.\"",
       "opcoes": [
@@ -881,7 +928,7 @@
       "banca": "EEAR/EAGS-B/2009"
     },
     {
-      "id": "cg-00-60",
+      "id": "cg-00-63",
       "tipo": "multipla_escolha",
       "enunciado": "O campo de atuação da Contabilidade é a entidade econômico-administrativa, cuja classificação, quanto aos fins a que se destinam, faz-se, corretamente, dividindo-as em:",
       "opcoes": [
@@ -897,7 +944,7 @@
       "banca": "ESAF/SUSEP/Agente Executivo/2006"
     },
     {
-      "id": "cg-00-61",
+      "id": "cg-00-64",
       "tipo": "multipla_escolha",
       "enunciado": "Estão excluídas do campo de aplicação da Contabilidade:",
       "opcoes": [
