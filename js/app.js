@@ -346,17 +346,32 @@ function renderListaQuestoes(questoes) {
 }
 
 function diagramasParaCanvas() {
+  const BOX = {
+    '─': { l:true,  r:true,  t:false, b:false },
+    '│': { l:false, r:false, t:true,  b:true  },
+    '┌': { l:false, r:true,  t:false, b:true  },
+    '┐': { l:true,  r:false, t:false, b:true  },
+    '└': { l:false, r:true,  t:true,  b:false },
+    '┘': { l:true,  r:false, t:true,  b:false },
+    '├': { l:false, r:true,  t:true,  b:true  },
+    '┤': { l:true,  r:false, t:true,  b:true  },
+    '┬': { l:true,  r:true,  t:false, b:true  },
+    '┴': { l:true,  r:true,  t:true,  b:false },
+    '┼': { l:true,  r:true,  t:true,  b:true  },
+  };
+
   document.querySelectorAll('pre.diagrama').forEach(pre => {
     const lines = pre.textContent.split('\n');
     const fontSize = 13;
-    const lh = Math.round(fontSize * 1.5);
-    const px = 12, py = 10;
-    const fontStr = `${fontSize}px 'Courier New', Consolas, monospace`;
+    const lh = fontSize * 1.7;
+    const px = 10, py = 10;
+    const fontStr = `${fontSize}px monospace`;
 
     const tmp = document.createElement('canvas').getContext('2d');
     tmp.font = fontStr;
-    const cw = tmp.measureText('─').width;
-    const maxLen = Math.max(...lines.map(l => l.length));
+    const cw = tmp.measureText('M').width;
+
+    const maxLen = Math.max(...lines.map(l => [...l].length));
     const w = Math.ceil(maxLen * cw + px * 2);
     const h = Math.ceil(lines.length * lh + py * 2);
 
@@ -364,23 +379,41 @@ function diagramasParaCanvas() {
     const canvas = document.createElement('canvas');
     canvas.width  = w * dpr;
     canvas.height = h * dpr;
-    canvas.style.width       = w + 'px';
-    canvas.style.maxWidth    = '100%';
-    canvas.style.aspectRatio = `${w} / ${h}`;
-    canvas.style.display     = 'block';
-    canvas.style.margin      = '0.75rem 0';
-    canvas.style.borderRadius = '6px';
-    canvas.style.border      = '1px solid #e5e7eb';
+    canvas.style.cssText = `width:${w}px;max-width:100%;aspect-ratio:${w}/${h};display:block;margin:0.75rem 0;border-radius:6px;border:1px solid #e5e7eb;`;
 
     const ctx = canvas.getContext('2d');
     ctx.scale(dpr, dpr);
     ctx.fillStyle = '#f9fafb';
     ctx.fillRect(0, 0, w, h);
-    ctx.font = fontStr;
-    ctx.fillStyle = '#1a1a1a';
-    lines.forEach((line, i) => {
-      ctx.fillText(line, px, py + (i + 1) * lh - 3);
+
+    const cellX  = col => px + col * cw;
+    const cellY  = row => py + row * lh;
+    const midX   = col => px + col * cw + cw * 0.5;
+    const midY   = row => py + row * lh + lh * 0.5;
+
+    ctx.strokeStyle = '#374151';
+    ctx.lineWidth   = 1.5;
+    ctx.lineCap     = 'square';
+    ctx.font        = fontStr;
+    ctx.fillStyle   = '#1a1a1a';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign    = 'left';
+
+    ctx.beginPath();
+    lines.forEach((line, row) => {
+      [...line].forEach((ch, col) => {
+        const seg = BOX[ch];
+        if (seg) {
+          if (seg.l) { ctx.moveTo(cellX(col),   midY(row));  ctx.lineTo(midX(col),    midY(row));  }
+          if (seg.r) { ctx.moveTo(midX(col),    midY(row));  ctx.lineTo(cellX(col+1), midY(row));  }
+          if (seg.t) { ctx.moveTo(midX(col),    cellY(row)); ctx.lineTo(midX(col),    midY(row));  }
+          if (seg.b) { ctx.moveTo(midX(col),    midY(row));  ctx.lineTo(midX(col),    cellY(row+1)); }
+        } else if (ch.trim()) {
+          ctx.fillText(ch, cellX(col), midY(row));
+        }
+      });
     });
+    ctx.stroke();
 
     pre.replaceWith(canvas);
   });
