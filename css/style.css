@@ -188,37 +188,6 @@ button:disabled { cursor: default; }
   padding: 2rem 1.25rem;
 }
 
-/* ---- Teoria (Markdown) ---- */
-.teoria-conteudo h1, .teoria-conteudo h2, .teoria-conteudo h3 {
-  margin-top: 1.5rem;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-}
-
-.teoria-conteudo h1 { font-size: 1.4rem; }
-.teoria-conteudo h2 { font-size: 1.2rem; }
-.teoria-conteudo h3 { font-size: 1.05rem; }
-.teoria-conteudo p { margin-bottom: 0.875rem; }
-.teoria-conteudo ul, .teoria-conteudo ol { padding-left: 1.5rem; margin-bottom: 0.875rem; }
-.teoria-conteudo li { margin-bottom: 0.25rem; }
-.teoria-conteudo strong { font-weight: 600; }
-
-.teoria-conteudo code {
-  background: #f5f5f5;
-  padding: 0.1em 0.3em;
-  border-radius: 3px;
-  font-size: 0.9em;
-  font-family: 'Courier New', monospace;
-}
-
-.teoria-conteudo table { border-collapse: collapse; width: 100%; margin-bottom: 1rem; }
-.teoria-conteudo th, .teoria-conteudo td {
-  border: 1px solid #ddd;
-  padding: 0.5rem 0.75rem;
-  text-align: left;
-}
-.teoria-conteudo th { background: #f5f5f5; font-weight: 600; }
-
 .questoes-barra {
   display: flex;
   justify-content: space-between;
@@ -362,7 +331,7 @@ button:disabled { cursor: default; }
 .btn-revelar.aberto { background: #ea580c; color: #fff; }
 .btn-revelar.aberto:hover { background: #c2410c; border-color: #c2410c; }
 
-/* ---- Modo foco ---- */
+/* ---- Barras sticky de questões ---- */
 .sim-barra-sticky {
   position: sticky;
   top: 94px; /* topbar 52 + barra-materias 42 */
