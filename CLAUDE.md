@@ -22,45 +22,45 @@ Sem build, sem bundler, sem transpilação. Firebase SDK via CDN.
 ## Arquitetura de navegação
 
 ```
-  Início   Simulado   Histórico   Salvos        ← topbar (abas globais)
+  Início   Simulado   Histórico   Fixadas       ← topbar (abas globais) — sticky
 ──────────────────────────────────────────────
-  ContG   ContC   ContT   ...                   ← barra de matérias (nível 1)
+  ContG   ContC   ContT   ...                   ← barra de matérias (nível 1) — sticky
 ──────────────────────────────────────────────
-  Aula 00   Aula 01A   Aula 01B   Aula 02  ...  ← barra de aulas (nível 2, oculta em abas globais)
+  Aula 00   Aula 01A   Aula 01B   Aula 02  ...  ← barra de aulas (nível 2) — sticky
+──────────────────────────────────────────────
+  [placar] [000] [000] [000]   Expandir tudo    ← barra de placar — sticky
 ```
 
-- **Início:** aba padrão — exibe as aulas da matéria ativa
-- **Barra de matérias:** botões que trocam a matéria ativa e voltam ao Início
-- **Barra de aulas:** visível apenas quando `tabGlobal === null` (Início)
-- **Simulado / Histórico / Salvos:** abas globais — operam independente da matéria
+- **Início:** aba padrão — ao clicar, sempre reseta para primeira matéria + primeira aula
+- **Barra de matérias:** font-weight 700; underline no ativo (sem preenchimento preto)
+- **Barra de aulas:** font-weight 600; underline no ativo; visível em Início e Fixadas
+- **Fixadas / Simulado / Histórico:** abas globais — ao entrar em Fixadas, pré-seleciona primeira aula como filtro
+- Todas as barras são `position: sticky` em cascata (topbar → matérias → aulas → placar)
 
-Não há sub-abas de Questões/Teoria — a aula abre direto nas questões.
+Não há sub-abas de Questões/Teoria — a aula abre direto nas questões. Não há modo Foco nas aulas (removido — usar Simulado).
 
-## Modos de questões
+## Modo de questões (lista)
 
-Dois modos alternáveis com **barra de informação unificada** acima das questões:
+**Barra de placar sticky** acima das questões (cola ao rolar):
+- Placar à esq. — chips coloridos com fonte mono, 3 dígitos zero-padded
+  - Chip azul `#dbeafe / #1d4ed8` — total de questões
+  - Chip verde `#dcfce7 / #15803d` — acertos
+  - Chip vermelho `#fee2e2 / #b91c1c` — erros
+- `Expandir tudo` à dir.
 
-- **Modo lista** — placar à esq. + `Expandir tudo` à dir.; scroll com gabaritos inline interativos
-- **Modo foco** — placar à esq. + div vazio à dir.; uma questão por vez → responde → gabarito imediato → próxima
+Progresso é session-only — nunca gravado. Exibe `Q1`, `Q2`... na meta da questão. Na aba Fixadas, o número original da aula-fonte é preservado via `_qNum`.
 
-**Placar** (chips coloridos com fonte mono, números zero-padded 3 dígitos):
-- Chip azul `#dbeafe / #1d4ed8` — total de questões
-- Chip verde `#dcfce7 / #15803d` — acertos
-- Chip vermelho `#fee2e2 / #b91c1c` — erros
+## Botão Fixar/Fixada
 
-Progresso é session-only — nunca gravado. Ambos os modos exibem `Q1`, `Q2`... na meta da questão. Na aba Salvos, o número original da aula-fonte é preservado via `_qNum`.
+Cada questão tem um botão de marcação na meta (mesmo padrão visual do "Ver gabarito"):
+- **Fixar** — borda amarela `#f59e0b` + texto amarelo; hover fundo amarelo claro
+- **Fixada** — fundo amarelo sólido `#f59e0b` + texto branco; hover amarelo escuro `#d97706`
 
-## Botão Salvar/Salvo
+Ao clicar em Fixar, a questão entra em `revisaoQuestoes[]` (cache em memória) e no Firestore. Ao clicar em Fixada, é removida de ambos. A atualização do Firestore é fire-and-forget (`.catch()`) — a UI sempre responde imediatamente.
 
-Cada questão tem um botão de marcação na meta:
-- **Salvar** — borda cinza `#d1d5db`, texto cinza `#9ca3af`; hover revela amarelo `#f59e0b`
-- **Salvo** — borda e texto amarelo `#f59e0b`, fundo `#fffbeb`
+## Aba Fixadas
 
-Ao clicar em Salvar, a questão entra em `revisaoQuestoes[]` (cache em memória) e no Firestore. Ao clicar em Salvo, é removida de ambos. A atualização do Firestore é fire-and-forget (`.catch()`) — a UI sempre responde imediatamente.
-
-## Aba Salvos
-
-Exibe as questões salvas usando o cache local `revisaoQuestoes[]` — sem fetch do Firestore, resposta imediata. Suporta modo lista e foco. Ao desmarcar uma questão dentro da aba, o card é removido do DOM na hora. Mostra `_materia` e `_aula` de origem na meta de cada questão.
+Exibe as questões fixadas usando o cache local `revisaoQuestoes[]` — sem fetch do Firestore, resposta imediata. Ao desmarcar uma questão dentro da aba, o card é removido do DOM na hora. Mostra `_materia` e `_aula` de origem na meta de cada questão.
 
 ## Autenticação
 
@@ -73,9 +73,10 @@ Exibe as questões salvas usando o cache local `revisaoQuestoes[]` — sem fetch
 1. Usuário configura fonte (matéria ou aula) e quantidade (10 / 20 / 30)
 2. Questões sorteadas aleatoriamente
 3. Uma por vez: responde → gabarito imediato (acerto/erro + comentário) → próxima
-4. Cronômetro crescente, sem limite de tempo
-5. Ao finalizar: placar + gabarito completo + salvo no Firestore (`usuarios/{userId}/historico`)
-6. No Histórico, clicar num simulado exibe o gabarito completo daquele simulado
+4. **Barra sticky** no topo: placar (azul/verde/vermelho) à esq. + cronômetro crescente à dir.
+5. Cabeçalho da questão não exibe matéria/aula (removido no simulado)
+6. Ao finalizar: placar + gabarito completo + salvo no Firestore (`usuarios/{userId}/historico`)
+7. No Histórico, clicar num simulado exibe o gabarito completo daquele simulado
 
 ## Estrutura do Firestore
 
@@ -128,7 +129,8 @@ Não modificar arquivos JSON existentes, salvo para corrigir erros reportados pe
 
 - ES6+ puro em `js/app.js` — sem frameworks ou npm
 - CSS em `css/style.css` — design minimalista, fundo branco
-- Paleta funcional: verde `#16a34a` / vermelho `#dc2626` (acerto/erro), azul `#2563eb` (total), amarelo `#f59e0b` (Salvar/Salvo), preto `#1a1a1a` (UI geral)
+- Paleta funcional: verde `#16a34a` / vermelho `#dc2626` (acerto/erro), azul `#2563eb` (total), amarelo `#f59e0b` (Fixar/Fixada), laranja `#ea580c` (Ver gabarito/Ocultar), preto `#1a1a1a` (UI geral)
+- Botões de ação (Fixar, Ver gabarito): contorno colorido → preenchimento sólido ao ativar; mesmo padrão visual
 - Markdown nos campos `teoria` renderizado no cliente (usar `marked` via CDN)
 - Todo texto da interface em português (pt-BR)
 - Layout responsivo — desktop e celular
