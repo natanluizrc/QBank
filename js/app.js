@@ -386,20 +386,28 @@ function diagramasParaCanvas() {
     });
     ctx.stroke();
 
-    // Pass 2: texto centralizado dentro de cada run entre bordas
+    // Pass 2: texto centralizado horizontal e verticalmente dentro de cada célula
+    const isHBorder = lines.map(l => [...l].some(ch => '─┌┐└┘┬┴┼├┤'.includes(ch)));
+
+    const cellCenterY = (row) => {
+      let top = row, bot = row;
+      for (let i = row - 1; i >= 0; i--) { if (isHBorder[i]) { top = i + 1; break; } else top = i; }
+      for (let i = row + 1; i < lines.length; i++) { if (isHBorder[i]) { bot = i - 1; break; } else bot = i; }
+      return (cellY(top) + cellY(bot + 1)) / 2;
+    };
+
     ctx.textAlign = 'center';
     lines.forEach((line, row) => {
+      if (isHBorder[row]) return;
       const chars = [...line];
+      const cy = cellCenterY(row);
       let i = 0;
       while (i < chars.length) {
         if (BOX[chars[i]]) { i++; continue; }
         const start = i;
         while (i < chars.length && !BOX[chars[i]]) i++;
         const text = chars.slice(start, i).join('').trim();
-        if (text) {
-          const centerX = cellX(start) + (i - start) * cw / 2;
-          ctx.fillText(text, centerX, midY(row));
-        }
+        if (text) ctx.fillText(text, cellX(start) + (i - start) * cw / 2, cy);
       }
     });
 
