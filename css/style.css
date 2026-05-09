@@ -378,7 +378,6 @@ button:disabled { cursor: default; }
 
 .config-grupo select {
   width: 100%;
-  max-width: 480px;
   padding: 0.55rem 0.75rem;
   border: 1px solid #ddd;
   border-radius: 6px;
@@ -401,6 +400,7 @@ button:disabled { cursor: default; }
 }
 
 .btn-iniciar:hover { background: #333; }
+.simulado-config .btn-iniciar { width: 100%; }
 
 
 /* ---- Resultado ---- */
