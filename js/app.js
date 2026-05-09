@@ -372,21 +372,36 @@ function diagramasParaCanvas() {
     ctx.textBaseline = 'middle';
     ctx.textAlign    = 'left';
 
+    // Pass 1: linhas de borda
     ctx.beginPath();
     lines.forEach((line, row) => {
       [...line].forEach((ch, col) => {
         const seg = BOX[ch];
-        if (seg) {
-          if (seg.l) { ctx.moveTo(cellX(col),   midY(row));  ctx.lineTo(midX(col),    midY(row));  }
-          if (seg.r) { ctx.moveTo(midX(col),    midY(row));  ctx.lineTo(cellX(col+1), midY(row));  }
-          if (seg.t) { ctx.moveTo(midX(col),    cellY(row)); ctx.lineTo(midX(col),    midY(row));  }
-          if (seg.b) { ctx.moveTo(midX(col),    midY(row));  ctx.lineTo(midX(col),    cellY(row+1)); }
-        } else if (ch.trim()) {
-          ctx.fillText(ch, cellX(col), midY(row));
-        }
+        if (!seg) return;
+        if (seg.l) { ctx.moveTo(cellX(col),   midY(row));  ctx.lineTo(midX(col),    midY(row));  }
+        if (seg.r) { ctx.moveTo(midX(col),    midY(row));  ctx.lineTo(cellX(col+1), midY(row));  }
+        if (seg.t) { ctx.moveTo(midX(col),    cellY(row)); ctx.lineTo(midX(col),    midY(row));  }
+        if (seg.b) { ctx.moveTo(midX(col),    midY(row));  ctx.lineTo(midX(col),    cellY(row+1)); }
       });
     });
     ctx.stroke();
+
+    // Pass 2: texto centralizado dentro de cada run entre bordas
+    ctx.textAlign = 'center';
+    lines.forEach((line, row) => {
+      const chars = [...line];
+      let i = 0;
+      while (i < chars.length) {
+        if (BOX[chars[i]]) { i++; continue; }
+        const start = i;
+        while (i < chars.length && !BOX[chars[i]]) i++;
+        const text = chars.slice(start, i).join('').trim();
+        if (text) {
+          const centerX = cellX(start) + (i - start) * cw / 2;
+          ctx.fillText(text, centerX, midY(row));
+        }
+      }
+    });
 
     pre.replaceWith(canvas);
   });
