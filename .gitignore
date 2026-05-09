@@ -11,4 +11,13 @@ desktop.ini
 
 # Logs
 *.log
+
+# Firebase
+.firebase/
+
+# Node (ferramenta local de extração de PDF)
+package-lock.json
+node_modules/
+
+# Claude Code
 .claude/
