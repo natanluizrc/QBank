@@ -971,9 +971,17 @@ document.getElementById('btn-logout').addEventListener('click', () => {
 document.querySelectorAll('.aba-global').forEach(btn => {
   btn.addEventListener('click', () => {
     const newTab = btn.dataset.tab === 'inicio' ? null : btn.dataset.tab;
-    if (newTab !== 'revisao') salvosFiltroSlug = null;
-    tabGlobal = newTab;
     simuladoState = null;
+    if (newTab === null) {
+      materiaAtiva = MATERIAS[0];
+      aulaAtiva = materiaAtiva.aulas[0];
+      salvosFiltroSlug = null;
+    } else if (newTab === 'revisao') {
+      salvosFiltroSlug = materiaAtiva.aulas[0].slug;
+    } else {
+      salvosFiltroSlug = null;
+    }
+    tabGlobal = newTab;
     document.querySelectorAll('.aba-global').forEach(b => b.classList.remove('ativa'));
     btn.classList.add('ativa');
     renderConteudo();
