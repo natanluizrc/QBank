@@ -491,7 +491,6 @@ function htmlQuestaoFoco(q, resp, isLast = false, num = null) {
         ${num !== null ? `<span>Q${num}</span>` : ''}
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
-        ${q._aula ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
         <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? 'Fixada' : 'Fixar'}</button>
       </div>
       ${htmlEnunciado(q)}
