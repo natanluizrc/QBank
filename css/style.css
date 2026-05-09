@@ -572,7 +572,7 @@ button:disabled { cursor: default; }
   line-height: 1.55;
 }
 
-.docs-tabela-wrap { overflow-x: auto; margin: 0.5rem 0 1rem; }
+.docs-tabela-wrap { overflow-x: auto; margin: 0.5rem 0 1rem; max-width: 100%; }
 
 .docs-tabela {
   width: 100%;
@@ -601,9 +601,8 @@ button:disabled { cursor: default; }
 
 @media (max-width: 600px) {
   .docs-wrap { flex-direction: column; }
-  .docs-toc { position: static; width: 100%; flex-direction: row; flex-wrap: wrap; gap: 0.25rem; }
-  .docs-toc-titulo, .docs-toc-meta { display: none; }
-  .docs-toc-item { border: 1px solid #e5e5e5; border-radius: 5px; font-size: 0.75rem; }
+  .docs-pre { white-space: pre-wrap; word-break: break-word; }
+  .docs-tabela th { white-space: normal; }
 }
 
 /* ---- Estados genéricos ---- */
