@@ -246,7 +246,7 @@ function renderListaQuestoes(questoes) {
   const placarHtml = () => {
     const acertos = Object.values(listaRespostas).filter(r => r.acertou).length;
     const erros   = Object.values(listaRespostas).filter(r => !r.acertou).length;
-    return `<span class="total">● ${questoes.length}</span><span class="acerto">● ${acertos}</span><span class="erro">● ${erros}</span>`;
+    return `<span class="total">${questoes.length}</span><span class="acerto">✓ ${acertos}</span><span class="erro">✗ ${erros}</span>`;
   };
 
   area.innerHTML = `
@@ -405,9 +405,9 @@ function renderFocoQuestao(questoes) {
     <div class="foco-wrapper">
       <div class="questoes-barra">
         <div class="barra-placar">
-          <span class="total">● ${total}</span>
-          <span class="acerto">● ${acertos}</span>
-          <span class="erro">● ${respondidas - acertos}</span>
+          <span class="total">${total}</span>
+          <span class="acerto">✓ ${acertos}</span>
+          <span class="erro">✗ ${respondidas - acertos}</span>
         </div>
         <div></div>
       </div>
