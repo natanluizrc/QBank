@@ -101,7 +101,6 @@ async function salvarPerfil() {
 }
 
 async function inicializarApp() {
-  popularSelectMaterias();
   await carregarRevisao();
   document.querySelector('.aba-global[data-tab="inicio"]')?.classList.add('ativa');
   renderConteudo();
@@ -110,19 +109,30 @@ async function inicializarApp() {
 // =====================================================================
 // NAVEGAÇÃO
 // =====================================================================
-function popularSelectMaterias() {
-  const sel = document.getElementById('select-materia');
-  sel.innerHTML = MATERIAS.map(m =>
-    `<option value="${m.id}">${m.nome}</option>`
+function renderBarraMaterias() {
+  const barra = document.getElementById('barra-materias');
+  barra.innerHTML = MATERIAS.map(m =>
+    `<button class="aba-materia ${m.id === materiaAtiva.id ? 'ativa' : ''}" data-mid="${m.id}">${m.nome}</button>`
   ).join('');
+  barra.querySelectorAll('.aba-materia').forEach(btn => {
+    btn.addEventListener('click', () => {
+      materiaAtiva = MATERIAS.find(m => m.id === btn.dataset.mid);
+      aulaAtiva = materiaAtiva.aulas[0];
+      tabGlobal = null;
+      document.querySelectorAll('.aba-global').forEach(b => b.classList.remove('ativa'));
+      document.querySelector('.aba-global[data-tab="inicio"]')?.classList.add('ativa');
+      renderConteudo();
+    });
+  });
 }
 
 function renderBarraAulas() {
   const barra = document.getElementById('barra-aulas');
   if (tabGlobal) {
-    barra.innerHTML = '';
+    barra.style.display = 'none';
     return;
   }
+  barra.style.display = '';
   barra.innerHTML = materiaAtiva.aulas.map(a =>
     `<button class="aba-aula ${a.slug === aulaAtiva.slug ? 'ativa' : ''}" data-slug="${a.slug}">${a.titulo}</button>`
   ).join('');
@@ -138,6 +148,7 @@ function renderBarraAulas() {
 }
 
 function renderConteudo() {
+  renderBarraMaterias();
   renderBarraAulas();
 
   if (tabGlobal === 'simulado') { renderSimuladoConfig(); return; }
@@ -931,7 +942,7 @@ async function renderRevisao() {
   conteudo.innerHTML = '<p class="msg-vazio">Carregando...</p>';
   try {
     const snap = await db.collection('usuarios').doc(usuario.uid)
-      .collection('revisao').orderBy('marcadoEm').get();
+      .collection('revisao').get();
     if (snap.empty) {
       conteudo.innerHTML = '<p class="msg-vazio">Nenhuma questão marcada para revisão ainda.</p>';
       return;
@@ -976,14 +987,6 @@ document.getElementById('btn-logout').addEventListener('click', () => {
   auth.signOut();
 });
 
-document.getElementById('select-materia').addEventListener('change', e => {
-  materiaAtiva = MATERIAS.find(m => m.id === e.target.value);
-  aulaAtiva = materiaAtiva.aulas[0];
-  tabGlobal = null;
-  document.querySelectorAll('.aba-global').forEach(b => b.classList.remove('ativa'));
-  document.querySelector('.aba-global[data-tab="inicio"]')?.classList.add('ativa');
-  renderConteudo();
-});
 
 document.querySelectorAll('.aba-global').forEach(btn => {
   btn.addEventListener('click', () => {
