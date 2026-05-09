@@ -339,7 +339,7 @@ function renderListaQuestoes(questoes) {
         }
       } else {
         btn.classList.toggle('marcado', marcado);
-        btn.textContent = marcado ? 'Salvo' : 'Salvar';
+        btn.textContent = marcado ? 'Fixada' : 'Fixar';
       }
     });
   });
@@ -466,7 +466,7 @@ function htmlQuestaoLista(q, i) {
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
         ${q._aula && tabGlobal !== 'revisao' ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
-        <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? 'Salvo' : 'Salvar'}</button>
+        <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? 'Fixada' : 'Fixar'}</button>
       </div>
       ${htmlEnunciado(q)}
       ${opcoes}
@@ -519,7 +519,7 @@ function renderFocoQuestao(questoes) {
     toggleRevisao(q, focoIdx + 1);
     const marcado = revisaoIds.has(q.id);
     const btn = area.querySelector('.btn-marcar');
-    if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? 'Salvo' : 'Salvar'; }
+    if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? 'Fixada' : 'Fixar'; }
   });
 }
 
@@ -562,7 +562,7 @@ function htmlQuestaoFoco(q, resp, isLast = false, num = null) {
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
         ${q._aula && tabGlobal !== 'revisao' ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
-        <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? 'Salvo' : 'Salvar'}</button>
+        <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? 'Fixada' : 'Fixar'}</button>
       </div>
       ${htmlEnunciado(q)}
       ${interacaoHtml}
@@ -753,7 +753,7 @@ function renderSimuladoQuiz() {
     toggleRevisao(q, s.idx + 1);
     const marcado = revisaoIds.has(q.id);
     const btn = conteudo.querySelector('.btn-marcar');
-    if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? 'Salvo' : 'Salvar'; }
+    if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? 'Fixada' : 'Fixar'; }
   });
 }
 
