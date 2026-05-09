@@ -432,7 +432,7 @@ function htmlQuestaoLista(q, i) {
         <span>Q${q._qNum ?? i + 1}</span>
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
-        ${q._aula ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
+        ${q._aula && tabGlobal !== 'revisao' ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
         <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? 'Salvo' : 'Salvar'}</button>
       </div>
       ${htmlEnunciado(q)}
@@ -528,7 +528,7 @@ function htmlQuestaoFoco(q, resp, isLast = false, num = null) {
         ${num !== null ? `<span>Q${q._qNum ?? num}</span>` : ''}
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
-        ${q._aula ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
+        ${q._aula && tabGlobal !== 'revisao' ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
         <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? 'Salvo' : 'Salvar'}</button>
       </div>
       ${htmlEnunciado(q)}
