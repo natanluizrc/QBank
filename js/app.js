@@ -311,13 +311,22 @@ function renderListaQuestoes(questoes) {
   });
 
   area.querySelectorAll('.btn-marcar').forEach(btn => {
-    btn.addEventListener('click', async () => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
       const q = questoes.find(x => x.id === btn.dataset.qid);
       if (!q) return;
-      await toggleRevisao(q);
+      toggleRevisao(q);
       const marcado = revisaoIds.has(q.id);
-      btn.classList.toggle('marcado', marcado);
-      btn.textContent = marcado ? '✓ revisão' : '+ revisão';
+      if (tabGlobal === 'revisao' && !marcado) {
+        const card = btn.closest('.questao-card');
+        card?.remove();
+        if (!area.querySelector('.questao-card')) {
+          area.innerHTML = '<p class="msg-vazio">Nenhuma questão marcada para revisão ainda.</p>';
+        }
+      } else {
+        btn.classList.toggle('marcado', marcado);
+        btn.textContent = marcado ? '✓ revisão' : '+ revisão';
+      }
     });
   });
 }
@@ -416,8 +425,9 @@ function renderFocoQuestao(questoes) {
     });
   }
 
-  area.querySelector('.btn-marcar')?.addEventListener('click', async () => {
-    await toggleRevisao(q);
+  area.querySelector('.btn-marcar')?.addEventListener('click', e => {
+    e.stopPropagation();
+    toggleRevisao(q);
     const marcado = revisaoIds.has(q.id);
     const btn = area.querySelector('.btn-marcar');
     if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? '✓ revisão' : '+ revisão'; }
@@ -648,8 +658,9 @@ function renderSimuladoQuiz() {
     });
   }
 
-  conteudo.querySelector('.btn-marcar')?.addEventListener('click', async () => {
-    await toggleRevisao(q);
+  conteudo.querySelector('.btn-marcar')?.addEventListener('click', e => {
+    e.stopPropagation();
+    toggleRevisao(q);
     const marcado = revisaoIds.has(q.id);
     const btn = conteudo.querySelector('.btn-marcar');
     if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? '✓ revisão' : '+ revisão'; }
@@ -918,22 +929,21 @@ async function carregarRevisao() {
   } catch (e) { console.error('Erro ao carregar revisão:', e); }
 }
 
-async function toggleRevisao(q) {
+function toggleRevisao(q) {
   const ref = db.collection('usuarios').doc(usuario.uid).collection('revisao').doc(q.id);
   if (revisaoIds.has(q.id)) {
     revisaoIds.delete(q.id);
-    await ref.delete();
-    if (tabGlobal === 'revisao') renderRevisao();
+    ref.delete().catch(e => console.error('Erro ao remover revisão:', e));
   } else {
     revisaoIds.add(q.id);
-    await ref.set({
+    ref.set({
       id: q.id, banca: q.banca || '', tipo: q.tipo, enunciado: q.enunciado,
       opcoes: q.opcoes || null, resposta: q.resposta, comentario: q.comentario,
       dificuldade: q.dificuldade || 1,
       _materia: q._materia || materiaAtiva.nome, _materiaId: q._materiaId || materiaAtiva.id,
       _aula: q._aula || aulaAtiva?.titulo || '', _slug: q._slug || aulaAtiva?.slug || '',
       marcadoEm: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    }).catch(e => console.error('Erro ao salvar revisão:', e));
   }
 }
 
