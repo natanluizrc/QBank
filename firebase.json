@@ -5,7 +5,9 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**",
-      "PDFs/**"
+      "PDFs/**",
+      "documentacao.html",
+      "*.md"
     ],
     "headers": [
       {
