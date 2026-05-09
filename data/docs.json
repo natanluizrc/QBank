@@ -1,6 +1,6 @@
 {
   "versao": "1.0",
-  "atualizado": "2026-05-09",
+  "atualizado": "2026-05-10",
   "secoes": [
     {
       "id": "visao-geral",
@@ -62,7 +62,7 @@
           "linhas": [
             ["Início", "Reseta sempre para a primeira matéria e sua primeira aula"],
             ["Fixadas", "Exibe questões fixadas; reseta para a primeira matéria e pré-seleciona sua primeira aula como filtro"],
-            ["Simulado", "Config → quiz (1 por vez) → resultado; oculta barras de matéria/aula"],
+            ["Simulado", "Config → quiz (1 por vez) → resultado; exibe a fonte selecionada (matéria/aula) nas barras como indicador read-only"],
             ["Histórico", "Lista simulados passados; oculta barras de matéria/aula"],
             ["Doc", "Esta documentação; oculta barras de matéria/aula"]
           ]
@@ -167,7 +167,7 @@
           "tipo": "tabela",
           "cabecalho": ["Campo", "Tipo", "Valores"],
           "linhas": [
-            ["id", "string", "cg-XX-NN (matéria-aula-número)"],
+            ["id", "string", "{mat}-XX-NN — abreviação da matéria + número da aula + número da questão"],
             ["banca", "string", "Livre — exibido em cinza acima do enunciado"],
             ["tipo", "string", "\"multipla_escolha\" | \"certo_errado\""],
             ["enunciado", "string", "Texto da questão; suporta quebras de linha e diagramas Unicode"],
@@ -183,7 +183,7 @@
         },
         {
           "tipo": "codigo",
-          "conteudo": "usuarios/{userId}/\n  perfil/dados          → { nome, email, fotoUrl, criadoEm }\n  historico/{id}        → { data, fonte, placar, total, tempoSegundos, questoes[] }\n  revisao/{questaoId}   → { ...questão, _materia, _aula, _slug, _qNum, marcadoEm }"
+          "conteudo": "usuarios/{userId}/\n  perfil/dados          → { nome, email, fotoUrl, criadoEm }\n  historico/{id}        → { data, fonte, placar, total, tempoSegundos, questoes[] }\n  revisao/{questaoId}   → { ...questão, _materia, _materiaId, _aula, _slug, _qNum, marcadoEm }"
         }
       ]
     },
