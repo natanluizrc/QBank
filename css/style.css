@@ -111,6 +111,9 @@ button:disabled { cursor: default; }
 
 /* ---- Barra de matérias ---- */
 #barra-materias {
+  position: sticky;
+  top: 52px;
+  z-index: 99;
   background: #f0f0f0;
   border-bottom: 1px solid #e5e5e5;
   display: flex;
@@ -142,6 +145,9 @@ button:disabled { cursor: default; }
 
 /* ---- Barra de aulas ---- */
 #barra-aulas {
+  position: sticky;
+  top: 94px;
+  z-index: 98;
   background: #fafafa;
   border-bottom: 1px solid #e5e5e5;
   display: flex;
@@ -545,6 +551,8 @@ button:disabled { cursor: default; }
   .topbar-usuario { gap: 0.5rem; }
   #avatar { width: 26px; height: 26px; }
   #btn-logout { display: none; }
-  .sim-barra-sticky { top: 90px; }   /* topbar 48 + barra-materias 42 */
-  .aula-barra-sticky { top: 132px; } /* topbar 48 + barra-materias 42 + barra-aulas 42 */
+  #barra-materias { top: 48px; }
+  #barra-aulas { top: 90px; }
+  .sim-barra-sticky { top: 90px; }
+  .aula-barra-sticky { top: 132px; }
 }
