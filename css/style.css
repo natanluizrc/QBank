@@ -381,6 +381,13 @@ button:disabled { cursor: default; }
   z-index: 10;
 }
 
+.aula-barra-sticky {
+  position: sticky;
+  top: 136px; /* topbar 52 + barra-materias 42 + barra-aulas 42 */
+  background: #fff;
+  z-index: 10;
+}
+
 
 
 .btn-proxima {
@@ -538,5 +545,6 @@ button:disabled { cursor: default; }
   .topbar-usuario { gap: 0.5rem; }
   #avatar { width: 26px; height: 26px; }
   #btn-logout { display: none; }
-  .sim-barra-sticky { top: 90px; } /* topbar 48 + barra-materias 42 */
+  .sim-barra-sticky { top: 90px; }   /* topbar 48 + barra-materias 42 */
+  .aula-barra-sticky { top: 132px; } /* topbar 48 + barra-materias 42 + barra-aulas 42 */
 }

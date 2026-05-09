@@ -234,7 +234,7 @@ function renderListaQuestoes(questoes) {
   };
 
   area.innerHTML = `
-    <div class="questoes-barra">
+    <div class="questoes-barra aula-barra-sticky">
       <div class="barra-placar">${placarHtml()}</div>
       <button id="btn-expandir">Expandir tudo</button>
     </div>
