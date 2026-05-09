@@ -253,7 +253,10 @@ function renderListaQuestoes(questoes) {
     area.querySelectorAll('.gabarito-inline').forEach(gab => {
       gab.classList.toggle('hidden', !expandir);
       const revelar = area.querySelector(`.btn-revelar[data-id="${gab.dataset.id}"]`);
-      if (revelar) revelar.textContent = expandir ? 'Ocultar' : 'Ver gabarito';
+      if (revelar) {
+        revelar.textContent = expandir ? 'Ocultar' : 'Ver gabarito';
+        revelar.classList.toggle('aberto', expandir);
+      }
     });
     btn.textContent = expandir ? 'Recolher tudo' : 'Expandir tudo';
   });
@@ -262,7 +265,9 @@ function renderListaQuestoes(questoes) {
     btn.addEventListener('click', () => {
       const gab = area.querySelector(`.gabarito-inline[data-id="${btn.dataset.id}"]`);
       gab.classList.toggle('hidden');
-      btn.textContent = gab.classList.contains('hidden') ? 'Ver gabarito' : 'Ocultar';
+      const oculto = gab.classList.contains('hidden');
+      btn.textContent = oculto ? 'Ver gabarito' : 'Ocultar';
+      btn.classList.toggle('aberto', !oculto);
     });
   });
 

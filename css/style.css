@@ -372,15 +372,18 @@ button:disabled { cursor: default; }
 /* ---- Botão revelar (modo lista) ---- */
 .btn-revelar {
   font-size: 0.85rem;
+  font-weight: 500;
   color: #ea580c;
   border: 1px solid #ea580c;
   border-radius: 5px;
   padding: 0.35rem 0.75rem;
-  transition: background 0.1s;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
   margin-top: 0.5rem;
 }
 
 .btn-revelar:hover { background: #fff7ed; }
+.btn-revelar.aberto { background: #ea580c; color: #fff; }
+.btn-revelar.aberto:hover { background: #c2410c; border-color: #c2410c; }
 
 /* ---- Modo foco ---- */
 .sim-barra-sticky {
@@ -525,7 +528,7 @@ button:disabled { cursor: default; }
   font-size: 0.75rem;
   font-weight: 500;
   padding: 0.15rem 0.5rem;
-  border-radius: 4px;
+  border-radius: 5px;
   border: 1px solid #f59e0b;
   color: #f59e0b;
   background: none;
