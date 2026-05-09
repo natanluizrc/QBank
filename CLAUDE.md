@@ -4,7 +4,7 @@ Este arquivo orienta o Claude Code (claude.ai/code) ao trabalhar neste repositó
 
 ## Visão geral do projeto
 
-QBank é um banco de questões interativo para estudo pessoal, inicialmente focado em Contabilidade. Conteúdo extraído de PDFs pelo Claude, armazenado como JSON estático. Firebase para autenticação, hospedagem e banco de dados do usuário.
+QBank é um banco de questões interativo para estudo pessoal de concursos públicos, multi-matéria. Conteúdo extraído de PDFs pelo Claude, armazenado como JSON estático. Firebase para autenticação, hospedagem e banco de dados do usuário.
 
 ## Stack
 

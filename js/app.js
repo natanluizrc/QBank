@@ -995,6 +995,7 @@ document.querySelectorAll('.aba-global').forEach(btn => {
       aulaAtiva = materiaAtiva.aulas[0];
       salvosFiltroSlug = null;
     } else if (newTab === 'revisao') {
+      materiaAtiva = MATERIAS[0];
       salvosFiltroSlug = materiaAtiva.aulas[0].slug;
     } else {
       salvosFiltroSlug = null;
