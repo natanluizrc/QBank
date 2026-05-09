@@ -78,8 +78,8 @@ button:disabled { cursor: default; }
 .topbar-abas { display: flex; gap: 0.25rem; }
 
 .aba-global {
-  padding: 0.35rem 0.85rem;
-  min-width: 5.5rem;
+  padding: 0.4rem 0.85rem;
+  min-width: 5rem;
   text-align: center;
   border-radius: 5px;
   font-size: 0.875rem;
@@ -126,8 +126,8 @@ button:disabled { cursor: default; }
 
 .aba-materia {
   flex-shrink: 0;
-  padding: 0.45rem 0.9rem;
-  min-width: 4.5rem;
+  padding: 0.4rem 0.85rem;
+  min-width: 5rem;
   text-align: center;
   font-size: 0.875rem;
   font-weight: 500;
@@ -156,19 +156,19 @@ button:disabled { cursor: default; }
 
 .aba-aula {
   flex-shrink: 0;
-  padding: 0.6rem 0.9rem;
-  min-width: 5.5rem;
+  padding: 0.4rem 0.85rem;
+  min-width: 5rem;
   text-align: center;
   font-size: 0.875rem;
   font-weight: 500;
   color: #555;
-  border-bottom: 2px solid transparent;
-  transition: color 0.12s, border-color 0.12s;
+  border-radius: 5px;
+  transition: background 0.12s, color 0.12s;
   white-space: nowrap;
 }
 
-.aba-aula:hover { color: #1a1a1a; }
-.aba-aula.ativa { color: #1a1a1a; border-bottom-color: #1a1a1a; font-weight: 500; }
+.aba-aula:hover { background: #efefef; color: #1a1a1a; }
+.aba-aula.ativa { background: #1a1a1a; color: #fff; }
 
 
 /* ---- Conteúdo ---- */
