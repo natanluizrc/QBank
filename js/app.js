@@ -453,7 +453,6 @@ function htmlQuestaoLista(q, i) {
         <span>Q${q._qNum ?? i + 1}</span>
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
-        ${q._aula && tabGlobal === 'revisao' ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
         <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? 'Fixada' : 'Fixar'}</button>
       </div>
       ${htmlEnunciado(q)}
@@ -928,19 +927,18 @@ async function renderDocs() {
     </div>
   `).join('');
 
-  const toc = docs.secoes.map((s, i) =>
-    `<a class="docs-toc-item" href="#docs-${s.id}">${i + 1}. ${s.titulo}</a>`
+  const tocItems = docs.secoes.map((s, i) =>
+    `<li><a href="#docs-${s.id}">${i + 1}. ${s.titulo}</a></li>`
   ).join('');
 
-  conteudo.innerHTML = `
-    <div class="docs-wrap">
-      <aside class="docs-toc">
-        <div class="docs-toc-titulo">Índice</div>
-        ${toc}
-        <div class="docs-toc-meta">v${docs.versao} · ${docs.atualizado}</div>
-      </aside>
-      <div class="docs-conteudo">${secoesHtml}</div>
+  const indiceHtml = `
+    <div class="docs-secao">
+      <h2 class="docs-titulo">Índice</h2>
+      <ol class="docs-indice">${tocItems}</ol>
+      <p class="docs-versao">v${docs.versao} · ${docs.atualizado}</p>
     </div>`;
+
+  conteudo.innerHTML = indiceHtml + secoesHtml;
 }
 
 // =====================================================================
