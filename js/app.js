@@ -323,11 +323,11 @@ function renderListaQuestoes(questoes) {
         const card = btn.closest('.questao-card');
         card?.remove();
         if (!area.querySelector('.questao-card')) {
-          area.innerHTML = '<p class="msg-vazio">Nenhuma questão marcada para revisão ainda.</p>';
+          area.innerHTML = '<p class="msg-vazio">Nenhuma questão salva ainda.</p>';
         }
       } else {
         btn.classList.toggle('marcado', marcado);
-        btn.textContent = marcado ? '⚑ Marcado' : '⚑ Marcar';
+        btn.textContent = marcado ? '⚑ Salvo' : '⚑ Salvar';
       }
     });
   });
@@ -380,7 +380,7 @@ function htmlQuestaoLista(q, i) {
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
         ${q._aula ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
-        <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? '⚑ Marcado' : '⚑ Marcar'}</button>
+        <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? '⚑ Salvo' : '⚑ Salvar'}</button>
       </div>
       ${htmlEnunciado(q)}
       ${opcoes}
@@ -432,7 +432,7 @@ function renderFocoQuestao(questoes) {
     toggleRevisao(q, focoIdx + 1);
     const marcado = revisaoIds.has(q.id);
     const btn = area.querySelector('.btn-marcar');
-    if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? '⚑ Marcado' : '⚑ Marcar'; }
+    if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? '⚑ Salvo' : '⚑ Salvar'; }
   });
 }
 
@@ -475,7 +475,7 @@ function htmlQuestaoFoco(q, resp, isLast = false, num = null) {
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
         ${q._aula ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
-        <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? '⚑ Marcado' : '⚑ Marcar'}</button>
+        <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? '⚑ Salvo' : '⚑ Salvar'}</button>
       </div>
       ${htmlEnunciado(q)}
       ${interacaoHtml}
@@ -665,7 +665,7 @@ function renderSimuladoQuiz() {
     toggleRevisao(q, s.idx + 1);
     const marcado = revisaoIds.has(q.id);
     const btn = conteudo.querySelector('.btn-marcar');
-    if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? '⚑ Marcado' : '⚑ Marcar'; }
+    if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? '⚑ Salvo' : '⚑ Salvar'; }
   });
 }
 
@@ -963,7 +963,7 @@ function toggleRevisao(q, qNum) {
 function renderRevisao() {
   const conteudo = document.getElementById('conteudo');
   if (!revisaoQuestoes.length) {
-    conteudo.innerHTML = '<p class="msg-vazio">Nenhuma questão marcada para revisão ainda.</p>';
+    conteudo.innerHTML = '<p class="msg-vazio">Nenhuma questão salva ainda.</p>';
     return;
   }
   focoIdx = 0; focoRespostas = {}; listaRespostas = {};
