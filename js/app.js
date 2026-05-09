@@ -452,6 +452,53 @@ function htmlQuestaoLista(q, i) {
 
 // =====================================================================
 // SIMULADO
+
+function htmlQuestaoFoco(q, resp, isLast = false, num = null) {
+  const dif = '★'.repeat(q.dificuldade) + '☆'.repeat(5 - q.dificuldade);
+
+  let interacaoHtml;
+  if (q.tipo === 'multipla_escolha') {
+    interacaoHtml = `<div class="opcoes">${q.opcoes.map((o, i) => {
+      const letra = String.fromCharCode(65 + i);
+      let cls = 'opcao';
+      if (resp) {
+        if (letra === q.resposta) cls += ' correta';
+        else if (letra === resp.dada) cls += ' errada';
+      }
+      return `<button class="${cls}" data-letra="${letra}" ${resp ? 'disabled' : ''}>${o}</button>`;
+    }).join('')}</div>`;
+  } else {
+    const mkCE = (val, label) => {
+      let cls = 'opcao btn-ce';
+      if (resp) {
+        if (q.resposta === val) cls += ' correta';
+        else if (resp.dada === val) cls += ' errada';
+      }
+      return `<button class="${cls}" data-resp="${val}" ${resp ? 'disabled' : ''}>${label}</button>`;
+    };
+    interacaoHtml = `<div class="opcoes">${mkCE('certo', 'A) Certo')}${mkCE('errado', 'B) Errado')}</div>`;
+  }
+
+  const gabaritoHtml = resp ? `
+    <div class="gabarito-inline ${resp.acertou ? 'acerto' : 'erro'}">
+      ${resp.acertou ? '✓ Correto!' : '✗ Incorreto.'} Resposta: <strong>${String(q.resposta).toUpperCase()}</strong><br>${q.comentario}
+    </div>
+    <button class="btn-proxima">${isLast ? 'Ver resultado' : 'Próxima →'}</button>` : '';
+
+  return `
+    <div class="questao-card">
+      <div class="questao-meta">
+        ${num !== null ? `<span>Q${num}</span>` : ''}
+        <span title="Dificuldade">${dif}</span>
+        <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
+        ${q._aula ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
+        <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? 'Fixada' : 'Fixar'}</button>
+      </div>
+      ${htmlEnunciado(q)}
+      ${interacaoHtml}
+      ${gabaritoHtml}
+    </div>`;
+}
 // =====================================================================
 function renderSimuladoConfig() {
   if (simuladoState?.fase === 'quiz') { renderSimuladoQuiz(); return; }
