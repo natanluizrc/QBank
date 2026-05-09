@@ -374,7 +374,12 @@ button:disabled { cursor: default; }
 .btn-revelar:hover { background: #fff7ed; }
 
 /* ---- Modo foco ---- */
-.foco-wrapper { width: 100%; }
+.sim-barra-sticky {
+  position: sticky;
+  top: 94px; /* topbar 52 + barra-materias 42 */
+  background: #fff;
+  z-index: 10;
+}
 
 
 
@@ -430,14 +435,6 @@ button:disabled { cursor: default; }
 
 .btn-iniciar:hover { background: #333; }
 
-.simulado-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  font-size: 0.875rem;
-  color: #666;
-}
 
 /* ---- Resultado ---- */
 .resultado-placar { text-align: center; margin: 2rem 0; }
@@ -541,4 +538,5 @@ button:disabled { cursor: default; }
   .topbar-usuario { gap: 0.5rem; }
   #avatar { width: 26px; height: 26px; }
   #btn-logout { display: none; }
+  .sim-barra-sticky { top: 90px; } /* topbar 48 + barra-materias 42 */
 }

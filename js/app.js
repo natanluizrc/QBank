@@ -593,14 +593,20 @@ function renderSimuladoQuiz() {
   const isLast = s.idx === s.questoes.length - 1;
   const resp = s.respostas[q.id];
 
+  const total    = s.questoes.length;
+  const acertos  = Object.values(s.respostas).filter(r => r.acertou).length;
+  const erros    = Object.values(s.respostas).filter(r => !r.acertou).length;
+
   conteudo.innerHTML = `
-    <div class="foco-wrapper">
-      <div class="simulado-header">
-        <span>${s.idx + 1} / ${s.questoes.length}</span>
-        <span id="cronometro">00:00</span>
+    <div class="questoes-barra sim-barra-sticky">
+      <div class="barra-placar">
+        <span class="total">${String(total).padStart(3,'0')}</span>
+        <span class="acerto">${String(acertos).padStart(3,'0')}</span>
+        <span class="erro">${String(erros).padStart(3,'0')}</span>
       </div>
-      ${htmlQuestaoFoco(q, resp, isLast, s.idx + 1)}
-    </div>`;
+      <span id="cronometro">00:00</span>
+    </div>
+    ${htmlQuestaoFoco(q, resp, isLast, s.idx + 1)}`;
   diagramasParaCanvas();
 
   atualizarCronometro();
