@@ -314,9 +314,10 @@ function renderListaQuestoes(questoes) {
   area.querySelectorAll('.btn-marcar').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
-      const q = questoes.find(x => x.id === btn.dataset.qid);
+      const qIdx = questoes.findIndex(x => x.id === btn.dataset.qid);
+      const q = questoes[qIdx];
       if (!q) return;
-      toggleRevisao(q);
+      toggleRevisao(q, qIdx + 1);
       const marcado = revisaoIds.has(q.id);
       if (tabGlobal === 'revisao' && !marcado) {
         const card = btn.closest('.questao-card');
@@ -375,7 +376,7 @@ function htmlQuestaoLista(q, i) {
   return `
     <div class="questao-card" data-qid="${q.id}">
       <div class="questao-meta">
-        <span>Q${i + 1}</span>
+        <span>Q${q._qNum ?? i + 1}</span>
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
         ${q._aula ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
@@ -428,7 +429,7 @@ function renderFocoQuestao(questoes) {
 
   area.querySelector('.btn-marcar')?.addEventListener('click', e => {
     e.stopPropagation();
-    toggleRevisao(q);
+    toggleRevisao(q, focoIdx + 1);
     const marcado = revisaoIds.has(q.id);
     const btn = area.querySelector('.btn-marcar');
     if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? '✓ revisão' : '+ revisão'; }
@@ -470,7 +471,7 @@ function htmlQuestaoFoco(q, resp, isLast = false, num = null) {
   return `
     <div class="questao-card">
       <div class="questao-meta">
-        ${num !== null ? `<span>Q${num}</span>` : ''}
+        ${num !== null ? `<span>Q${q._qNum ?? num}</span>` : ''}
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
         ${q._aula ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
@@ -661,7 +662,7 @@ function renderSimuladoQuiz() {
 
   conteudo.querySelector('.btn-marcar')?.addEventListener('click', e => {
     e.stopPropagation();
-    toggleRevisao(q);
+    toggleRevisao(q, s.idx + 1);
     const marcado = revisaoIds.has(q.id);
     const btn = conteudo.querySelector('.btn-marcar');
     if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? '✓ revisão' : '+ revisão'; }
@@ -931,21 +932,29 @@ async function carregarRevisao() {
   } catch (e) { console.error('Erro ao carregar revisão:', e); }
 }
 
-function toggleRevisao(q) {
+function toggleRevisao(q, qNum) {
   const ref = db.collection('usuarios').doc(usuario.uid).collection('revisao').doc(q.id);
   if (revisaoIds.has(q.id)) {
     revisaoIds.delete(q.id);
     revisaoQuestoes = revisaoQuestoes.filter(x => x.id !== q.id);
     ref.delete().catch(e => console.error('Erro ao remover revisão:', e));
   } else {
+    const qRich = {
+      ...q,
+      _materia:   q._materia   || materiaAtiva.nome,
+      _materiaId: q._materiaId || materiaAtiva.id,
+      _aula:      q._aula      || aulaAtiva?.titulo || '',
+      _slug:      q._slug      || aulaAtiva?.slug   || '',
+      _qNum:      q._qNum      ?? qNum,
+    };
     revisaoIds.add(q.id);
-    revisaoQuestoes.push(q);
+    revisaoQuestoes.push(qRich);
     ref.set({
-      id: q.id, banca: q.banca || '', tipo: q.tipo, enunciado: q.enunciado,
-      opcoes: q.opcoes || null, resposta: q.resposta, comentario: q.comentario,
-      dificuldade: q.dificuldade || 1,
-      _materia: q._materia || materiaAtiva.nome, _materiaId: q._materiaId || materiaAtiva.id,
-      _aula: q._aula || aulaAtiva?.titulo || '', _slug: q._slug || aulaAtiva?.slug || '',
+      id: qRich.id, banca: qRich.banca || '', tipo: qRich.tipo, enunciado: qRich.enunciado,
+      opcoes: qRich.opcoes || null, resposta: qRich.resposta, comentario: qRich.comentario,
+      dificuldade: qRich.dificuldade || 1,
+      _materia: qRich._materia, _materiaId: qRich._materiaId,
+      _aula: qRich._aula, _slug: qRich._slug, _qNum: qRich._qNum || null,
       marcadoEm: firebase.firestore.FieldValue.serverTimestamp()
     }).catch(e => console.error('Erro ao salvar revisão:', e));
   }
