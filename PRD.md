@@ -2,105 +2,118 @@
 
 ## Objetivo
 
-Banco de questões interativo para estudo pessoal, inicialmente focado em Contabilidade. O conteúdo é extraído de apostilas em PDF pelo Claude e organizado por matéria e aula, com explicação teórica, questões comentadas, simulados cronometrados e histórico de desempenho por usuário.
+Banco de questões interativo para estudo pessoal, inicialmente focado em Contabilidade. O conteúdo é extraído de apostilas em PDF pelo Claude e organizado por matéria e aula, com questões comentadas, simulados cronometrados, marcação de questões para revisão e histórico de desempenho por usuário.
 
 ## Público-alvo
 
-Inicialmente uso pessoal. Arquitetura preparada para múltiplos usuários desde o MVP.
+Uso pessoal. Arquitetura multi-usuário desde o início (dados isolados por `userId` no Firestore).
 
 ---
 
 ## Estrutura de navegação
 
 ```
-[ Matéria ▼ ]   Início   Simulado   Histórico
-─────────────────────────────────────────────────────
-  Aula 00   Aula 01A   Aula 01B   Aula 02  ...
-─────────────────────────────────────────────────────
-  [ Questões ]   [ Teoria ]
+  Início   Fixadas   Simulado   Histórico       ← topbar sticky
+──────────────────────────────────────────────
+  ContG   ContC   ContT   ...                   ← barra de matérias sticky
+──────────────────────────────────────────────
+  Aula 00   Aula 01A   Aula 01B   Aula 02  ...  ← barra de aulas sticky
+──────────────────────────────────────────────
+  [000] [000] [000]   Expandir tudo             ← barra de placar sticky
 ```
 
-### Barra superior (fixa)
-| Elemento | Tipo | Descrição |
-|----------|------|-----------|
-| **Seletor de matéria** | Dropdown | Troca a matéria ativa — muda as abas de Aula abaixo |
-| **Início** | Aba global | Volta para a view de aulas (aba padrão ao entrar no app) |
-| **Simulado** | Aba global | Modo prova com fonte e quantidade configuráveis |
-| **Histórico** | Aba global | Todos os simulados do usuário |
+### Topbar (abas globais)
+| Aba | Comportamento |
+|-----|---------------|
+| **Início** | Aba padrão — reseta para primeira matéria + primeira aula ao clicar |
+| **Fixadas** | Exibe questões marcadas; pré-seleciona primeira aula como filtro |
+| **Simulado** | Modo prova configurável |
+| **Histórico** | Lista de simulados anteriores |
 
-### Barra secundária (muda conforme matéria selecionada)
-- Uma aba por aula da matéria ativa: **Aula 00, Aula 01A, Aula 01B, Aula 02...**
-- Cada aba de aula tem duas sub-abas: **Questões** (padrão) e **Teoria**
+### Barra de matérias
+- Uma tag por matéria registrada em `MATERIAS`; ativa com underline preto
+- Ao clicar: troca matéria ativa, reseta para Início + primeira aula
+
+### Barra de aulas
+- Visível em **Início** e **Fixadas** (oculta em Simulado e Histórico)
+- Em Início: seleciona aula ativa (carga das questões)
+- Em Fixadas: funciona como filtro por aula (toggle — clicar na ativa desativa o filtro)
+
+### Barra de placar
+- Sticky abaixo das três barras superiores (topo 136px desktop / 132px mobile)
+- Chips coloridos zero-padded (3 dígitos): azul = total, verde = acertos, vermelho = erros
+- Botão "Expandir tudo / Recolher tudo" à direita
+- Progresso session-only — nunca persiste
 
 ---
 
-## Abas de Aula
+## Modo de questões (lista)
 
-### Sub-aba: Questões (padrão)
-- **Todas as questões da aula são exibidas sempre** (sem seleção de quantidade)
-- Dois modos alternáveis por botão, com **barra de informação unificada** abaixo dos botões:
+Todas as questões da aula são exibidas em scroll contínuo.
 
-#### Modo Lista
-- Barra: `N questões` (esquerda) · `Expandir tudo / Recolher tudo` (direita, link sublinhado)
-- Scroll com todas as questões — cada uma tem gabarito inline interativo
-- Responder clicando na opção revela gabarito com feedback visual (verde/vermelho)
-- "Expandir tudo" abre todos os gabaritos de uma vez para revisão rápida
+### Cada questão exibe:
+- Meta: número `Q1`, `Q2`... · estrelas de dificuldade (★★☆☆☆) · tipo · botão Fixar
+- Em Fixadas: também exibe matéria e aula de origem (`_materia — _aula`)
+- `(Banca/Concurso/Ano)` acima do enunciado em cinza
+- Enunciado + opções de resposta
+- Botão "Ver gabarito" (laranja, contorno → preenchido ao abrir)
 
-#### Modo Foco
-- Barra: `X / N` em negrito (esquerda) · placar `✓ verde` / `✗ vermelho` (direita)
-- Uma questão por vez: responde → gabarito imediato (acerto/erro + comentário) → avança
-- Ao final: tela de conclusão com resultado da sessão
+### Interação:
+- Clicar na opção/botão CE revela gabarito imediatamente + atualiza placar
+- Opções ficam desabilitadas após resposta
+- Gabarito pode ser expandido/recolhido manualmente a qualquer momento
 
-#### Campos exibidos em cada questão (ambos os modos)
-- Número `Q1`, `Q2`... · estrelas de dificuldade (★★☆☆☆) · tipo
-- `(Banca/Concurso/Ano)` em destaque acima do enunciado
-- Enunciado + opções (ou botões Certo/Errado)
+---
 
-Progresso da sessão não persiste ao recarregar.
+## Botão Fixar / Fixada
 
-### Sub-aba: Teoria
-- Conteúdo teórico extraído do PDF, sintetizado e formatado pelo Claude
-- Renderizado em Markdown
+Presente na meta de cada questão (Início, Fixadas e Simulado).
+
+- **Fixar** — borda amarela `#f59e0b`, texto amarelo; hover fundo amarelo claro
+- **Fixada** — fundo amarelo sólido, texto branco; hover amarelo escuro `#d97706`
+
+Ao fixar: questão salva em `revisaoQuestoes[]` (cache) e no Firestore (fire-and-forget).  
+Ao desmarcar na aba Fixadas: card removido do DOM imediatamente.
 
 ---
 
 ## Aba: Simulado
 
-### Configuração antes de iniciar
-- **Fonte:** Matéria específica | Aula específica
-- **Quantidade:** 10 / 20 / 30 questões
-
-> Cada material terá no mínimo 30 questões, garantindo que todas as opções de quantidade estejam disponíveis.
+### Configuração
+- **Fonte:** matéria inteira ou aula específica
+- **Quantidade:** 10 / 20 / 30 questões (sorteadas aleatoriamente do pool)
 
 ### Durante o simulado
-- Uma questão por vez com número `Q1`, `Q2`...
-- Ao marcar a resposta → gabarito imediato (acerto/erro + comentário)
-- Avança para a próxima
-- Cronômetro crescente visível (sem limite — não encerra automaticamente)
+- Uma questão por vez, com numeração `Q1`, `Q2`...
+- Cabeçalho sem exibir matéria/aula
+- Barra sticky: placar (azul/verde/vermelho) à esq. + cronômetro crescente à dir.
+- Ao responder: gabarito imediato com acerto/erro + comentário → botão "Próxima →"
+- Botão Fixar disponível em cada questão
 
 ### Ao finalizar
-- Tela de resultado: placar (ex: 14/20 — 70%) + tempo total
-- Gabarito completo com comentários
-- Simulado salvo automaticamente no Firestore (vinculado ao usuário)
+- Tela de resultado: `X / N` + percentual + tempo total
+- Gabarito completo de todas as questões
+- Simulado salvo automaticamente no Firestore
+- Botão "Novo Simulado"
 
 ---
 
 ## Aba: Histórico
 
-- Lista de todos os simulados do usuário: data, fonte, placar, tempo
-- Clicar num simulado abre o **gabarito completo** daquele simulado (todas as questões com resposta dada, acerto/erro e comentário)
-- Escopo global (todas as matérias)
-- Botão para limpar histórico
-- Dados no Firestore, acessíveis de qualquer dispositivo
+- Lista de simulados em ordem cronológica decrescente: data, total de questões, tempo, placar
+- Clicar num item abre o gabarito completo daquele simulado
+- Botão "← Histórico" para voltar à lista
+- Botão "Limpar histórico" com confirmação
+- Dados no Firestore — acessíveis de qualquer dispositivo
 
 ---
 
 ## Autenticação
 
-- Usuário não autenticado vê uma **tela de boas-vindas** com botão "Entrar com Google"
-- Login obrigatório com conta Google (Firebase Authentication)
-- Após autenticação, redirecionado para o app
-- Todos os dados do usuário ficam isolados em `usuarios/{userId}/` no Firestore
+- Usuário não autenticado vê tela de boas-vindas com botão "Entrar com Google"
+- Login via Firebase Authentication (Google)
+- Após autenticação: `carregarRevisao()` popula cache local com questões fixadas do Firestore
+- Todo acesso ao Firestore exige autenticação
 
 ---
 
@@ -108,31 +121,30 @@ Progresso da sessão não persiste ao recarregar.
 
 ### Stack
 
-| Camada | Tecnologia | Custo |
-|--------|-----------|-------|
-| Interface | HTML + CSS + JavaScript (vanilla) | — |
-| Hospedagem | Firebase Hosting | Gratuito |
-| Autenticação | Firebase Authentication (Google) | Gratuito |
-| Banco de dados | Firebase Firestore | Gratuito |
-| Controle de versão | GitHub | Gratuito |
-| Conteúdo | JSON estático em `data/` | — |
+| Camada | Tecnologia |
+|--------|-----------|
+| Interface | HTML + CSS + JavaScript vanilla (sem framework, sem bundler) |
+| Hospedagem | Firebase Hosting |
+| Autenticação | Firebase Authentication (Google) |
+| Banco de dados | Firebase Firestore |
+| Conteúdo | JSON estático em `data/` (versionado no GitHub) |
+| Repositório | GitHub |
+
+Firebase SDK e `marked` via CDN. Sem build step.
 
 ### Estrutura do Firestore
 
 ```
 usuarios/
   {userId}/
-    perfil/         → nome, email, fotoUrl, criadoEm
+    perfil/
+      dados/           → nome, email, fotoUrl, criadoEm
     historico/
-      {simuladoId}/ → data, fonte, materia, placar, total, tempoSegundos
+      {simuladoId}/    → data, fonte, placar, total, tempoSegundos, questoes[]
+    revisao/
+      {questaoId}/     → id, banca, tipo, enunciado, opcoes, resposta, comentario,
+                          dificuldade, _materia, _materiaId, _aula, _slug, _qNum, marcadoEm
 ```
-
-### Conteúdo (questões e teoria)
-
-- Arquivos JSON estáticos em `data/{materia}/aula-XX.json` — slug da matéria em minúsculas sem acentos (ex: `data/contabilidade/`)
-- Servidos pelo Firebase Hosting
-- Versionados no GitHub
-- Futuramente podem migrar para Firestore (ex: conteúdo personalizado por usuário)
 
 ---
 
@@ -140,19 +152,19 @@ usuarios/
 
 ```json
 {
-  "titulo": "Aula 01 — Nome do Tema",
-  "slug": "aula-01",
-  "materia": "Contabilidade",
-  "teoria": "Conteúdo teórico em Markdown...",
+  "slug": "aula-01a",
+  "titulo": "Aula 01A",
+  "materia": "ContG",
+  "teoria": "Conteúdo teórico em Markdown (disponível, sem sub-aba dedicada)",
   "questoes": [
     {
       "id": "cg-01-01",
-      "banca": "FGV/PC-AM/Investigador de Polícia/2022",
+      "banca": "FGV/PC-AM/Investigador/2022",
       "tipo": "multipla_escolha",
       "enunciado": "Enunciado da questão...",
       "opcoes": ["A) ...", "B) ...", "C) ...", "D) ...", "E) ..."],
       "resposta": "A",
-      "comentario": "Explicação da resposta correta...",
+      "comentario": "Explicação...",
       "dificuldade": 3
     },
     {
@@ -168,51 +180,34 @@ usuarios/
 }
 ```
 
-**Notas sobre o schema:**
-- **`id`:** formato `cg-XX-NN` — matéria abreviada + número da aula (dois dígitos) + número da questão (dois dígitos)
-- **`banca`:** identificação completa separada do enunciado — nunca embutir no texto da questão
-- **`dificuldade`:** escala de 1 (muito fácil) a 5 (muito difícil) — atribuído pelo Claude; exibido como estrelas ★
-- **`opcoes`:** presente apenas em `multipla_escolha`; ausente em `certo_errado`
-- **`resposta` em `certo_errado`:** `"certo"` ou `"errado"` (string, minúsculo)
-- **`resposta` em `multipla_escolha`:** letra maiúscula — `"A"`, `"B"`, `"C"`, `"D"` ou `"E"`
-
----
-
-## Identidade visual
-
-- Design limpo e minimalista — fundo branco, tipografia clara
-- Sem logo, sem cor de destaque decorativa
-- Verde (#16a34a) e vermelho (#dc2626) usados exclusivamente para feedback de acerto/erro
-- Responsivo — funciona em desktop e celular
+**Notas:**
+- `id`: formato `cg-XX-NN` — matéria abreviada + nº aula (2 dígitos) + nº questão (2 dígitos)
+- `banca`: separado do enunciado — nunca embutir no texto
+- `opcoes`: presente apenas em `multipla_escolha`
+- `resposta` em `certo_errado`: `"certo"` ou `"errado"` (minúsculo)
+- `resposta` em `multipla_escolha`: letra maiúscula — `"A"` a `"E"`
+- `dificuldade`: 1 (muito fácil) a 5 (muito difícil)
 
 ---
 
 ## Fluxo de adição de conteúdo
 
-1. Usuário envia o PDF diretamente no chat com Claude
+1. Usuário envia o PDF no chat com Claude
 2. Claude extrai o texto com `pdftotext -enc UTF-8` via Bash
-3. Questões extraídas da seção "Lista de Questões"; comentários da seção "Questões Comentadas"
-4. Teoria: síntese estruturada em Markdown — definições, classificações, tabelas, normas; omite exemplos do professor
+3. Questões: extraídas da seção "Lista de Questões"; comentários da "Questões Comentadas"
+4. Teoria: síntese estruturada em Markdown (definições, classificações, tabelas, normas)
 5. Claude atribui `dificuldade` (1–5) e separa `banca` do `enunciado`
 6. Arquivo salvo em `data/{materia}/aula-XX.json`
-7. Material registrado na lista de materiais em `app.js`
+7. Material registrado em `MATERIAS` no `app.js`
+8. Mínimo de 30 questões por material
 
 ---
 
-## Plano de evolução
+## Fora do escopo atual
 
-| Fase | Funcionalidade |
-|------|---------------|
-| MVP | Login Google + matérias + aulas (Questões + Teoria) + simulado + histórico |
-| Fase 2 | Progresso persistido por usuário, marcar questões para revisão, filtros avançados |
-| Fase 3 | Questões no Firestore, conteúdo personalizável, permissões por usuário |
-
----
-
-## Fora do escopo no MVP
-
-- Cadastro manual (só login Google)
-- Upload de PDFs pelo usuário pela interface
-- Modo administrador para gerenciar conteúdo pela interface
+- Sub-aba Teoria (campo existe no JSON mas não é exibido)
+- Modo Foco por aula (substituído pelo Simulado)
+- Simulado com toda a base como fonte
+- Upload de PDFs pela interface
 - Edição de questões pela interface
-- Simulado com "Toda a base" como fonte (disponível a partir da Fase 2)
+- Cadastro manual (só Google)

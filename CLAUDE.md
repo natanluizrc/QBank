@@ -22,7 +22,7 @@ Sem build, sem bundler, sem transpilação. Firebase SDK via CDN.
 ## Arquitetura de navegação
 
 ```
-  Início   Simulado   Histórico   Fixadas       ← topbar (abas globais) — sticky
+  Início   Fixadas   Simulado   Histórico       ← topbar (abas globais) — sticky
 ──────────────────────────────────────────────
   ContG   ContC   ContT   ...                   ← barra de matérias (nível 1) — sticky
 ──────────────────────────────────────────────
@@ -129,7 +129,7 @@ Não modificar arquivos JSON existentes, salvo para corrigir erros reportados pe
 
 - ES6+ puro em `js/app.js` — sem frameworks ou npm
 - CSS em `css/style.css` — design minimalista, fundo branco
-- Paleta funcional: verde `#16a34a` / vermelho `#dc2626` (acerto/erro), azul `#2563eb` (total), amarelo `#f59e0b` (Fixar/Fixada), laranja `#ea580c` (Ver gabarito/Ocultar), preto `#1a1a1a` (UI geral)
+- Paleta funcional: verde `#15803d` / vermelho `#b91c1c` (chips do placar), azul `#1d4ed8` (chip total), amarelo `#f59e0b` (Fixar/Fixada), laranja `#ea580c` (Ver gabarito/Ocultar), preto `#1a1a1a` (UI geral)
 - Botões de ação (Fixar, Ver gabarito): contorno colorido → preenchimento sólido ao ativar; mesmo padrão visual
 - Markdown nos campos `teoria` renderizado no cliente (usar `marked` via CDN)
 - Todo texto da interface em português (pt-BR)

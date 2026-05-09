@@ -40,7 +40,7 @@ const MATERIAS = [
 let usuario = null;
 let materiaAtiva = MATERIAS[0];
 let aulaAtiva = MATERIAS[0].aulas[0];
-let tabGlobal = null;       // null | 'simulado' | 'historico'
+let tabGlobal = null;       // null | 'simulado' | 'historico' | 'revisao'
 let aulaCache = {};         // 'materiaId/slug' → dados JSON
 let listaRespostas = {};   // questaoId → { dada, acertou }
 let revisaoIds = new Set();
@@ -903,6 +903,7 @@ document.getElementById('btn-logout').addEventListener('click', () => {
 document.querySelectorAll('.aba-global').forEach(btn => {
   btn.addEventListener('click', () => {
     const newTab = btn.dataset.tab === 'inicio' ? null : btn.dataset.tab;
+    if (simuladoState?.intervalo) clearInterval(simuladoState.intervalo);
     simuladoState = null;
     if (newTab === null) {
       materiaAtiva = MATERIAS[0];
