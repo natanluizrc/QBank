@@ -246,7 +246,7 @@ function renderListaQuestoes(questoes) {
   const placarHtml = () => {
     const acertos = Object.values(listaRespostas).filter(r => r.acertou).length;
     const erros   = Object.values(listaRespostas).filter(r => !r.acertou).length;
-    return `<span class="total">● ${questoes.length}</span><span class="acerto">✓ ${acertos}</span><span class="erro">✗ ${erros}</span>`;
+    return `<span class="total">○ ${questoes.length}</span><span class="acerto">✓ ${acertos}</span><span class="erro">✗ ${erros}</span>`;
   };
 
   area.innerHTML = `
@@ -327,7 +327,7 @@ function renderListaQuestoes(questoes) {
         }
       } else {
         btn.classList.toggle('marcado', marcado);
-        btn.textContent = marcado ? '✓ revisão' : '+ revisão';
+        btn.textContent = marcado ? '- revisão' : '+ revisão';
       }
     });
   });
@@ -380,7 +380,7 @@ function htmlQuestaoLista(q, i) {
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
         ${q._aula ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
-        <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? '✓ revisão' : '+ revisão'}</button>
+        <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? '- revisão' : '+ revisão'}</button>
       </div>
       ${htmlEnunciado(q)}
       ${opcoes}
@@ -405,7 +405,7 @@ function renderFocoQuestao(questoes) {
     <div class="foco-wrapper">
       <div class="questoes-barra">
         <div class="barra-placar">
-          <span class="total">● ${total}</span>
+          <span class="total">○ ${total}</span>
           <span class="acerto">✓ ${acertos}</span>
           <span class="erro">✗ ${respondidas - acertos}</span>
         </div>
@@ -432,7 +432,7 @@ function renderFocoQuestao(questoes) {
     toggleRevisao(q, focoIdx + 1);
     const marcado = revisaoIds.has(q.id);
     const btn = area.querySelector('.btn-marcar');
-    if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? '✓ revisão' : '+ revisão'; }
+    if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? '- revisão' : '+ revisão'; }
   });
 }
 
@@ -475,7 +475,7 @@ function htmlQuestaoFoco(q, resp, isLast = false, num = null) {
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
         ${q._aula ? `<span class="questao-fonte">${q._materia} — ${q._aula}</span>` : ''}
-        <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? '✓ revisão' : '+ revisão'}</button>
+        <button class="btn-marcar ${revisaoIds.has(q.id) ? 'marcado' : ''}" data-qid="${q.id}">${revisaoIds.has(q.id) ? '- revisão' : '+ revisão'}</button>
       </div>
       ${htmlEnunciado(q)}
       ${interacaoHtml}
@@ -665,7 +665,7 @@ function renderSimuladoQuiz() {
     toggleRevisao(q, s.idx + 1);
     const marcado = revisaoIds.has(q.id);
     const btn = conteudo.querySelector('.btn-marcar');
-    if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? '✓ revisão' : '+ revisão'; }
+    if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? '- revisão' : '+ revisão'; }
   });
 }
 

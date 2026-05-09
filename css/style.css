@@ -497,12 +497,14 @@ button:disabled { cursor: default; }
 .btn-marcar {
   margin-left: auto;
   font-size: 0.75rem;
-  color: #bbb;
+  color: #16a34a;
+  font-weight: 500;
   padding: 0;
   transition: color 0.12s;
 }
-.btn-marcar:hover { color: #888; }
-.btn-marcar.marcado { color: #f59e0b; font-weight: 500; }
+.btn-marcar:hover { color: #15803d; }
+.btn-marcar.marcado { color: #dc2626; }
+.btn-marcar.marcado:hover { color: #b91c1c; }
 
 .questao-fonte { color: #aaa; font-size: 0.75rem; }
 
