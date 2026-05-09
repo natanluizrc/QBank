@@ -1,6 +1,5 @@
 // =====================================================================
 // CONFIGURAÇÃO FIREBASE
-// Substitua os valores abaixo pelos do seu projeto no Firebase Console
 // =====================================================================
 const firebaseConfig = {
   apiKey: "AIzaSyClB2xCaotvwvvokpfZ3APU-hRMpM42v9o",
@@ -231,8 +230,8 @@ function renderListaQuestoes(questoes) {
     if (pl) pl.innerHTML = placarHtml();
   };
 
-  document.getElementById('btn-expandir').addEventListener('click', () => {
-    const btn = document.getElementById('btn-expandir');
+  document.getElementById('btn-expandir').addEventListener('click', (e) => {
+    const btn = e.currentTarget;
     const expandir = btn.textContent === 'Expandir tudo';
     area.querySelectorAll('.gabarito-inline').forEach(gab => {
       gab.classList.toggle('hidden', !expandir);
@@ -406,7 +405,6 @@ function diagramasParaCanvas() {
 
 function htmlEnunciado(q) {
   const banca = q.banca ? `<div class="questao-banca">(${q.banca})</div>` : '';
-  const boxRe = /[┌┐└┘│─┬┴┼├┤]/;
   const linhas = q.enunciado.split('\n');
   let html = '';
   let diagBuf = [];
@@ -419,7 +417,7 @@ function htmlEnunciado(q) {
   };
 
   for (const linha of linhas) {
-    if (boxRe.test(linha)) {
+    if (DIAGRAMA_RE.test(linha)) {
       diagBuf.push(linha);
     } else {
       flushDiag();
@@ -432,7 +430,8 @@ function htmlEnunciado(q) {
 }
 
 function htmlQuestaoLista(q, i) {
-  const dif = '★'.repeat(q.dificuldade) + '☆'.repeat(5 - q.dificuldade);
+  const d = Math.min(5, Math.max(0, q.dificuldade || 0));
+  const dif = '★'.repeat(d) + '☆'.repeat(5 - d);
 
   const opcoes = q.tipo === 'multipla_escolha'
     ? `<div class="opcoes">${q.opcoes.map((o, idx) => {
@@ -466,7 +465,8 @@ function htmlQuestaoLista(q, i) {
 // SIMULADO
 
 function htmlQuestaoFoco(q, resp, isLast = false, num = null) {
-  const dif = '★'.repeat(q.dificuldade) + '☆'.repeat(5 - q.dificuldade);
+  const d = Math.min(5, Math.max(0, q.dificuldade || 0));
+  const dif = '★'.repeat(d) + '☆'.repeat(5 - d);
 
   let interacaoHtml;
   if (q.tipo === 'multipla_escolha') {
@@ -882,6 +882,8 @@ function renderRevisao() {
 // =====================================================================
 // UTILITÁRIOS
 // =====================================================================
+const DIAGRAMA_RE = /[┌┐└┘│─┬┴┼├┤]/;
+
 function formatarTempo(seg) {
   const mm = String(Math.floor(seg / 60)).padStart(2, '0');
   const ss = String(seg % 60).padStart(2, '0');
