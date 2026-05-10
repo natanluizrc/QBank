@@ -250,7 +250,7 @@ function renderListaQuestoes(questoes) {
   area.innerHTML = `
     <div class="questoes-barra aula-barra-sticky">
       <div class="barra-placar">${placarHtml()}</div>
-      <button id="btn-expandir">Expandir tudo</button>
+      <button id="btn-expandir">Ver gabaritos</button>
     </div>
     ${questoes.map((q, i) => htmlQuestaoLista(q, i)).join('')}
   `;
@@ -263,16 +263,16 @@ function renderListaQuestoes(questoes) {
 
   document.getElementById('btn-expandir').addEventListener('click', (e) => {
     const btn = e.currentTarget;
-    const expandir = btn.textContent === 'Expandir tudo';
+    const expandir = btn.textContent === 'Ver gabaritos';
     area.querySelectorAll('.gabarito-inline').forEach(gab => {
       gab.classList.toggle('hidden', !expandir);
       const revelar = area.querySelector(`.btn-revelar[data-id="${gab.dataset.id}"]`);
       if (revelar) {
-        revelar.textContent = expandir ? 'Ocultar' : 'Ver gabarito';
+        revelar.textContent = expandir ? 'Ocultar gabarito' : 'Ver gabarito';
         revelar.classList.toggle('aberto', expandir);
       }
     });
-    btn.textContent = expandir ? 'Recolher tudo' : 'Expandir tudo';
+    btn.textContent = expandir ? 'Ocultar gabaritos' : 'Ver gabaritos';
   });
 
   area.querySelectorAll('.btn-revelar').forEach(btn => {
@@ -280,7 +280,7 @@ function renderListaQuestoes(questoes) {
       const gab = area.querySelector(`.gabarito-inline[data-id="${btn.dataset.id}"]`);
       gab.classList.toggle('hidden');
       const oculto = gab.classList.contains('hidden');
-      btn.textContent = oculto ? 'Ver gabarito' : 'Ocultar';
+      btn.textContent = oculto ? 'Ver gabarito' : 'Ocultar gabarito';
       btn.classList.toggle('aberto', !oculto);
     });
   });
