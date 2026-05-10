@@ -208,6 +208,7 @@ button:disabled { cursor: default; }
   font-weight: 600;
   font-family: 'Courier New', monospace;
   letter-spacing: 0.05em;
+  line-height: 1.5;
 }
 .barra-placar .total  { background: #dbeafe; color: #1d4ed8; }
 .barra-placar .acerto { background: #dcfce7; color: #15803d; }
@@ -216,6 +217,7 @@ button:disabled { cursor: default; }
 .questoes-barra button {
   font-size: 0.8rem;
   font-weight: 600;
+  line-height: 1.5;
   color: #4b5563;
   background: #f3f4f6;
   border: none;
@@ -225,6 +227,17 @@ button:disabled { cursor: default; }
   text-decoration: none;
 }
 .questoes-barra button:hover { background: #e5e7eb; color: #1a1a1a; }
+#cronometro {
+  padding: 0.15rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.5;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.05em;
+  color: #4b5563;
+  background: #f3f4f6;
+}
 
 /* ---- Questão card ---- */
 .questao-card {
