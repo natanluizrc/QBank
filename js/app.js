@@ -338,6 +338,7 @@ function renderListaQuestoes(questoes) {
       if (tabGlobal === 'revisao' && !marcado) {
         const card = btn.closest('.questao-card');
         card?.remove();
+        atualizarPlacar();
         if (!area.querySelector('.questao-card')) {
           area.innerHTML = '<p class="msg-vazio">Nenhuma questão salva ainda.</p>';
         }
