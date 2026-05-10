@@ -109,6 +109,8 @@ Organizados por matéria em `data/{materia}/aula-XX.json` — slug da matéria e
 
 Diagramas no enunciado usam caracteres box-drawing Unicode (`┌┐└┘│─┬┴┼├┤`) — detectados por regex e renderizados em `<pre class="diagrama">` com fonte monoespaçada.
 
+Campo `comentario`: texto puro, sem markdown — nenhum `**negrito**`, `_itálico_` ou lista com `-`. Prosa direta e didática.
+
 ## Adicionando novo conteúdo (fluxo padrão)
 
 Quando o usuário enviar um PDF:
@@ -122,6 +124,23 @@ Quando o usuário enviar um PDF:
 8. Cada material deve ter no mínimo 30 questões
 
 Não modificar arquivos JSON existentes, salvo para corrigir erros reportados pelo usuário.
+
+Antes de salvar o JSON, validar:
+- Total de questões no PDF bate com o total no JSON
+- Nenhum `comentario` contém `**` ou `_`
+- Questões `multipla_escolha` têm campo `opcoes`; `certo_errado` não têm
+- IDs sequenciais sem lacunas
+
+Se o `pdftotext` truncar um enunciado (termina abruptamente, banca ausente, opções sem enunciado): pedir screenshot da página ao usuário e usar `Read` na imagem para recuperar o conteúdo.
+
+## Autonomia nas ações
+
+Executar ações locais diretamente, sem pedir confirmação ao usuário:
+- Criar, editar ou deletar arquivos
+- Commits, staging, rodar scripts
+- Deploy no Firebase Hosting
+
+Confirmar antes apenas para ações destrutivas e irreversíveis de alto impacto (ex: force push, deletar branch remota).
 
 ## Fluxo de publicação
 
