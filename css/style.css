@@ -202,7 +202,7 @@ button:disabled { cursor: default; }
 }
 .questoes-barra .barra-placar { display: flex; gap: 0.35rem; align-items: center; }
 .barra-placar span {
-  padding: 0.15rem 0.55rem;
+  padding: 0.35rem 0.55rem;
   border-radius: 4px;
   font-size: 0.8rem;
   font-weight: 600;
