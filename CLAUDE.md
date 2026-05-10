@@ -123,6 +123,15 @@ Quando o usuário enviar um PDF:
 
 Não modificar arquivos JSON existentes, salvo para corrigir erros reportados pelo usuário.
 
+## Fluxo de publicação
+
+Ao finalizar qualquer tarefa que altere arquivos do projeto:
+
+1. **Commit + push** — commitar as alterações com mensagem descritiva e fazer push para o GitHub (`git push`)
+2. **Deploy** — publicar o site com `firebase deploy --only hosting`
+
+Esses dois passos são obrigatórios e automáticos — executar sem pedir confirmação ao usuário.
+
 ## Convenções de código
 
 - ES6+ puro em `js/app.js` — sem frameworks ou npm
