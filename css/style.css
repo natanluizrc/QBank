@@ -218,15 +218,18 @@ button:disabled { cursor: default; }
   font-size: 0.8rem;
   font-weight: 600;
   line-height: 1.5;
-  color: #4b5563;
-  background: #f3f4f6;
-  border: none;
+  color: #ea580c;
+  background: transparent;
+  border: 1px solid #ea580c;
   border-radius: 4px;
   cursor: pointer;
   padding: 0.15rem 0.55rem;
   text-decoration: none;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
 }
-.questoes-barra button:hover { background: #e5e7eb; color: #1a1a1a; }
+.questoes-barra button:hover { background: #fff7ed; }
+.questoes-barra button.aberto { background: #ea580c; color: #fff; }
+.questoes-barra button.aberto:hover { background: #c2410c; border-color: #c2410c; }
 #cronometro {
   padding: 0.15rem 0.55rem;
   border-radius: 4px;

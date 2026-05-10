@@ -273,6 +273,7 @@ function renderListaQuestoes(questoes) {
       }
     });
     btn.textContent = expandir ? 'Ocultar gabaritos' : 'Ver gabaritos';
+    btn.classList.toggle('aberto', expandir);
   });
 
   area.querySelectorAll('.btn-revelar').forEach(btn => {
