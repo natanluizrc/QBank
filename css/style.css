@@ -212,6 +212,7 @@ button:disabled { cursor: default; }
 .barra-placar .total  { background: #dbeafe; color: #1d4ed8; }
 .barra-placar .acerto { background: #dcfce7; color: #15803d; }
 .barra-placar .erro   { background: #fee2e2; color: #b91c1c; }
+.barra-placar .fixadas { background: #fef3c7; color: #b45309; }
 .questoes-barra button {
   font-size: 0.78rem;
   color: #666;

@@ -241,9 +241,10 @@ function renderListaQuestoes(questoes) {
   const area = document.getElementById('questoes-area');
 
   const placarHtml = () => {
-    const acertos = Object.values(listaRespostas).filter(r => r.acertou).length;
-    const erros   = Object.values(listaRespostas).filter(r => !r.acertou).length;
-    return `<span class="total">${String(questoes.length).padStart(3,'0')}</span><span class="acerto">${String(acertos).padStart(3,'0')}</span><span class="erro">${String(erros).padStart(3,'0')}</span>`;
+    const acertos  = Object.values(listaRespostas).filter(r => r.acertou).length;
+    const erros    = Object.values(listaRespostas).filter(r => !r.acertou).length;
+    const fixadas  = questoes.filter(q => revisaoIds.has(q.id)).length;
+    return `<span class="total">${String(questoes.length).padStart(3,'0')}</span><span class="acerto">${String(acertos).padStart(3,'0')}</span><span class="erro">${String(erros).padStart(3,'0')}</span><span class="fixadas">${String(fixadas).padStart(3,'0')}</span>`;
   };
 
   area.innerHTML = `
@@ -331,6 +332,7 @@ function renderListaQuestoes(questoes) {
       } else {
         btn.classList.toggle('marcado', marcado);
         btn.textContent = marcado ? 'Fixada' : 'Fixar';
+        atualizarPlacar();
       }
     });
   });
