@@ -290,12 +290,18 @@ function renderListaQuestoes(questoes) {
       if (btn.disabled) return;
       const card = btn.closest('.questao-card');
       const q = questoes.find(x => x.id === card.dataset.qid);
-      listaRespostas[q.id] = { dada: btn.dataset.letra, acertou: btn.dataset.letra === q.resposta };
+      const acertou = btn.dataset.letra === q.resposta;
+      listaRespostas[q.id] = { dada: btn.dataset.letra, acertou };
       card.querySelectorAll('.opcao').forEach(o => {
         o.disabled = true;
         if (o.dataset.letra === q.resposta) o.classList.add('correta');
         else if (o.dataset.letra === btn.dataset.letra) o.classList.add('errada');
       });
+      if (!acertou && !revisaoIds.has(q.id)) {
+        toggleRevisao(q, questoes.indexOf(q) + 1);
+        const btnMarcar = card.querySelector('.btn-marcar');
+        if (btnMarcar) { btnMarcar.classList.add('marcado'); btnMarcar.textContent = 'Fixada'; }
+      }
       atualizarPlacar();
     });
   });
@@ -305,12 +311,18 @@ function renderListaQuestoes(questoes) {
       if (btn.disabled) return;
       const card = btn.closest('.questao-card');
       const q = questoes.find(x => x.id === card.dataset.qid);
-      listaRespostas[q.id] = { dada: btn.dataset.resp, acertou: btn.dataset.resp === q.resposta };
+      const acertou = btn.dataset.resp === q.resposta;
+      listaRespostas[q.id] = { dada: btn.dataset.resp, acertou };
       card.querySelectorAll('.btn-ce').forEach(b => {
         b.disabled = true;
         if (b.dataset.resp === q.resposta) b.classList.add('correta');
         else if (b.dataset.resp === btn.dataset.resp) b.classList.add('errada');
       });
+      if (!acertou && !revisaoIds.has(q.id)) {
+        toggleRevisao(q, questoes.indexOf(q) + 1);
+        const btnMarcar = card.querySelector('.btn-marcar');
+        if (btnMarcar) { btnMarcar.classList.add('marcado'); btnMarcar.textContent = 'Fixada'; }
+      }
       atualizarPlacar();
     });
   });
