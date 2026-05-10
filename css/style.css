@@ -250,7 +250,7 @@ button:disabled { cursor: default; }
   margin-bottom: 1rem;
 }
 
-.questao-meta {
+.questao-info {
   display: flex;
   gap: 0.75rem;
   font-size: 0.8rem;
@@ -473,9 +473,9 @@ button:disabled { cursor: default; }
 /* ---- Marcador de revisão ---- */
 .btn-marcar {
   margin-left: auto;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 500;
-  padding: 0.15rem 0.5rem;
+  padding: 0.35rem 0.75rem;
   border-radius: 5px;
   border: 1px solid #f59e0b;
   color: #f59e0b;

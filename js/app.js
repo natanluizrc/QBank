@@ -491,7 +491,7 @@ function htmlQuestaoLista(q, i) {
 
   return `
     <div class="questao-card" data-qid="${q.id}">
-      <div class="questao-meta">
+      <div class="questao-info">
         <span>Q${q._qNum ?? i + 1}</span>
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
@@ -544,7 +544,7 @@ function htmlQuestaoFoco(q, resp, isLast = false, num = null) {
 
   return `
     <div class="questao-card">
-      <div class="questao-meta">
+      <div class="questao-info">
         ${num !== null ? `<span>Q${num}</span>` : ''}
         <span title="Dificuldade">${dif}</span>
         <span>${q.tipo === 'multipla_escolha' ? 'Múltipla escolha' : 'Certo/Errado'}</span>
@@ -753,7 +753,7 @@ function renderSimuladoResultado() {
     const resp = s.respostas[q.id] || {};
     return `
       <div class="questao-card">
-        <div class="questao-meta">
+        <div class="questao-info">
           <span>Q${i + 1}</span>
           <span style="color:${resp.acertou ? '#4a9a5a' : '#c05050'}">${resp.acertou ? '✓' : '✗'}</span>
           ${q._aula ? `<span>${q._materia} — ${q._aula}</span>` : ''}
@@ -839,7 +839,7 @@ function renderDetalhesSimulado(s) {
 
   const gabHtml = (s.questoes || []).map((q, i) => `
     <div class="questao-card">
-      <div class="questao-meta">
+      <div class="questao-info">
         <span>Q${i + 1}</span>
         <span style="color:${q.acertou ? '#4a9a5a' : '#c05050'}">${q.acertou ? '✓' : '✗'}</span>
         ${q._aula ? `<span>${q._materia} — ${q._aula}</span>` : ''}
