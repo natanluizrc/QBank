@@ -375,6 +375,10 @@ button:disabled { cursor: default; }
   z-index: 10;
 }
 
+.sim-barra-sticky.com-aula {
+  top: 136px; /* topbar 52 + barra-materias 42 + barra-aulas 42 */
+}
+
 .aula-barra-sticky {
   position: sticky;
   top: 136px; /* topbar 52 + barra-materias 42 + barra-aulas 42 */
@@ -507,7 +511,8 @@ button:disabled { cursor: default; }
 .btn-marcar.marcado { background: #f59e0b; color: #fff; border-color: #f59e0b; }
 .btn-marcar.marcado:hover { background: #d97706; border-color: #d97706; }
 
-.questao-fonte { color: #aaa; font-size: 0.75rem; }
+.ind-acerto { color: #4a9a5a; }
+.ind-erro   { color: #c05050; }
 
 /* ---- Documentação ---- */
 .docs-indice {
@@ -648,5 +653,6 @@ button:disabled { cursor: default; }
   #barra-materias { top: 48px; padding: 0 0.75rem; }
   #barra-aulas { top: 90px; padding: 0 0.75rem; }
   .sim-barra-sticky { top: 90px; }
+  .sim-barra-sticky.com-aula { top: 132px; }
   .aula-barra-sticky { top: 132px; }
 }

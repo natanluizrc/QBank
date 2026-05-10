@@ -33,13 +33,15 @@ const MATERIAS = [
   }
 ];
 
+const DIAGRAMA_RE = /[┌┐└┘│─┬┴┼├┤]/;
+
 // =====================================================================
 // ESTADO
 // =====================================================================
 let usuario = null;
 let materiaAtiva = MATERIAS[0];
 let aulaAtiva = MATERIAS[0].aulas[0];
-let tabGlobal = null;       // null | 'simulado' | 'historico' | 'revisao'
+let tabGlobal = null;       // null | 'simulado' | 'historico' | 'revisao' | 'docs'
 let aulaCache = {};         // 'materiaId/slug' → dados JSON
 let listaRespostas = {};   // questaoId → { dada, acertou }
 let revisaoIds = new Set();
@@ -113,7 +115,7 @@ function renderBarraMaterias() {
   if (tabGlobal === 'simulado') {
     const s = simuladoState;
     if (!s || s.fase === 'config') { barra.style.display = 'none'; return; }
-    const mid = s.fonte.startsWith('materia:') ? s.fonte.split(':')[1] : s.fonte.split(':')[1];
+    const mid = s.fonte.split(':')[1];
     const m = MATERIAS.find(x => x.id === mid);
     barra.style.display = '';
     barra.innerHTML = m ? `<button class="aba-materia ativa">${m.nome}</button>` : '';
@@ -654,8 +656,9 @@ function renderSimuladoQuiz() {
   const erros    = Object.values(s.respostas).filter(r => !r.acertou).length;
   const fixadas  = s.questoes.filter(q => revisaoIds.has(q.id)).length;
 
+  const stickyClass = s.fonte.startsWith('aula:') ? 'sim-barra-sticky com-aula' : 'sim-barra-sticky';
   conteudo.innerHTML = `
-    <div class="questoes-barra sim-barra-sticky">
+    <div class="questoes-barra ${stickyClass}">
       <div class="barra-placar">
         <span class="total">${String(total).padStart(3,'0')}</span>
         <span class="acerto">${String(acertos).padStart(3,'0')}</span>
@@ -760,7 +763,7 @@ function renderSimuladoResultado() {
       <div class="questao-card">
         <div class="questao-info">
           <span>Q${i + 1}</span>
-          <span style="color:${resp.acertou ? '#4a9a5a' : '#c05050'}">${resp.acertou ? '✓' : '✗'}</span>
+          <span class="${resp.acertou ? 'ind-acerto' : 'ind-erro'}">${resp.acertou ? '✓' : '✗'}</span>
           ${q._aula ? `<span>${q._materia} — ${q._aula}</span>` : ''}
         </div>
         ${htmlEnunciado(q)}
@@ -846,7 +849,7 @@ function renderDetalhesSimulado(s) {
     <div class="questao-card">
       <div class="questao-info">
         <span>Q${i + 1}</span>
-        <span style="color:${q.acertou ? '#4a9a5a' : '#c05050'}">${q.acertou ? '✓' : '✗'}</span>
+        <span class="${q.acertou ? 'ind-acerto' : 'ind-erro'}">${q.acertou ? '✓' : '✗'}</span>
         ${q._aula ? `<span>${q._materia} — ${q._aula}</span>` : ''}
       </div>
       ${htmlEnunciado(q)}
@@ -993,8 +996,6 @@ async function renderDocs() {
 // =====================================================================
 // UTILITÁRIOS
 // =====================================================================
-const DIAGRAMA_RE = /[┌┐└┘│─┬┴┼├┤]/;
-
 function formatarTempo(seg) {
   const mm = String(Math.floor(seg / 60)).padStart(2, '0');
   const ss = String(seg % 60).padStart(2, '0');
@@ -1011,7 +1012,6 @@ document.getElementById('btn-login').addEventListener('click', () => {
 document.getElementById('btn-logout').addEventListener('click', () => {
   auth.signOut();
 });
-
 
 document.querySelectorAll('.aba-global').forEach(btn => {
   btn.addEventListener('click', () => {

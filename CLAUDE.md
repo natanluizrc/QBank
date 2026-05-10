@@ -63,6 +63,7 @@ Não há sub-abas de Questões/Teoria — a aula abre direto nas questões. Não
   - Chip azul `#dbeafe / #1d4ed8` — total de questões
   - Chip verde `#dcfce7 / #15803d` — acertos
   - Chip vermelho `#fee2e2 / #b91c1c` — erros
+  - Chip âmbar `#fef3c7 / #b45309` — fixadas (questões marcadas da sessão)
 - `Expandir tudo` à dir.
 
 Progresso é session-only — nunca gravado. Exibe `Q1`, `Q2`... na meta da questão. Na aba Fixadas, o número original da aula-fonte é preservado via `_qNum`.
@@ -90,7 +91,7 @@ Exibe as questões fixadas usando o cache local `revisaoQuestoes[]` — sem fetc
 1. Usuário configura fonte (matéria ou aula) e quantidade (10 / 20 / 30)
 2. Questões sorteadas aleatoriamente
 3. Uma por vez: responde → gabarito imediato (acerto/erro + comentário) → próxima
-4. **Barra sticky** no topo: placar (azul/verde/vermelho) à esq. + cronômetro crescente à dir.
+4. **Barra sticky** no topo: placar (azul/verde/vermelho/âmbar) à esq. + cronômetro crescente à dir.
 5. Cabeçalho da questão não exibe matéria/aula (removido no simulado)
 6. Ao finalizar: placar + gabarito completo + salvo no Firestore (`usuarios/{userId}/historico`)
 7. No Histórico, clicar num simulado exibe o gabarito completo daquele simulado
