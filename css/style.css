@@ -80,7 +80,11 @@ button:disabled { cursor: default; }
 .topbar-abas { display: flex; gap: 0.25rem; }
 
 .aba-global {
-  padding: 0.4rem 0.85rem;
+  padding: 0 0.85rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: 5rem;
   text-align: center;
   border-radius: 5px;
@@ -131,10 +135,10 @@ button:disabled { cursor: default; }
 
 .aba-materia {
   flex-shrink: 0;
-  align-self: stretch;
   display: flex;
   align-items: center;
   padding: 0 0.85rem;
+  height: 2rem;
   min-width: 5rem;
   text-align: center;
   font-size: 0.875rem;
@@ -168,7 +172,10 @@ button:disabled { cursor: default; }
 
 .aba-aula {
   flex-shrink: 0;
-  padding: 0.4rem 0.85rem;
+  padding: 0 0.85rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
   min-width: 5rem;
   text-align: center;
   font-size: 0.875rem;
@@ -202,13 +209,15 @@ button:disabled { cursor: default; }
 }
 .questoes-barra .barra-placar { display: flex; gap: 0.35rem; align-items: center; }
 .barra-placar span {
-  padding: 0.35rem 0.55rem;
+  padding: 0 0.55rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
   border-radius: 4px;
   font-size: 0.8rem;
   font-weight: 600;
   font-family: 'Courier New', monospace;
   letter-spacing: 0.05em;
-  line-height: 1.5;
 }
 .barra-placar .total  { background: #dbeafe; color: #1d4ed8; }
 .barra-placar .acerto { background: #dcfce7; color: #15803d; }
@@ -217,13 +226,15 @@ button:disabled { cursor: default; }
 .questoes-barra button {
   font-size: 0.8rem;
   font-weight: 600;
-  line-height: 1.5;
   color: #ea580c;
   background: transparent;
   border: 1px solid #ea580c;
   border-radius: 4px;
   cursor: pointer;
-  padding: 0.35rem 0.55rem;
+  padding: 0 0.55rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
   text-decoration: none;
   transition: background 0.12s, color 0.12s, border-color 0.12s;
 }
@@ -231,11 +242,13 @@ button:disabled { cursor: default; }
 .questoes-barra button.aberto { background: #ea580c; color: #fff; }
 .questoes-barra button.aberto:hover { background: #c2410c; border-color: #c2410c; }
 #cronometro {
-  padding: 0.35rem 0.55rem;
+  padding: 0 0.55rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
   border-radius: 4px;
   font-size: 0.8rem;
   font-weight: 600;
-  line-height: 1.5;
   font-family: 'Courier New', monospace;
   letter-spacing: 0.05em;
   color: #4b5563;
@@ -342,7 +355,10 @@ button:disabled { cursor: default; }
   color: #ea580c;
   border: 1px solid #ea580c;
   border-radius: 5px;
-  padding: 0.35rem 0.75rem;
+  padding: 0 0.75rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
   transition: background 0.12s, color 0.12s, border-color 0.12s;
   margin-top: 0.5rem;
 }
@@ -369,11 +385,13 @@ button:disabled { cursor: default; }
 
 
 .btn-proxima {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   margin-top: 1rem;
   background: #1a1a1a;
   color: #fff;
-  padding: 0.65rem 1.5rem;
+  padding: 0 1.5rem;
+  height: 2rem;
   border-radius: 6px;
   font-size: 0.9rem;
   transition: background 0.15s;
@@ -475,7 +493,10 @@ button:disabled { cursor: default; }
   margin-left: auto;
   font-size: 0.85rem;
   font-weight: 500;
-  padding: 0.35rem 0.75rem;
+  padding: 0 0.75rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
   border-radius: 5px;
   border: 1px solid #f59e0b;
   color: #f59e0b;
@@ -619,7 +640,7 @@ button:disabled { cursor: default; }
   .topbar-esquerda { display: none; }
   .topbar-abas { flex: 1; overflow-x: auto; scrollbar-width: none; justify-content: flex-start; }
   .topbar-abas::-webkit-scrollbar { display: none; }
-  .aba-global { padding: 0.3rem 0.55rem; font-size: 0.82rem; min-width: auto; flex-shrink: 0; }
+  .aba-global { padding: 0 0.55rem; font-size: 0.82rem; min-width: auto; flex-shrink: 0; }
   .topbar-usuario { gap: 0.5rem; }
   #avatar { width: 26px; height: 26px; }
   #btn-logout { display: none; }
