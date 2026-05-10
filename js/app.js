@@ -673,6 +673,7 @@ function renderSimuladoQuiz() {
     const responder = (dada) => {
       const acertou = dada.toLowerCase() === String(q.resposta).toLowerCase();
       s.respostas[q.id] = { dada, acertou };
+      if (!acertou && !revisaoIds.has(q.id)) toggleRevisao(q, s.idx + 1);
       renderSimuladoQuiz();
     };
 
