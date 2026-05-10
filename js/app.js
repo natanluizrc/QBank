@@ -634,7 +634,8 @@ async function iniciarSimulado(fonte, qtd) {
     qtd,
     tempoInicio: Date.now(),
     tempoSegundos: 0,
-    intervalo: setInterval(atualizarCronometro, 1000)
+    intervalo: setInterval(atualizarCronometro, 1000),
+    fixadasSessao: new Set()
   };
 
   renderBarraMaterias();
@@ -652,6 +653,7 @@ function renderSimuladoQuiz() {
   const total    = s.questoes.length;
   const acertos  = Object.values(s.respostas).filter(r => r.acertou).length;
   const erros    = Object.values(s.respostas).filter(r => !r.acertou).length;
+  const fixadas  = s.fixadasSessao.size;
 
   conteudo.innerHTML = `
     <div class="questoes-barra sim-barra-sticky">
@@ -659,6 +661,7 @@ function renderSimuladoQuiz() {
         <span class="total">${String(total).padStart(3,'0')}</span>
         <span class="acerto">${String(acertos).padStart(3,'0')}</span>
         <span class="erro">${String(erros).padStart(3,'0')}</span>
+        <span class="fixadas">${String(fixadas).padStart(3,'0')}</span>
       </div>
       <span id="cronometro">00:00</span>
     </div>
@@ -696,8 +699,13 @@ function renderSimuladoQuiz() {
 
   conteudo.querySelector('.btn-marcar')?.addEventListener('click', e => {
     e.stopPropagation();
+    const eraFixada = revisaoIds.has(q.id);
     toggleRevisao(q, s.idx + 1);
     const marcado = revisaoIds.has(q.id);
+    if (marcado && !eraFixada) s.fixadasSessao.add(q.id);
+    else if (!marcado) s.fixadasSessao.delete(q.id);
+    const chip = conteudo.querySelector('.barra-placar .fixadas');
+    if (chip) chip.textContent = String(s.fixadasSessao.size).padStart(3, '0');
     const btn = conteudo.querySelector('.btn-marcar');
     if (btn) { btn.classList.toggle('marcado', marcado); btn.textContent = marcado ? 'Fixada' : 'Fixar'; }
   });
