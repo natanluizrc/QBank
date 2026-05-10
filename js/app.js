@@ -538,7 +538,7 @@ function htmlQuestaoFoco(q, resp, isLast = false, num = null) {
 
   const gabaritoHtml = resp ? `
     <div class="gabarito-inline ${resp.acertou ? 'acerto' : 'erro'}">
-      ${resp.acertou ? '✓ Correto!' : '✗ Incorreto.'} Resposta: <strong>${String(q.resposta).toUpperCase()}</strong><br>${q.comentario}
+      Resposta: <strong>${String(q.resposta).toUpperCase()}</strong><br>${q.comentario}
     </div>
     <button class="btn-proxima">${isLast ? 'Ver resultado' : 'Próxima →'}</button>` : '';
 
