@@ -922,9 +922,14 @@ function toggleRevisao(q, qNum) {
 
 function renderRevisao() {
   const conteudo = document.getElementById('conteudo');
-  const questoes = salvosFiltroSlug
+  const questoes = (salvosFiltroSlug
     ? revisaoQuestoes.filter(q => q._slug === salvosFiltroSlug && q._materiaId === materiaAtiva.id)
-    : revisaoQuestoes;
+    : revisaoQuestoes
+  ).slice().sort((a, b) =>
+    (a._materiaId || '').localeCompare(b._materiaId || '') ||
+    (a._slug || '').localeCompare(b._slug || '') ||
+    (a._qNum || 0) - (b._qNum || 0)
+  );
   if (!questoes.length) {
     conteudo.innerHTML = `<p class="msg-vazio">${salvosFiltroSlug ? 'Nenhuma questão salva nesta aula.' : 'Nenhuma questão salva ainda.'}</p>`;
     return;
