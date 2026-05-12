@@ -2,12 +2,12 @@
 // CONFIGURAÇÃO FIREBASE
 // =====================================================================
 const firebaseConfig = {
-  apiKey: "AIzaSyClB2xCaotvwvvokpfZ3APU-hRMpM42v9o",
-  authDomain: "qbank-v01.firebaseapp.com",
-  projectId: "qbank-v01",
-  storageBucket: "qbank-v01.firebasestorage.app",
-  messagingSenderId: "465595574154",
-  appId: "1:465595574154:web:dab51b68e511d0c2d00a73"
+  apiKey: "AIzaSyAEi9WCO_gujvA_LfplCZXF6Oo4GjyFIj8",
+  authDomain: "nl-qbank.firebaseapp.com",
+  projectId: "nl-qbank",
+  storageBucket: "nl-qbank.firebasestorage.app",
+  messagingSenderId: "229802939264",
+  appId: "1:229802939264:web:23c96f6ac3f53706916765"
 };
 
 firebase.initializeApp(firebaseConfig);
