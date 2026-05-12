@@ -1037,7 +1037,14 @@ function toggleRevisao(q, qNum) {
     revisaoIds.add(q.id);
     revisaoQuestoes.push(qRich);
     db.collection('usuarios').doc(usuario.uid).collection('questoes').doc(q.id)
-      .set({ fixacoes: firebase.firestore.FieldValue.increment(1) }, { merge: true })
+      .set({
+        fixacoes:   firebase.firestore.FieldValue.increment(1),
+        _materia:   qRich._materia,
+        _materiaId: qRich._materiaId,
+        _aula:      qRich._aula,
+        _slug:      qRich._slug,
+        _qNum:      qRich._qNum || null,
+      }, { merge: true })
       .catch(e => console.error('Erro ao registrar fixação:', e));
     ref.set({
       id: qRich.id, banca: qRich.banca || '', tipo: qRich.tipo, enunciado: qRich.enunciado,
