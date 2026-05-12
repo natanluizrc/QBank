@@ -252,7 +252,7 @@ function renderListaQuestoes(questoes) {
   area.innerHTML = `
     <div class="questoes-barra aula-barra-sticky">
       <div class="barra-placar">${placarHtml()}</div>
-      <button id="btn-expandir">Ver gabaritos</button>
+      <button id="btn-expandir">Ver Gabaritos</button>
     </div>
     ${questoes.map((q, i) => htmlQuestaoLista(q, i)).join('')}
   `;
@@ -265,16 +265,16 @@ function renderListaQuestoes(questoes) {
 
   document.getElementById('btn-expandir').addEventListener('click', (e) => {
     const btn = e.currentTarget;
-    const expandir = btn.textContent === 'Ver gabaritos';
+    const expandir = btn.textContent === 'Ver Gabaritos';
     area.querySelectorAll('.gabarito-inline').forEach(gab => {
       gab.classList.toggle('hidden', !expandir);
       const revelar = area.querySelector(`.btn-revelar[data-id="${gab.dataset.id}"]`);
       if (revelar) {
-        revelar.textContent = expandir ? 'Ocultar gabarito' : 'Ver gabarito';
+        revelar.textContent = expandir ? 'Ocultar Gabarito' : 'Ver Gabarito';
         revelar.classList.toggle('aberto', expandir);
       }
     });
-    btn.textContent = expandir ? 'Ocultar gabaritos' : 'Ver gabaritos';
+    btn.textContent = expandir ? 'Ocultar Gabaritos' : 'Ver Gabaritos';
     btn.classList.toggle('aberto', expandir);
   });
 
@@ -283,7 +283,7 @@ function renderListaQuestoes(questoes) {
       const gab = area.querySelector(`.gabarito-inline[data-id="${btn.dataset.id}"]`);
       gab.classList.toggle('hidden');
       const oculto = gab.classList.contains('hidden');
-      btn.textContent = oculto ? 'Ver gabarito' : 'Ocultar gabarito';
+      btn.textContent = oculto ? 'Ver Gabarito' : 'Ocultar Gabarito';
       btn.classList.toggle('aberto', !oculto);
     });
   });
@@ -501,7 +501,7 @@ function htmlQuestaoLista(q, i) {
       </div>
       ${htmlEnunciado(q)}
       ${opcoes}
-      <button class="btn-revelar" data-id="${q.id}">Ver gabarito</button>
+      <button class="btn-revelar" data-id="${q.id}">Ver Gabarito</button>
       <div class="gabarito-inline hidden" data-id="${q.id}">
         <strong>Resposta: ${String(q.resposta).toUpperCase()}</strong><br>${q.comentario}
       </div>
@@ -542,7 +542,7 @@ function htmlQuestaoFoco(q, resp, isLast = false, num = null) {
     <div class="gabarito-inline ${resp.acertou ? 'acerto' : 'erro'}">
       Resposta: <strong>${String(q.resposta).toUpperCase()}</strong><br>${q.comentario}
     </div>
-    <button class="btn-proxima">${isLast ? 'Ver resultado' : 'Próxima →'}</button>` : '';
+    <button class="btn-proxima">${isLast ? 'Ver Resultado' : 'Próxima →'}</button>` : '';
 
   return `
     <div class="questao-card">
@@ -811,7 +811,7 @@ async function renderHistorico() {
     const simulados = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
     conteudo.innerHTML = `
-      <button class="btn-limpar-historico" id="btn-limpar">Limpar histórico</button>
+      <button class="btn-limpar-historico" id="btn-limpar">Limpar Histórico</button>
       <ul class="historico-lista">
         ${simulados.map(s => {
           const data = s.data?.toDate?.().toLocaleDateString('pt-BR') || '—';

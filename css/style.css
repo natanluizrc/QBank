@@ -44,7 +44,11 @@ button:disabled { cursor: default; }
 #btn-login {
   background: #1a1a1a;
   color: #fff;
-  padding: 0.75rem 2rem;
+  height: 2rem;
+  padding: 0 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 6px;
   font-size: 0.95rem;
   font-weight: 500;
@@ -135,8 +139,9 @@ button:disabled { cursor: default; }
 
 .aba-materia {
   flex-shrink: 0;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   padding: 0 0.85rem;
   height: 2rem;
   min-width: 5rem;
@@ -176,6 +181,7 @@ button:disabled { cursor: default; }
   height: 2rem;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-width: 5rem;
   text-align: center;
   font-size: 0.875rem;
@@ -235,6 +241,7 @@ button:disabled { cursor: default; }
   height: 2rem;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   text-decoration: none;
   transition: background 0.12s, color 0.12s, border-color 0.12s;
 }
@@ -324,7 +331,11 @@ button:disabled { cursor: default; }
 
 /* ---- Certo/Errado ---- */
 .btn-ce {
-  padding: 0.5rem 1.5rem;
+  height: 2rem;
+  padding: 0 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 0.9rem;
@@ -359,6 +370,7 @@ button:disabled { cursor: default; }
   height: 2rem;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   transition: background 0.12s, color 0.12s, border-color 0.12s;
   margin-top: 0.5rem;
 }
@@ -391,6 +403,7 @@ button:disabled { cursor: default; }
 .btn-proxima {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   margin-top: 1rem;
   background: #1a1a1a;
   color: #fff;
@@ -480,7 +493,11 @@ button:disabled { cursor: default; }
   color: #c05050;
   border: 1px solid #c05050;
   border-radius: 5px;
-  padding: 0.35rem 0.75rem;
+  height: 2rem;
+  padding: 0 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 1.25rem;
   transition: background 0.1s;
 }
@@ -492,6 +509,9 @@ button:disabled { cursor: default; }
   color: #555;
   margin-bottom: 1rem;
   padding: 0.25rem 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-voltar:hover { color: #1a1a1a; }
@@ -505,6 +525,7 @@ button:disabled { cursor: default; }
   height: 2rem;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   border-radius: 5px;
   border: 1px solid #f59e0b;
   color: #f59e0b;
