@@ -66,11 +66,11 @@ Não há sub-abas de Questões/Teoria — a aula abre direto nas questões. Não
   - Chip âmbar `#fef3c7 / #b45309` — fixadas (questões marcadas da sessão)
 - `Expandir tudo` à dir.
 
-Progresso é session-only — nunca gravado. Exibe `Q1`, `Q2`... na meta da questão. Na aba Fixadas, o número original da aula-fonte é preservado via `_qNum`.
+Progresso é session-only — nunca gravado. Exibe `Q1`, `Q2`... no cabeçalho da questão. Na aba Fixadas, o número original da aula-fonte é preservado via `_qNum`.
 
 ## Botão Fixar/Fixada
 
-Cada questão tem um botão de marcação na meta (mesmo padrão visual do "Ver gabarito"):
+Cada questão tem um botão de marcação no cabeçalho (mesmo padrão visual do "Ver gabarito"):
 - **Fixar** — borda amarela `#f59e0b` + texto amarelo; hover fundo amarelo claro
 - **Fixada** — fundo amarelo sólido `#f59e0b` + texto branco; hover amarelo escuro `#d97706`
 
@@ -78,7 +78,7 @@ Ao clicar em Fixar, a questão entra em `revisaoQuestoes[]` (cache em memória) 
 
 ## Aba Fixadas
 
-Exibe as questões fixadas usando o cache local `revisaoQuestoes[]` — sem fetch do Firestore, resposta imediata. Ao desmarcar uma questão dentro da aba, o card é removido do DOM na hora. Mostra `_materia` e `_aula` de origem na meta de cada questão.
+Exibe as questões fixadas usando o cache local `revisaoQuestoes[]` — sem fetch do Firestore, resposta imediata. Ao desmarcar uma questão dentro da aba, o card é removido do DOM na hora. Mostra `_materia` e `_aula` de origem no cabeçalho de cada questão.
 
 ## Autenticação
 
