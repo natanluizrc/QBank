@@ -488,7 +488,7 @@ button:disabled { cursor: default; }
 .historico-info { font-size: 0.8rem; color: #888; margin-top: 0.15rem; }
 .historico-placar { font-weight: 600; font-size: 1rem; }
 
-.btn-limpar-historico {
+.btn-limpar-simulados {
   font-size: 0.85rem;
   color: #c05050;
   border: 1px solid #c05050;
@@ -502,7 +502,7 @@ button:disabled { cursor: default; }
   transition: background 0.1s;
 }
 
-.btn-limpar-historico:hover { background: #fdf0f0; }
+.btn-limpar-simulados:hover { background: #fdf0f0; }
 
 /* ---- Tabs do Histórico ---- */
 .hist-tabs {
