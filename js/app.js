@@ -295,6 +295,7 @@ function renderListaQuestoes(questoes) {
       const q = questoes.find(x => x.id === card.dataset.qid);
       const acertou = btn.dataset.letra === q.resposta;
       listaRespostas[q.id] = { dada: btn.dataset.letra, acertou };
+      registrarRespostaQuestao(q, acertou, questoes.indexOf(q) + 1);
       card.querySelectorAll('.opcao').forEach(o => {
         o.disabled = true;
         if (o.dataset.letra === q.resposta) o.classList.add('correta');
@@ -316,6 +317,7 @@ function renderListaQuestoes(questoes) {
       const q = questoes.find(x => x.id === card.dataset.qid);
       const acertou = btn.dataset.resp === q.resposta;
       listaRespostas[q.id] = { dada: btn.dataset.resp, acertou };
+      registrarRespostaQuestao(q, acertou, questoes.indexOf(q) + 1);
       card.querySelectorAll('.btn-ce').forEach(b => {
         b.disabled = true;
         if (b.dataset.resp === q.resposta) b.classList.add('correta');
@@ -605,7 +607,7 @@ async function iniciarSimulado(fonte, qtd) {
   const carregarParaPool = async (m, a) => {
     const dados = await carregarAulaDados(m.id, a.slug);
     if (dados?.questoes) {
-      pool.push(...dados.questoes.map(q => ({ ...q, _materia: m.nome, _aula: a.titulo })));
+      pool.push(...dados.questoes.map(q => ({ ...q, _materia: m.nome, _materiaId: m.id, _aula: a.titulo, _slug: a.slug })));
     }
   };
 
@@ -676,6 +678,7 @@ function renderSimuladoQuiz() {
     const responder = (dada) => {
       const acertou = dada.toLowerCase() === String(q.resposta).toLowerCase();
       s.respostas[q.id] = { dada, acertou };
+      registrarRespostaQuestao(q, acertou);
       if (!acertou && !revisaoIds.has(q.id)) toggleRevisao(q, s.idx + 1);
       renderSimuladoQuiz();
     };
@@ -795,22 +798,44 @@ function renderSimuladoResultado() {
 // =====================================================================
 // HISTÓRICO
 // =====================================================================
-async function renderHistorico() {
+function renderHistorico() {
   const conteudo = document.getElementById('conteudo');
-  conteudo.innerHTML = '<p class="msg-vazio">Carregando...</p>';
+  conteudo.innerHTML = `
+    <div class="hist-tabs">
+      <button class="hist-tab ativo" data-hist="simulados">Simulados</button>
+      <button class="hist-tab" data-hist="questoes">Questões</button>
+    </div>
+    <div id="hist-conteudo"></div>`;
+
+  const container = document.getElementById('hist-conteudo');
+
+  conteudo.querySelectorAll('.hist-tab').forEach(btn => {
+    btn.addEventListener('click', () => {
+      conteudo.querySelectorAll('.hist-tab').forEach(b => b.classList.remove('ativo'));
+      btn.classList.add('ativo');
+      if (btn.dataset.hist === 'simulados') renderHistoricoSimulados(container);
+      else renderHistoricoQuestoes(container);
+    });
+  });
+
+  renderHistoricoSimulados(container);
+}
+
+async function renderHistoricoSimulados(container) {
+  container.innerHTML = '<p class="msg-vazio">Carregando...</p>';
 
   try {
     const snap = await db.collection('usuarios').doc(usuario.uid)
       .collection('historico').orderBy('data', 'desc').get();
 
     if (snap.empty) {
-      conteudo.innerHTML = '<p class="msg-vazio">Nenhum simulado realizado ainda.</p>';
+      container.innerHTML = '<p class="msg-vazio">Nenhum simulado realizado ainda.</p>';
       return;
     }
 
     const simulados = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-    conteudo.innerHTML = `
+    container.innerHTML = `
       <button class="btn-limpar-historico" id="btn-limpar">Limpar Histórico</button>
       <ul class="historico-lista">
         ${simulados.map(s => {
@@ -828,14 +853,89 @@ async function renderHistorico() {
       </ul>`;
 
     simulados.forEach(s => {
-      conteudo.querySelector(`.historico-item[data-id="${s.id}"]`)
+      container.querySelector(`.historico-item[data-id="${s.id}"]`)
         ?.addEventListener('click', () => renderDetalhesSimulado(s));
     });
 
-    document.getElementById('btn-limpar').addEventListener('click', () => limparHistorico(simulados));
+    document.getElementById('btn-limpar').addEventListener('click', () => limparHistorico(simulados, container));
 
   } catch (e) {
-    conteudo.innerHTML = '<p class="msg-vazio">Erro ao carregar histórico.</p>';
+    container.innerHTML = '<p class="msg-vazio">Erro ao carregar histórico.</p>';
+    console.error(e);
+  }
+}
+
+async function renderHistoricoQuestoes(container) {
+  container.innerHTML = '<p class="msg-vazio">Carregando...</p>';
+
+  try {
+    const snap = await db.collection('usuarios').doc(usuario.uid)
+      .collection('questoes').get();
+
+    if (snap.empty) {
+      container.innerHTML = '<p class="msg-vazio">Nenhuma questão respondida ainda.</p>';
+      return;
+    }
+
+    const questoes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    const grupos = {};
+    questoes.forEach(q => {
+      const key = `${q._materiaId || ''}|${q._slug || ''}`;
+      if (!grupos[key]) grupos[key] = {
+        materia: q._materia || q._materiaId || '—',
+        aula: q._aula || '—',
+        materiaId: q._materiaId || '',
+        slug: q._slug || '',
+        questoes: []
+      };
+      grupos[key].questoes.push(q);
+    });
+
+    const sortedGrupos = Object.values(grupos).sort((a, b) =>
+      a.materiaId.localeCompare(b.materiaId) || a.slug.localeCompare(b.slug)
+    );
+    sortedGrupos.forEach(g => g.questoes.sort((a, b) => (a._qNum ?? 999) - (b._qNum ?? 999)));
+
+    const totalAcertos = questoes.reduce((s, q) => s + (q.acertos || 0), 0);
+    const totalErros   = questoes.reduce((s, q) => s + (q.erros   || 0), 0);
+    const totalResp    = totalAcertos + totalErros;
+    const pct = totalResp > 0 ? Math.round((totalAcertos / totalResp) * 100) : 0;
+
+    container.innerHTML = `
+      <button class="btn-limpar-historico" id="btn-limpar-q">Limpar Questões</button>
+      <div class="questoes-hist-resumo">
+        <span class="qh-chip azul">${String(questoes.length).padStart(3,'0')}</span>
+        <span class="qh-chip verde">${String(totalAcertos).padStart(3,'0')}</span>
+        <span class="qh-chip vermelho">${String(totalErros).padStart(3,'0')}</span>
+        <span class="qh-chip cinza">${pct}%</span>
+      </div>
+      <div class="questoes-hist-lista">
+        ${sortedGrupos.map(g => `
+          <div class="qh-grupo">
+            <div class="qh-grupo-header">${g.materia} — ${g.aula}</div>
+            ${g.questoes.map(q => {
+              const ac = q.acertos  || 0;
+              const er = q.erros    || 0;
+              const fi = q.fixacoes || 0;
+              return `
+                <div class="qh-item">
+                  <span class="qh-num">Q${q._qNum != null ? q._qNum : '—'}</span>
+                  <span class="qh-stat verde">✓ ${ac}</span>
+                  <span class="qh-stat vermelho">✗ ${er}</span>
+                  ${fi > 0 ? `<span class="qh-stat amarelo">★ ${fi}</span>` : ''}
+                </div>`;
+            }).join('')}
+          </div>`
+        ).join('')}
+      </div>`;
+
+    document.getElementById('btn-limpar-q').addEventListener('click', () =>
+      limparHistoricoQuestoes(questoes, container)
+    );
+
+  } catch (e) {
+    container.innerHTML = '<p class="msg-vazio">Erro ao carregar histórico de questões.</p>';
     console.error(e);
   }
 }
@@ -871,19 +971,46 @@ function renderDetalhesSimulado(s) {
   document.getElementById('btn-voltar-hist').addEventListener('click', renderHistorico);
 }
 
-async function limparHistorico(simulados) {
+async function limparHistorico(simulados, container) {
   if (!confirm('Apagar todo o histórico de simulados?')) return;
   const batch = db.batch();
   simulados.forEach(s =>
     batch.delete(db.collection('usuarios').doc(usuario.uid).collection('historico').doc(s.id))
   );
   await batch.commit();
-  renderHistorico();
+  renderHistoricoSimulados(container);
+}
+
+async function limparHistoricoQuestoes(questoes, container) {
+  if (!confirm('Apagar todo o histórico de questões?')) return;
+  const batch = db.batch();
+  questoes.forEach(q =>
+    batch.delete(db.collection('usuarios').doc(usuario.uid).collection('questoes').doc(q.id))
+  );
+  await batch.commit();
+  renderHistoricoQuestoes(container);
 }
 
 // =====================================================================
 // REVISÃO
 // =====================================================================
+function registrarRespostaQuestao(q, acertou, qNum) {
+  if (!usuario) return;
+  const ref = db.collection('usuarios').doc(usuario.uid).collection('questoes').doc(q.id);
+  const inc = firebase.firestore.FieldValue.increment;
+  const idNum = parseInt(String(q.id).split('-').pop());
+  const numFinal = !isNaN(idNum) ? idNum : (qNum ?? null);
+  ref.set({
+    [acertou ? 'acertos' : 'erros']: inc(1),
+    _materia:   q._materia   || materiaAtiva?.nome  || '',
+    _materiaId: q._materiaId || materiaAtiva?.id    || '',
+    _aula:      q._aula      || aulaAtiva?.titulo   || '',
+    _slug:      q._slug      || aulaAtiva?.slug     || '',
+    _qNum:      numFinal,
+    ultimaResposta: firebase.firestore.FieldValue.serverTimestamp(),
+  }, { merge: true }).catch(e => console.error('Erro ao registrar resposta:', e));
+}
+
 async function carregarRevisao() {
   try {
     const snap = await db.collection('usuarios').doc(usuario.uid).collection('revisao').get();
@@ -909,6 +1036,9 @@ function toggleRevisao(q, qNum) {
     };
     revisaoIds.add(q.id);
     revisaoQuestoes.push(qRich);
+    db.collection('usuarios').doc(usuario.uid).collection('questoes').doc(q.id)
+      .set({ fixacoes: firebase.firestore.FieldValue.increment(1) }, { merge: true })
+      .catch(e => console.error('Erro ao registrar fixação:', e));
     ref.set({
       id: qRich.id, banca: qRich.banca || '', tipo: qRich.tipo, enunciado: qRich.enunciado,
       opcoes: qRich.opcoes || null, resposta: qRich.resposta, comentario: qRich.comentario,

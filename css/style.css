@@ -504,6 +504,81 @@ button:disabled { cursor: default; }
 
 .btn-limpar-historico:hover { background: #fdf0f0; }
 
+/* ---- Tabs do Histórico ---- */
+.hist-tabs {
+  display: flex;
+  border-bottom: 2px solid #e5e7eb;
+  margin-bottom: 1.25rem;
+}
+.hist-tab {
+  padding: 0.45rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: color 0.1s;
+}
+.hist-tab.ativo { color: #1a1a1a; border-bottom-color: #1a1a1a; }
+.hist-tab:hover:not(.ativo) { color: #444; }
+
+/* ---- Histórico de Questões ---- */
+.questoes-hist-resumo {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.qh-chip {
+  font-family: monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+}
+.qh-chip.azul     { background: #dbeafe; color: #1d4ed8; }
+.qh-chip.verde    { background: #dcfce7; color: #15803d; }
+.qh-chip.vermelho { background: #fee2e2; color: #b91c1c; }
+.qh-chip.cinza    { background: #f3f4f6; color: #374151; }
+
+.qh-grupo { margin-bottom: 1.25rem; }
+.qh-grupo-header {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #555;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.qh-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+.qh-num {
+  width: 2.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  flex-shrink: 0;
+}
+.qh-stat {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.1rem 0.45rem;
+  border-radius: 4px;
+}
+.qh-stat.verde    { background: #dcfce7; color: #15803d; }
+.qh-stat.vermelho { background: #fee2e2; color: #b91c1c; }
+.qh-stat.amarelo  { background: #fef3c7; color: #b45309; }
+
 .btn-voltar {
   font-size: 0.875rem;
   color: #555;
