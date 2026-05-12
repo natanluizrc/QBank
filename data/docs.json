@@ -87,7 +87,7 @@
         },
         {
           "tipo": "texto",
-          "conteudo": "Cada card contém: cabeçalho (Q1, estrelas de dificuldade, tipo, botão Fixar) → banca em cinza → enunciado → opções → botão Ver gabarito → gabarito inline."
+          "conteudo": "Cada card contém: questao-info (Q1, estrelas de dificuldade, tipo, botão Fixar) → banca em cinza → enunciado → opções → botão Ver gabarito → gabarito inline."
         },
         {
           "tipo": "subtitulo",
