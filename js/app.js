@@ -836,7 +836,7 @@ async function renderHistoricoSimulados(container) {
     const simulados = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
     container.innerHTML = `
-      <button class="btn-limpar-simulados" id="btn-limpar">Limpar Histórico</button>
+      <button class="btn-limpar-simulados" id="btn-limpar">Limpar Simulados</button>
       <ul class="historico-lista">
         ${simulados.map(s => {
           const data = s.data?.toDate?.().toLocaleDateString('pt-BR') || '—';
